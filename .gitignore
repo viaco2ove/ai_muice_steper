@@ -93,3 +93,4 @@ _test*
 *.mlmodel
 torch/
 cache/
+/.workbuddy/memory/
