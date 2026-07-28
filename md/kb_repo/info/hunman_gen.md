@@ -119,4 +119,5 @@
   3. 可选：写一个 SynthV .svp 项目生成脚本
 
   要不要先导出 MIDI 看看？
+# 相关资料
 [human_gen](human_gen)
