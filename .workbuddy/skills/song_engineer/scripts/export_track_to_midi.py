@@ -46,13 +46,18 @@ def note_to_midi(name: str) -> int | None:
         return None
     # 去掉"泛音"标记
     name = name.replace("泛音", "").strip()
-    m = re.match(r"([A-G][#]?)(-?\d+)", name)
+    # 支持 # 升号 和 b 降号
+    m = re.match(r"([A-G])([#b]?)(-?\d+)", name)
     if not m:
         return None
-    pitch_class, octave = m.group(1), int(m.group(2))
-    if pitch_class not in NOTE2MIDI:
-        return None
-    return NOTE2MIDI[pitch_class] + (octave + 1) * 12
+    letter, accidental, octave = m.group(1), m.group(2), m.group(3)
+    # 转换:先转音名+升降号到 pitch class
+    base = {"C":0,"D":2,"E":4,"F":5,"G":7,"A":9,"B":11}[letter]
+    if accidental == "#":
+        base += 1
+    elif accidental == "b":
+        base -= 1
+    return base + (int(octave) + 1) * 12
 
 
 def pos_to_offset(pos: str) -> tuple[int, int]:
@@ -154,6 +159,36 @@ def export_track(json_path: str, output_path: str, tempo_bpm: int = 68, instrume
                 vel = DYN2VEL.get(n.get("dynamics", "p"), 60)
                 events.append((tick, midi_num, dur, vel, section_name))
 
+    # 源3:notes 扁平结构(吉他/环境音轨,每音含 note/duration/beat_pos/velocity)
+    flat_notes = data.get("notes", [])
+    for n in flat_notes:
+        if not isinstance(n, dict):
+            continue  # 跳过非音符(如备注字符串)
+        note_name = n.get("actual") or n.get("note") or ""
+        # slap/noise 等无音高打击:midi=0,用 channel 9(鼓)或跳过
+        if note_name in ("slap", "noise") or n.get("midi", -1) == 0:
+            continue  # 无音高打击暂跳过(SF 鼓轨需专门处理)
+        midi_num = note_to_midi(note_name)
+        if midi_num is None:
+            continue
+        bp = n.get("beat_pos", "1.1.1").split(".")
+        try:
+            bar_num = int(bp[0])
+            beat = int(bp[1]) if len(bp) > 1 else 1
+            frac_str = bp[2] if len(bp) > 2 else "1"
+            if frac_str == "末":
+                beat = min(beat + 1, 4); frac = 1
+            else:
+                frac = int(frac_str)
+        except (ValueError, IndexError):
+            continue
+        tick = bar_offset(bar_num, (beat, frac))
+        dur = DUR2TICKS.get(n.get("duration", "4分"), 480)
+        vel = n.get("velocity", 60)
+        if isinstance(vel, str):
+            vel = DYN2VEL.get(vel, 60)
+        events.append((tick, midi_num, dur, int(vel), n.get("chord", "")))
+
     events.sort(key=lambda x: x[0])
     last_tick = 0
     for tick, midi_num, dur, vel, label in events:
@@ -165,7 +200,7 @@ def export_track(json_path: str, output_path: str, tempo_bpm: int = 68, instrume
     mid.save(output_path)
     print(f"[输出] {output_path}")
     print(f"  音轨: {track_name} | 音色 program={instrument_program} | BPM={tempo_bpm}")
-    print(f"  音符数: {len(events)} (bars源:{sum(len(b.get('beats',[])) for b in bars) if bars else 0}, melody源:{sum(len(v) for v in m.get('sections',{}).values()) if m else 0})")
+    print(f"  音符数: {len(events)} (bars源:{sum(len(b.get('beats',[])) for b in bars) if bars else 0}, melody源:{sum(len(v) for v in m.get('sections',{}).values()) if m else 0}, notes源:{len(flat_notes)})")
 
 
 def main():

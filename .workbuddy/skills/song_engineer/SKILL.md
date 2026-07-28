@@ -254,7 +254,13 @@ PYTHONUTF8=1 ./.venv/python.exe .workbuddy/skills/song_engineer/scripts/synth_fu
 [json_to_music.md](../../../md/kb_repo/info/json_to_music.md)
 [FluidSynth.md](../../../md/kb_repo/info/FluidSynth.md)
 #### 特别说明
-无论numpy 还是 FluidSynth 都说粗糙塑料音色，比较适合做验证
+无论numpy 还是 FluidSynth 都是粗糙塑料音色，比较适合做验证
+
+#### 高保真成品
+##### 难道人声生成
+[hunman_gen.md](../../../md/kb_repo/info/hunman_gen.md)
+##### 乐器音色
+[track_up_level.md](../../../md/kb_repo/info/track_up_level.md)
 
 #### 步骤
 ```bash
