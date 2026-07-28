@@ -1,5 +1,7 @@
 https://github.com/openutau/OpenUtau/wiki/Getting-Started#windows  
 https://github.com/openutau/OpenUtau/wiki/%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB-%28%E4%B8%AD%E6%96%87%29
+中文文档
+https://github.com/openutau/OpenUtau/wiki/%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB-(%E4%B8%AD%E6%96%87)
 
 Step 1：装 OpenUTAU
 
@@ -203,3 +205,22 @@ https://utau.fandom.com/wiki/UTAU_Wiki
    - UTAU采样声库：CPU占用低，适合批量渲染；
    - DiffSinger AI声库：人声更自然，但需要Win10+、内存8G以上；
 4. 乐器轨道继续用MuseScore General sf2，只把主唱人声交给OpenUtau，整套管线成本最低。
+
+
+# 在线版Diffsinger 和其他版本 Diffsinger
+[Diffsinger](../Diffsinger)
+
+OpenUtau Lunai
+https://lunaiproject.github.io/singers/memoka_ater
+
+https://huggingface.co/spaces/SJTU/diffsinger-webui
+
+https://aistudio.baidu.com/projectdetail/7458093
+
+https://github.com/bingcheng1998/diffsinger-webui
+
+https://github.com/MoonInTheRiver/DiffSinger
+
+https://blog.csdn.net/gitblog_00549/article/details/156377485
+
+https://github.com/openvpi/DiffSinger

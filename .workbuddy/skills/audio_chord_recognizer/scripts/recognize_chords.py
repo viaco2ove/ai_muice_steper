@@ -10,9 +10,14 @@ import sys
 import numpy as np
 
 try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
+try:
     import librosa
 except ImportError:
-    print("❌ 缺少 librosa，请运行: pip install librosa -i https://mirrors.aliyun.com/pypi/simple/")
+    print("[ERROR] 缺少 librosa，请运行: pip install librosa")
     sys.exit(1)
 
 
@@ -150,16 +155,14 @@ def main():
 
     input_path = os.path.expanduser(args.input)
     if not os.path.exists(input_path):
-        print(f"❌ 文件不存在: {input_path}")
+        print(f"[ERROR] 文件不存在: {input_path}")
         sys.exit(1)
 
     print(f"加载音频: {input_path}")
     y, sr = librosa.load(input_path, sr=None, mono=True)
     print(f"采样率: {sr}Hz, 时长: {len(y)/sr:.1f}s")
 
-    hop_length = librosa.time_to_frames(
-        args.hop, sr=sr
-    )[0] if args.hop else 512
+    hop_length = int(args.hop * sr) if args.hop else 512
 
     print(f"分析中（窗口 {args.window}s, 步长 {args.hop}s）...")
     results = recognize_chords(y, sr, hop_length=hop_length, window_sec=args.window)
@@ -173,7 +176,7 @@ def main():
         for start_sec, chord, conf in results:
             f.write(f"{start_sec:.2f}  {chord:<10} {conf:.3f}\n")
 
-    print(f"\n✅ 完成，{len(results)} 个和弦，输出到: {args.output}")
+    print(f"\n[OK] 完成，{len(results)} 个和弦，输出到: {args.output}")
 
     # 打印摘要
     unique_chords = set(c for _, c, _ in results)
