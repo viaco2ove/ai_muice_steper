@@ -12,7 +12,7 @@ metadata:
 ---
 
 # MiniMax Music API Skill
-
+[.env](../../../.env)
 Generate songs using the **mmx CLI** tool with MiniMax API. This is for programmatic
 /CLI usage. For web-based generation, use `minimax-music-web` skill instead.
 

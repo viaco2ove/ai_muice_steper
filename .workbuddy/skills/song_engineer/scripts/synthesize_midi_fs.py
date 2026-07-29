@@ -57,9 +57,13 @@ def find_sf(preferred=None):
         p = os.path.join(SF_DIR, preferred)
         if os.path.exists(p):
             return p
-    # 默认优先 GeneralUser GS(轻量好用)
+    # 默认优先 Timbres Of Heaven(最完整)
     for f in list_soundfonts():
-        if "GeneralUser" in f:
+        if "Timbres" in f and f.endswith(".sf2"):
+            return os.path.join(SF_DIR, f)
+    # 次选 MuseScore_General
+    for f in list_soundfonts():
+        if "MuseScore" in f and f.endswith(".sf2"):
             return os.path.join(SF_DIR, f)
     sfs = list_soundfonts()
     if sfs:

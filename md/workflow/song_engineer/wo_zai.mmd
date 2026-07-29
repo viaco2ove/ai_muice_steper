@@ -1,0 +1,306 @@
+# 走在 · 制作流程图
+
+```mermaid
+flowchart TB
+    %% 样式定义
+    classDef phase1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef phase2 fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef phase3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef phase4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef phase5 fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef phase6 fill:#e0f7fa,stroke:#006064,stroke-width:2px
+    classDef phase7 fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef skill fill:#fff9c4,stroke:#f57f17,stroke-width:1px
+    classDef output fill:#e8eaf6,stroke:#283593,stroke-width:1px
+    classDef decision fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+
+    %% ========== 阶段 1: 初始化 ==========
+    subgraph Phase1["阶段1 · 初始化与参考分析"]
+        direction TB
+        P1_1["📁 创建工程目录<br/>mkdir workspace/project/走在/"]
+        P1_2["🎵 导入参考音频<br/>标准录音3.mp3"]
+        P1_3["🔊 audio_chord_recognizer<br/>音频分析与扒谱"]
+
+        P1_1 --> P1_2
+        P1_2 --> P1_3
+
+        subgraph Outputs1["产出"]
+            O1_1["📄 report.md<br/>和弦+旋律报告"]
+            O1_2["📂 tracks/<br/>vocals/drums/bass/other.wav"]
+            O1_3["🎼 melody/pitch.csv<br/>旋律音高数据"]
+            O1_4["🎹 melody/vocals.mid<br/>人声旋律MIDI"]
+        end
+
+        P1_3 --> O1_1
+        P1_3 --> O1_2
+        P1_3 --> O1_3
+        P1_3 --> O1_4
+    end
+
+    %% ========== 阶段 2: 和弦 ==========
+    subgraph Phase2["阶段2 · 和弦方案设计"]
+        direction TB
+        P2_1["📋 song_engineer<br/>初始化工程聚合"]
+        P2_2["🎸 ai_chords_master<br/>生成和弦方案"]
+
+        P2_1 --> P2_2
+
+        subgraph Outputs2["产出"]
+            O2_1["📄 01_吉他.md<br/>吉他轨完整设计"]
+            O2_2["🎵 和弦骨架<br/>Cadd9→Em9/B"]
+            O2_3["📐 指法把位<br/>Cmaj9/C9/C13等"]
+        end
+
+        P2_2 --> O2_1
+        P2_2 --> O2_2
+        P2_2 --> O2_3
+    end
+
+    %% ========== 阶段 3: 歌词 ==========
+    subgraph Phase3["阶段3 · 歌词创作"]
+        direction TB
+        P3_1["✍️ muse-lyrics-gen<br/>歌词创作"]
+        P3_2["🔤 openutau_lyrics<br/>歌词转音素"]
+
+        P3_1 --> P3_2
+
+        subgraph Outputs3["产出"]
+            O3_1["📄 03_lyrics.md<br/>完整歌词"]
+            O3_2["📄 02_主唱_phonemes.md<br/>CV音素序列"]
+        end
+
+        P3_2 --> O3_1
+        P3_2 --> O3_2
+    end
+
+    %% ========== 阶段 4: 旋律 ==========
+    subgraph Phase4["阶段4 · 旋律设计"]
+        direction TB
+        P4_1["📊 读取 melody/pitch.csv<br/>分析参考旋律"]
+        P4_2["🎼 melody_master<br/>旋律重写"]
+
+        P4_1 --> P4_2
+
+        subgraph Outputs4["产出"]
+            O4_1["📄 02_主唱.md<br/>逐音符旋律表<br/>221音符"]
+            O4_2["📄 02_主唱.json<br/>机器可读"]
+        end
+
+        P4_2 --> O4_1
+        P4_2 --> O4_2
+    end
+
+    %% ========== 阶段 5: OpenUTAU ==========
+    subgraph Phase5["阶段5 · OpenUTAU 人声渲染"]
+        direction TB
+        P5_1["📤 export_track_to_midi.py<br/>导出MIDI"]
+        P5_2["⚙️ ustx_from_template.py<br/>生成.ustx文件"]
+        P5_3["🖥️ OpenUTAU<br/>渲染人声WAV"]
+
+        P5_1 --> P5_2
+        P5_2 --> P5_3
+
+        subgraph Outputs5["产出"]
+            O5_1["🎹 02_主唱.mid"]
+            O5_2["📄 02_主唱.ustx<br/>79.7KB, 221音符"]
+            O5_3["🔊 02_主唱_fs.wav<br/>FluidSynth预览"]
+        end
+
+        P5_2 --> O5_1
+        P5_2 --> O5_2
+        P5_3 --> O5_3
+    end
+
+    %% ========== 阶段 6: 多轨道 ==========
+    subgraph Phase6["阶段6 · 多轨道编曲"]
+        direction TB
+
+        subgraph Guitar["吉他轨系"]
+            G1["01_吉他<br/>基础分解"]
+            G2["05_solo吉他-主<br/>旋律solo"]
+            G3["06_solo吉他-辅1<br/>琶音辅助"]
+            G4["07_solo吉他-辅2<br/>布鲁斯色彩"]
+            G5["08_节奏吉他<br/>拍弦+勾弦"]
+        end
+
+        subgraph Vocal["人声轨系"]
+            V1["02_主唱<br/>主旋律"]
+            V2["09_和声<br/>三度和声"]
+            V3["03_lyrics<br/>歌词轨"]
+        end
+
+        subgraph Ambient["环境音轨系"]
+            A1["10_氛围垫音<br/>合成器铺底"]
+            A2["11_自然白噪音<br/>雨/风声"]
+            A3["12_泛音点缀<br/>吉他泛音"]
+            A4["13_轻贝斯<br/>低频填充"]
+        end
+
+        P6_1["🔊 synth_full_song_fs.py<br/>FluidSynth全曲合成"]
+        P6_1 --> full["🎵 full_multitrack_fs.wav<br/>13轨叠加"]
+    end
+
+    %% ========== 阶段 7: AI人声与成品 ==========
+    subgraph Phase7["阶段7 · AI人声与成品"]
+        direction TB
+
+        P7_1["🤖 MiniMax Music<br/>AI人声生成"]
+        P7_2["🎚️ DAW混音<br/>Audacity/Premiere"]
+
+        P7_1 --> P7_2
+        P7_2 --> final["🎵 走在.mp3<br/>成品音频"]
+    end
+
+    %% ========== 阶段连接 ==========
+    Phase1 -->|"参考分析产出"| Phase2
+    Phase2 -->|"和弦骨架+吉他"| Phase3
+    Phase3 -->|"歌词+音素"| Phase4
+    Phase4 -->|"旋律表"| Phase5
+    Phase5 -->|"人声WAV轨道"| Phase6
+    Phase6 -->|"多轨WAV"| Phase7
+
+    %% ========== 决策节点 ==========
+    D1{"OpenUTAU<br/>渲染?"}
+    D2{"MiniMax<br/>AI生成?"}
+
+    Phase5 --> D1
+    D1 -->|"渲染WAV"| Phase6
+    Phase7 --> D2
+    D2 -->|"AI人声"| Phase6
+
+    %% 样式应用
+    class P1_1,P1_2,P1_3 phase1
+    class P2_1,P2_2 phase2
+    class P3_1,P3_2 phase3
+    class P4_1,P4_2 phase4
+    class P5_1,P5_2,P5_3 phase5
+    class G1,G2,G3,G4,G5,V1,V2,V3,A1,A2,A3,A4,P6_1,full phase6
+    class P7_1,P7_2,final phase7
+    class O1_1,O1_2,O1_3,O1_4,O2_1,O2_2,O2_3,O3_1,O3_2,O4_1,O4_2,O5_1,O5_2,O5_3 output
+    class D1,D2 decision
+```
+
+---
+
+## 段落结构图
+
+```mermaid
+gantt
+    title 走在 · 段落时间线
+    dateFormat X
+    axisFormat %M:%S
+
+    section 演唱层
+    前奏         :intro, 0, 14
+    主歌A        :verse1, 14, 42
+    主歌B        :verse2, 42, 71
+    间奏         :interlude, 71, 85
+    副歌         :chorus1, 85, 113
+    主歌A'       :verse3, 113, 141
+    副歌         :chorus2, 141, 169
+    尾奏         :outro, 169, 184
+
+    section 和弦
+    Cadd9        :0, 35
+    C7sus4       :35, 70
+    Em9/B        :70, 105
+    Em11/B       :105, 140
+    E11          :140, 175
+    Em7(弱化)    :175, 184
+```
+
+---
+
+## 技能调用关系图
+
+```mermaid
+graph LR
+    subgraph 输入["输入"]
+        REF["🎵 参考音频<br/>标准录音3.mp3"]
+        STYLE["📋 风格规范<br/>沙发小曲"]
+        LYRICS["✍️ 原始歌词"]
+    end
+
+    subgraph 技能["技能调用"]
+        AC["🔊 audio_chord_recognizer"]
+        ACM["🎸 ai_chords_master"]
+        MLG["✍️ muse-lyrics-gen"]
+        MM["🎼 melody_master"]
+        OL["🔤 openutau_lyrics"]
+        SE["📋 song_engineer"]
+    end
+
+    subgraph 产出["工程产出"]
+        ENG["📂 song_engineer/<br/>52小节工程"]
+        MID["🎹 MIDI轨道<br/>13轨"]
+        UST["📄 .ustx文件"]
+        WEM["🔊 人声WAV"]
+    end
+
+    subgraph 成品["最终成品"]
+        MP3["🎵 走在.mp3"]
+    end
+
+    REF --> AC
+    AC -->|"melody/pitch.csv"| MLG
+    AC -->|"melody/vocals.mid"| MM
+    STYLE --> ACM
+    ACM --> ENG
+    LYRICS --> MLG
+    MLG --> ENG
+    MM --> ENG
+    OL --> ENG
+    SE --> ENG
+    ENG --> MID
+    ENG --> UST
+    MID --> WEM
+    UST --> WEM
+    WEM --> MP3
+```
+
+---
+
+## 技术栈概览
+
+```mermaid
+graph TB
+    subgraph 前端工具["前端工具"]
+        OU["🖥️ OpenUTAU<br/>.ustx渲染"]
+        DAW["🎚️ DAW软件<br/>Audacity/Premiere"]
+        WEB["🌐 MiniMax网页<br/>AI人声生成"]
+    end
+
+    subgraph Python脚本["Python脚本"]
+        FCR["🔊 full_analysis.py<br/>音频分析"]
+        ELM["📤 export_track_to_midi.py<br/>MIDI导出"]
+        UFT["⚙️ ustx_from_template.py<br/>.ustx生成"]
+        LTP["🔤 lyrics_to_phonemes.py<br/>音素转换"]
+        SFS["🔊 synth_full_song_fs.py<br/>FluidSynth合成"]
+    end
+
+    subgraph 核心库["核心库"]
+        DEM["🔊 demucs v4<br/>音轨分离"]
+        LIB["📊 librosa<br/>和弦识别"]
+        YAM["📄 ruamel.yaml<br/>YAML解析"]
+        MID["🎹 mido<br/>MIDI处理"]
+    end
+
+    subgraph 文件格式["文件格式"]
+        MID_F["🎹 .mid<br/>MIDI"]
+        USTX["📄 .ustx<br/>OpenUTAU"]
+        WAV["🔊 .wav<br/>音频"]
+        MD["📝 .md<br/>文档"]
+    end
+
+    FCR --> DEM
+    FCR --> LIB
+    UFT --> YAM
+    SFS --> MID
+    ELM --> MID
+    DEM --> WAV
+    LIB --> WAV
+    FCR --> WAV
+    UFT --> USTX
+    ELM --> MID_F
+    SFS --> WAV
+```

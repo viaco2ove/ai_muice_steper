@@ -5,7 +5,7 @@ agent_created: true
 ---
 
 # Melody Master 旋律设计技能
-
+[.env](../../../.env)
 ## 能力概览
 
 基于参考曲扒谱 + 旋律写作规范 + 转音设计，重写/优化人声主旋律。
@@ -74,6 +74,23 @@ with open('melody/pitch.csv') as f:
 "
 ```
 
-## 工程聚合
+## llm 写的主旋律像托dabian
+- 改用 minimax-music-api 等技能 生成初稿
+minimax-music-api
+主唱.prompt.md
+标准录音 3.mp3
+lyrics.md 
+music-3.0-free
+[.env](../../../.env)
+- 技能audio_chord_recognizer 分离出 vocals.mp3
+- 然后转成 md 和json 旋律文件
+用我刚刚转成mid 的
+vocals.ai.mid （Melodyne 5）
+ 改编
+02_主唱.md
+02_主唱.json
+你也可以认为是基本照抄。 然后
+openutau_lyrics
+出 openutau 的歌词
 
-重写后的 `02_主唱.md` 替换 song_engineer 里的原有旋律，供后续 ust_generator.py → .ustx → OpenUTAU 渲染使用。
+## 

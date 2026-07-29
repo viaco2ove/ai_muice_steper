@@ -13,7 +13,7 @@ metadata:
 ---
 
 # MiniMax Music Generation Skill
-
+[.env](../../../.env)
 Generate songs (vocal or instrumental) using the MiniMax Music API. Supports two creation
 modes: **Basic** (one-sentence-in, song-out) and **Advanced Control** (edit lyrics, refine
 prompt, plan before generating).
