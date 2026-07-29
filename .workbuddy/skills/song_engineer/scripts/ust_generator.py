@@ -166,7 +166,7 @@ def write_ust(words, out_path):
     lines.append("Tracks=1")
     lines.append("ProjectName=走在-主唱")
     lines.append("VoiceDir=")
-    lines.append("OutFile=02_主唱.wav")
+    lines.append("OutFile=02_主唱.org.wav")
     lines.append("CacheDir=")
     lines.append("Mode2=True")
 
