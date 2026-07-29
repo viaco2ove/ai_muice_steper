@@ -460,6 +460,6 @@ cd D:\Users\viaco\PycharmProjects\ai_muice_steper
 | 阶段9 AI翻唱        | 🟡 完成 | MiniMax 翻唱，优化，然后再分轨                                          |
 
 **下一步**：
-1. 在 OpenUTAU 中打开 `02_主唱.ustx` 渲染人声
+1. 在 OpenUTAU 中打开 `02_主唱.ustx` 渲染人声.如果失败改为 加载mid 文件 再导入歌词试试。
 2. 使用 MiniMax Music 生成高保真人声
 3. DAW 混音输出成品
