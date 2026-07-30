@@ -29,11 +29,18 @@ def _p(ns):
     return {'C':0,'D':2,'E':4,'F':5,'G':7,'A':9,'B':11}[s] + v + (o+1)*12
 
 def _pos(ps):
-    # '2.1' = beat2 sub1 (eighth units); return ticks offset within bar
+    # returns ticks offset within a bar.
+    # three-segment 'bar.beat.sub' (e.g. '1.2.1' = bar1 beat2 sub1) -> use [1],[2]
+    # two-segment 'beat.sub' (e.g. '2.1' = beat2 sub1) -> use [0],[1]
     p = str(ps).replace('-', '.').split('.')
-    if len(p) < 2 or not p[0].isdigit():
+    if len(p) < 2:
         return 0
-    beat = int(p[0]); sub = int(p[1]) if p[1].isdigit() else 1
+    if len(p) >= 3 and p[0].isdigit() and p[1].isdigit() and p[2].isdigit():
+        beat = int(p[1]); sub = int(p[2])
+    else:
+        if not p[0].isdigit():
+            return 0
+        beat = int(p[0]); sub = int(p[1]) if p[1].isdigit() else 1
     return (beat - 1) * TP + (sub - 1) * 240
 
 def df(t):  # ticks -> MuseScore durationType (English words)
