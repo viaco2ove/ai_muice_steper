@@ -195,3 +195,14 @@ categories.json
 convert.json
 drumset_fr.drm
 orchestral.drm
+
+## 配置文件读取
+[.env](../../../.env)
+主要是 musescore_ver。
+例如 musescore_ver=4.7.4.260706075
+## xml 说明
+- version
+    - <museScore version="5.00">  代表 5.0 以上的musescore 版本
+    - <museScore version="4.00">  代表 4.0 以上的musescore 版本 
+如 musescore_ver=4.7.4.260706075 那么 <museScore version="4.00">
+
