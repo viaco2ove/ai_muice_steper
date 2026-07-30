@@ -206,3 +206,38 @@ orchestral.drm
     - <museScore version="4.00">  代表 4.0 以上的musescore 版本 
 如 musescore_ver=4.7.4.260706075 那么 <museScore version="4.00">
 
+## 音色库列表
+### 参考文件
+[musescore.sound.yml](../../../md/kb_repo/info/text_score_xml/musescore/musescore.sound.yml)
+### 读取文件
+[musescore.sound.yml](../../../.cache/musescore.sound.yml)
+
+- 一般会下载 %USERPROFILE%\Muse Hub\Instruments
+ .mscx 文件里 <synti>Fluid</synti>， MuseScore 用 MS Basic
+ .mscx  文件里<synti>MuseSounds</synti>， MuseScore 用 MuseSounds 库
+synti 的合法值：Fluid / MuseSampler / MuseSounds。
+MuseScore 4 写入 MuseSounds 音色时用 MuseSounds（不是 MuseSampler）
+- Muse Guitars Vol.1
+库目录名实际是 Muse Guitars Vol 1（没有点）
+
+# 混音器的选择会保存到
+audiosettings.json 而不是 .mscx 里
+  01_吉他.mscx          ← 乐谱(音符/调号)，不含音色
+  audiosettings.json    ← ★ 音色配置在这！每轨的 MuseSounds 音色
+  score_style.mss       ← 谱面样式
+  META-INF/container.xml← 清单
+
+## audiosettings.json
+每个 track 的核心是 in.resourceMeta，MuseSounds 音色的关键字段：
+  - type: "muse_sampler_sound_pack"
+  - vendor: "MuseSounds"
+  - id = museUID（如 "13012"）
+  - attributes: museCategory / museName / musePack / museUID / museVendorName / playbackSetupData
+
+  而 partId 要跟 .mscx 里 <Part id="1"> 对应，instrumentId 跟 <Instrument id="guitar-steel"> 对应。
+
+  1. 把 musescore.conf.json 里的音色配置补全（加上 museUID 和 playbackSetupData）
+  2. 让生成器除了生成 .mscx，同时生成配套的 audiosettings.json + META-INF/container.xml，这样每轨开箱即用，不用手动在 Mixer 里选
+
+  先查所有音色的 UID 和 playbackSetupData。playbackSetupData 这个字段我需要从库里确认，让我看 .spx 或 SQLite 里有没有：
+

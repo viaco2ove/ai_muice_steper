@@ -154,3 +154,14 @@ https://musescore.com/ 和  https://musescore.org/zh-hans 那个是官网
 2. Audacity：**独立音频编辑软件**，乐谱导出音频后，离线做后期修整；
 3. Outlaw Lite（混音总线自动音量平衡插件）
 4. Inner Pitch 2（移调 / 音高修正插件）
+
+
+# 音色安装
+- 一般会下载 %USERPROFILE%\Muse Hub\Instruments
+ .mscx 文件里 <synti>Fluid</synti>， MuseScore 用 MS Basic
+ .mscx  文件里<synti>MuseSounds</synti>， MuseScore 用 MuseSounds 库
+synti 的合法值：Fluid / MuseSampler / MuseSounds。
+MuseScore 4 写入 MuseSounds 音色时用 MuseSounds（不是 MuseSampler）
+- Muse Guitars Vol.1
+库目录名实际是 Muse Guitars Vol 1（没有点）
+

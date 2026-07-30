@@ -1,0 +1,153 @@
+# MuseScore v4.7.4 MuseSounds 音色总库
+version: "4.7.4.260706075"
+library_bundles:
+  - bundle_name: "MuseSounds Core (免费核心库)"
+    sub_libraries:
+      # 1. Muse Strings 弦乐组
+      - lib: "Muse Strings"
+        category: "Orchestral Strings"
+        instruments:
+          - Violin 1 (Solo)
+          - Violin 2 (Solo)
+          - Violins (Section)
+          - Viola (Solo)
+          - Violas (Section)
+          - Cello (Solo)
+          - Cellos (Section)
+          - Contrabasses (Double Bass)
+      # 2. Muse Woodwinds 木管
+      - lib: "Muse Woodwinds"
+        category: "Orchestral Woodwinds"
+        instruments:
+          - Flute (Solo)
+          - Piccolo
+          - Oboe (Solo)
+          - English Horn
+          - Clarinet Bb (Solo)
+          - Bass Clarinet
+          - Bassoon (Solo)
+          - Contrabassoon
+      # 3. Muse Brass 铜管
+      - lib: "Muse Brass"
+        category: "Orchestral Brass"
+        instruments:
+          - Trumpet Bb (Solo)
+          - Muted Trumpet
+          - French Horn (Solo)
+          - French Horn Section
+          - Tenor Trombone (Solo)
+          - Bass Trombone
+          - Tuba
+      # 4. Muse Percussion 管弦打击乐
+      - lib: "Muse Percussion"
+        category: "Orchestral Percussion"
+        instruments:
+          - Timpani
+          - Bass Drum
+          - Snare Drum
+          - Suspended Cymbal
+          - Piatti (Orchestral Crash)
+          - Tam-tam
+          - Taiko Drums
+          - Toms
+          - Field Drum
+          - Tambourine
+          - Timbales
+          - Bongos
+          - Cabasa
+          - Castanets
+          - Claves
+          - Cowbell
+          - Shaker
+          - Wood Blocks
+          - Triangle
+          - Sleigh Bells
+          - Bell Tree
+          - Mark Tree
+          - Glockenspiel
+          - Xylophone
+          - Marimba
+          - Vibraphone
+          - Crotales
+          - Tubular Bells
+          - Gong
+      # 5. Muse Keys 键盘乐器
+      - lib: "Muse Keys"
+        category: "Keyboard Instruments"
+        instruments:
+          - Grand Piano (Concert)
+          - Dream Piano
+          - Soft Piano
+          - Upright Piano
+          - Suitcase Piano
+          - Wurly 200A
+          - Hammond Organ
+          - Harpsichord
+          - Celesta
+      # 6. Muse Harp 竖琴
+      - lib: "Muse Harp"
+        category: "Plucked Orchestral"
+        instruments:
+          - Concert Harp
+      # 7. Muse Choir 交响合唱
+      - lib: "Muse Choir"
+        category: "Vocal Choir"
+        instruments:
+          - Sopranos
+          - Altos
+          - Tenors
+          - Basses
+          - Mixed Choir Full
+          - Women Choir
+          - Men Choir
+      # 8. Muse Handbells 手铃
+      - lib: "Muse Handbells"
+        category: "Bell Ensemble"
+        instruments:
+          - Handbells
+          - Handchimes
+      # 9. Muse FX 音效库
+      - lib: "MuseFX"
+        category: "Sound Effects"
+        instruments:
+          - Breath Noise
+          - String Scrape
+          - Wind Rumble
+          - Sub Bass Drone
+          - Orchestral Swells
+          - Short Impacts
+  # 第二套独立扩展：Muse Guitars Vol.1（吉他合集）
+  - bundle_name: "Muse Guitars Vol.1 (独立吉他扩展)"
+    sub_libraries:
+      - lib: "Muse Guitars Vol.1"
+        category: "Guitar & Bass"
+        instruments:
+          # 原声吉他
+          - Acoustic Nylon (尼龙古典吉他)
+          - Acoustic Steel Picked (钢弦拨片民谣)
+          - Acoustic Steel Plucked (钢弦指弹民谣)
+          # LP电吉他 (Les Paul 双拾音器)
+          - Electric LP - Clean
+          - Electric LP - Heavy
+          - Electric LP - Lead
+          # ST电吉他 (Stratocaster 三单拾音器)
+          - Electric SC - Clean
+          - Electric SC - Heavy
+          - Electric SC - Lead
+          # 电贝斯
+          - Electric Bass (Precision Bass)
+# 吉他通用演奏技法（全部Guitars Vol.1乐器共享）
+guitar_articulations:
+  - Sustain (多力度分层长音)
+  - Staccato
+  - Staccatissimo
+  - Palm Mute
+  - Ghost Mute (X符头闷音)
+  - Hammer-on / Pull-off
+  - Harmonics (自然泛音)
+  - Bends (全音/半音推弦)
+  - Scoop / Fall
+  - Doit 滑音
+  - Legato Slides
+  - Tremolo Picking
+  - Plop 止音

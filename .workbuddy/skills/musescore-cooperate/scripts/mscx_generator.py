@@ -74,6 +74,7 @@ def load(name, td):
             if n: return n
     if os.path.exists(mp):
         mid = mido.MidiFile(mp); tp = mid.ticks_per_beat or TP
+        grid = 60  # quantize to 32nd notes (ticks)
         n, at, op = [], 0, {}
         for g in mid.tracks[1] if len(mid.tracks) > 1 else mid.tracks[0]:
             at += g.time
@@ -81,7 +82,9 @@ def load(name, td):
                 op[g.note] = (at, g.velocity)
             elif (g.type == 'note_off' or (g.type == 'note_on' and g.velocity == 0)) and g.note in op:
                 s, v = op.pop(g.note)
-                n.append({'t':int(s),'n':g.note,'d':int(at-s),'v':v,'b':1})
+                qs = max(0, round(s / grid) * grid)
+                qd = max(grid, round((at - s) / grid) * grid)
+                n.append({'t':qs,'n':g.note,'d':qd,'v':v,'b':1})
         n.sort(key=lambda x: x['t']); return n
     return []
 
@@ -104,27 +107,31 @@ def _tpc_for(pitch, name):
     return {0:14,1:21,2:16,3:23,4:18,5:19,6:26,7:21,8:16,9:23,10:18,11:25}[pc]
 
 def _duration_label(ticks):
-    # split a tick count into a list of (ticks,) durations summing to it,
-    # using binary (whole/half/quarter/eighth/16th) and dots not needed here
+    # split a tick count into standard binary durations summing to <= ticks
+    # (leftover smaller than a 32nd is dropped; returns [] for ticks < 60)
     out = []
     for unit in (1920, 960, 480, 240, 120, 60):
         while ticks >= unit:
             out.append(unit); ticks -= unit
-    if ticks:  # leftover, pad to smallest
-        out.append(60)
-    return out or [1920]
+    return out
 
-def chord_xml(pitch, ticks, tpc, vel, lyric=''):
+def chord_xml(notes, ticks):
+    # notes: list of dicts with n,name,v,lyric at the same onset (a chord)
     parts = ['      <Chord>']
     parts.append('        <durationType>' + df(ticks) + '</durationType>')
-    parts.append('        <Note>')
-    parts.append('          <pitch>' + str(pitch) + '</pitch>')
-    parts.append('          <tpc>' + str(tpc) + '</tpc>')
-    if vel is not None:
-        parts.append('          <velocity>' + format(vel/127.0, '.3f') + '</velocity>')
-    parts.append('        </Note>')
-    if lyric and lyric not in ('R',''):
-        parts.append('        <Lyric><text>' + str(lyric) + '</text></Lyric>')
+    for n in notes:
+        parts.append('        <Note>')
+        parts.append('          <pitch>' + str(n['n']) + '</pitch>')
+        parts.append('          <tpc>' + str(_tpc_for(n['n'], n.get('name'))) + '</tpc>')
+        if n.get('v') is not None:
+            parts.append('          <velocity>' + format(n['v']/127.0, '.3f') + '</velocity>')
+        parts.append('        </Note>')
+    # attach lyric from first note that has one
+    for n in notes:
+        lyr = n.get('lyric', '')
+        if lyr and lyr not in ('R', ''):
+            parts.append('        <Lyric><text>' + str(lyr) + '</text></Lyric>')
+            break
     parts.append('      </Chord>')
     return '\n'.join(parts)
 
@@ -145,51 +152,79 @@ def measure_xml(bar_num, bnotes, bpm, is_first):
         L.append('        <Rest><durationType>measure</durationType>'
                  '<duration>4/4</duration></Rest>')
     else:
-        # build a timeline 0..1920, fill gaps with rests, cap each note to
-        # not overflow into the next note or the bar end
+        # group notes that start at the same beat into one Chord, then walk
+        # the timeline filling gaps with rests and capping each chord to the
+        # next onset / bar end so the measure always totals exactly 4/4
         ev = sorted(bnotes, key=lambda x: x['t'] % BT)
+        groups = []
+        i = 0
+        while i < len(ev):
+            start = ev[i]['t'] % BT
+            grp = [ev[i]]; i += 1
+            while i < len(ev) and (ev[i]['t'] % BT) == start:
+                grp.append(ev[i]); i += 1
+            groups.append((start, grp))
         cursor = 0
-        for i, n in enumerate(ev):
-            start = n['t'] % BT
+        for gi, (start, grp) in enumerate(groups):
             if start > cursor:
-                L.append(rest_xml(start - cursor))
-            # note lasts until next event or bar end, capped by its own dur
-            end = (ev[i+1]['t'] % BT) if i+1 < len(ev) else BT
+                for s in _duration_label(start - cursor):
+                    L.append(rest_xml(s))
+            end = groups[gi+1][0] if gi+1 < len(groups) else BT
             avail = end - max(start, cursor)
-            dur = min(n['d'], avail) if avail > 0 else n['d']
-            if dur <= 0: dur = 120
-            for seg in _duration_label(dur):
-                L.append(chord_xml(n['n'], seg, _tpc_for(n['n'], n.get('name')),
-                                   n['v'], n.get('lyric','')))
-            cursor = max(start, cursor) + dur
+            dur = min(grp[0]['d'], avail) if avail > 0 else max(avail, 60)
+            if dur <= 0: dur = 60
+            segs = _duration_label(dur)
+            for seg in segs:
+                L.append(chord_xml(grp, seg))
+            cursor = max(start, cursor) + sum(segs)
         if cursor < BT:
-            L.append(rest_xml(BT - cursor))
+            for s in _duration_label(BT - cursor):
+                L.append(rest_xml(s))
     L.append('      </voice>')
     L.append('    </Measure>')
     return '\n'.join(L)
 
-# ---- instrument definition table (modeled on 01-Guitar.mscx template) ----
-# each entry: clef, instrumentId, min/max pitch, optional StringData, articulations,
-# channels list of (name|None, program)
-INST = {
- "01_吉他":      dict(clef="G8vb", iid="pluck.guitar.nylon-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "08_节奏吉他":  dict(clef="G8vb", iid="pluck.guitar.nylon-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "05_solo吉他主":dict(clef="G8vb", iid="pluck.guitar.steel-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "06_solo吉他辅1":dict(clef="G8vb", iid="pluck.guitar.steel-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "06_solo吉他辅2":dict(clef="G8vb", iid="pluck.guitar.steel-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "12_泛音环境点缀":dict(clef="G8vb", iid="pluck.guitar.nylon-string", mn=40, mx=83,
-                     strings=[40,45,50,55,59,64], frets=19),
- "02_主唱":      dict(clef="G", iid="voice.soprano", mn=55, mx=81),
- "09_和声":      dict(clef="G", iid="voice.alto", mn=52, mx=79),
- "10_氛围垫音pad":dict(clef="G", iid="synth.pad", mn=36, mx=96),
- "13_轻贝斯":    dict(clef="F8", iid="pluck.bass acoustic", mn=28, mx=60),
- "11_自然白噪音":dict(clef="G", iid="percussion", mn=35, mx=81),
-}
+# ---- instrument config loaded from musescore.conf.json ----
+# structure per track: program, soundId, musesounds_library, musesounds_name,
+#   midi_instrument, clef, optional strings/frets, minPitch, maxPitch
+CONF = {'tracks': {}, 'default_synti': 'Fluid'}
+
+def load_conf(td):
+    global CONF
+    p = os.path.join(td, 'musescore', 'musescore.conf.json')
+    if os.path.exists(p):
+        with open(p, encoding='utf-8') as f:
+            CONF = json.load(f)
+    return CONF
+
+def track_cfg(name):
+    t = CONF.get('tracks', {}).get(name)
+    synti = CONF.get('default_synti', 'Fluid')
+    if t:
+        return {
+            'clef': t.get('clef', 'G'),
+            'iid': t.get('midi_instrument', t.get('soundId', '')),
+            'instr_id': t.get('instrument_id', name.lower().replace(' ', '-').replace('_', '-')),
+            'soundId': t.get('soundId', t.get('midi_instrument', '')),
+            'mspath': t.get('musesounds_path', ''),
+            'libname': t.get('museName', ''),
+            'museUID': t.get('museUID', ''),
+            'museName': t.get('museName', ''),
+            'musePack': t.get('musePack', ''),
+            'museCategory': t.get('museCategory', ''),
+            'playbackSetupData': t.get('playbackSetupData', ''),
+            'synti': synti,
+            'prog': int(t.get('program', 0)),
+            'mn': int(t.get('minPitch', 40)),
+            'mx': int(t.get('maxPitch', 88)),
+            'strings': t.get('strings'),
+            'frets': int(t.get('frets', 19)),
+        }
+    # fallback defaults
+    return {'clef':'G','iid':'','instr_id':'instrument','soundId':'','mspath':'',
+            'libname':'','museUID':'','museName':'','musePack':'','museCategory':'',
+            'playbackSetupData':'','synti':synti,'prog':0,'mn':40,'mx':88,
+            'strings':None,'frets':19}
 
 ARTIC = [
  ('', 100, 100), ('staccatissimo', 100, 33), ('staccato', 100, 50),
@@ -198,17 +233,30 @@ ARTIC = [
  ('marcatoStaccato', 120, 50), ('marcatoTenuto', 120, 100),
 ]
 
-def part_xml(name, sid, prog):
-    cfg = INST.get(name, dict(clef="G", iid="", mn=40, mx=88))
-    pid = name.lower().replace(' ', '-').replace('_', '-')
+def channel_xml(cfg, chan_name):
+    # channel names: open (default), mute, jazz -- matches MuseScore guitar template
+    # program per channel (open=main prog, mute=28, jazz=26 for guitar-ish)
+    prog = cfg['prog']
+    if chan_name == 'mute': prog = 28
+    elif chan_name == 'jazz': prog = 26
+    parts = []
+    parts.append('        <Channel name="' + chan_name + '">')
+    parts.append('          <program value="' + str(prog) + '"/>')
+    parts.append('          <synti>' + cfg['synti'] + '</synti>')
+    parts.append('          </Channel>')
+    return '\n'.join(parts)
+
+def part_xml(name, sid):
+    cfg = track_cfg(name)
+    instr_id = cfg['instr_id']
     L = []
-    L.append('    <Part>')
-    L.append('      <Staff id="' + str(sid) + '">')
+    L.append('    <Part id="' + str(sid) + '">')
+    L.append('      <Staff>')
     L.append('        <StaffType group="pitched"><name>stdNormal</name></StaffType>')
     L.append('        <defaultClef>' + cfg['clef'] + '</defaultClef>')
     L.append('      </Staff>')
     L.append('      <trackName>' + name + '</trackName>')
-    L.append('      <Instrument id="' + pid + '">')
+    L.append('      <Instrument id="' + instr_id + '">')
     L.append('        <longName>' + name + '</longName>')
     L.append('        <shortName>' + name[:6] + '</shortName>')
     L.append('        <trackName>' + name + '</trackName>')
@@ -219,6 +267,8 @@ def part_xml(name, sid, prog):
     if cfg.get('iid'):
         L.append('        <instrumentId>' + cfg['iid'] + '</instrumentId>')
     L.append('        <clef>' + cfg['clef'] + '</clef>')
+    L.append('        <singleNoteDynamics>0</singleNoteDynamics>')
+    L.append('        <glissandoStyle>portamento</glissandoStyle>')
     if cfg.get('strings'):
         sd = ['        <StringData>', '          <frets>' + str(cfg.get('frets', 19)) + '</frets>']
         for s in cfg['strings']:
@@ -230,17 +280,14 @@ def part_xml(name, sid, prog):
         L.append('          <velocity>' + str(v) + '</velocity>')
         L.append('          <gateTime>' + str(g) + '</gateTime>')
         L.append('          </Articulation>')
-    L.append('        <Channel><program value="' + str(prog) + '"/><synti>Fluid</synti></Channel>')
-    L.append('        <Channel name="mute"><program value="' + str(prog) + '"/><synti>Fluid</synti></Channel>')
-    L.append('        <Channel name="harmony"><program value="' + str(prog) + '"/><synti>Fluid</synti></Channel>')
+    L.append(channel_xml(cfg, 'open'))
+    L.append(channel_xml(cfg, 'mute'))
+    L.append(channel_xml(cfg, 'jazz'))
     L.append('        </Instrument>')
     L.append('      </Part>')
     return '\n'.join(L)
 
 def gen_single(name, notes, bpm):
-    prog = PROG.get(name, '0')
-    pid = name.lower().replace(' ','-')
-    short = name[:6]
     bars = max((n['t']+n['d'] for n in notes), default=BT*52) // BT + 2
     L = []
     L.append('<?xml version="1.0" encoding="UTF-8"?>')
@@ -258,7 +305,7 @@ def gen_single(name, notes, bpm):
         val = name if mt == 'workTitle' else ''
         L.append('    <metaTag name="' + mt + '">' + val + '</metaTag>')
 
-    L.append(part_xml(name, 1, prog))
+    L.append(part_xml(name, 1))
 
     L.append('    <Staff id="1">')
     L.append('      <VBox>')
@@ -297,7 +344,7 @@ def gen_full(tracks, bpm):
 
     sid = 1
     for tr in tracks:
-        L.append(part_xml(tr['name'], sid, PROG.get(tr['name'], '0')))
+        L.append(part_xml(tr['name'], sid))
         sid += 1
 
     sid = 1
@@ -320,6 +367,78 @@ def gen_full(tracks, bpm):
     L.append('</museScore>')
     return '\n'.join(L)
 
+def audiosettings_json(track_list):
+    # build audiosettings.json (MuseScore 4.7 companion file) mapping each
+    # part to its MuseSounds instrument. track_list = [(name, partId), ...]
+    tracks = []
+    # metronome track (MuseScore always adds partId 999)
+    tracks.append({
+        "in": {"resourceMeta": {"attributes": {"playbackSetupData": "last.last.last",
+                 "soundFontName": "MS Basic"}, "hasNativeEditorSupport": False,
+                 "id": "MS Basic", "type": "fluid_soundfont", "vendor": "Fluid"},
+               "unitConfiguration": {}},
+        "instrumentId": "metronome",
+        "out": {"balance": 0, "fxChain": {}, "volumeDb": 0},
+        "partId": "999"})
+    for name, pid in track_list:
+        cfg = track_cfg(name)
+        attrs = {}
+        if cfg.get('museUID'):
+            attrs = {"museCategory": cfg['museCategory'], "museName": cfg['museName'],
+                     "musePack": cfg['musePack'], "museUID": cfg['museUID'],
+                     "museVendorName": "Muse",
+                     "playbackSetupData": cfg.get('playbackSetupData', '')}
+            rmeta = {"attributes": attrs, "hasNativeEditorSupport": False,
+                     "id": cfg['museUID'], "type": "muse_sampler_sound_pack",
+                     "vendor": "MuseSounds"}
+        else:
+            rmeta = {"attributes": {"playbackSetupData": "last.last.last",
+                     "soundFontName": "MS Basic"}, "hasNativeEditorSupport": False,
+                     "id": "MS Basic", "type": "fluid_soundfont", "vendor": "Fluid"}
+        tracks.append({
+            "in": {"resourceMeta": rmeta, "unitConfiguration": {}},
+            "instrumentId": cfg['instr_id'],
+            "out": {"balance": 0, "fxChain": {}, "volumeDb": 0},
+            "partId": str(pid),
+            "soloMuteState": {"mute": False, "solo": False}})
+    doc = {
+        "activeSoundProfile": "",
+        "aux": [
+            {"out": {"balance": 0, "fxChain": {"0": {"active": True, "chainOrder": 0,
+              "resourceMeta": {"attributes": {}, "hasNativeEditorSupport": True,
+              "id": "Muse Reverb", "type": "muse_plugin", "vendor": "Muse"},
+              "unitConfiguration": {}}}, "volumeDb": 0}},
+            {"out": {"balance": 0, "fxChain": {}, "volumeDb": 0}}],
+        "master": {"balance": 0, "fxChain": {}, "volumeDb": 0},
+        "tracks": tracks}
+    return json.dumps(doc, ensure_ascii=False, indent=4)
+
+def container_xml(mscx_name):
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<container>\n  <rootfiles>\n'
+            '    <rootfile full-path="score_style.mss"/>\n'
+            '    <rootfile full-path="' + mscx_name + '"/>\n'
+            '    <rootfile full-path="Thumbnails/thumbnail.png"/>\n'
+            '    <rootfile full-path="automation.json"/>\n'
+            '    <rootfile full-path="audiosettings.json"/>\n'
+            '    <rootfile full-path="viewsettings.json"/>\n'
+            '    </rootfiles>\n</container>')
+
+def write_score_bundle(out_dir, mscx_name, mscx_xml, track_list):
+    # write a single score as a MuseScore 4.7 container: mscx + companion files
+    # out_dir = folder for this score; track_list = [(name, partId), ...]
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, mscx_name), 'w', encoding='utf-8') as f:
+        f.write(mscx_xml)
+    with open(os.path.join(out_dir, 'audiosettings.json'), 'w', encoding='utf-8') as f:
+        f.write(audiosettings_json(track_list))
+    with open(os.path.join(out_dir, 'automation.json'), 'w', encoding='utf-8') as f:
+        f.write('[]')
+    with open(os.path.join(out_dir, 'viewsettings.json'), 'w', encoding='utf-8') as f:
+        f.write('{\n    "notation": {\n        "viewMode": "page"\n    }\n}')
+    os.makedirs(os.path.join(out_dir, 'META-INF'), exist_ok=True)
+    with open(os.path.join(out_dir, 'META-INF', 'container.xml'), 'w', encoding='utf-8') as f:
+        f.write(container_xml(mscx_name))
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--project', required=True)
@@ -327,11 +446,16 @@ if __name__ == '__main__':
     ap.add_argument('-o', default='')
     ap.add_argument('--bpm', type=int, default=68)
     ap.add_argument('--full', action='store_true')
+    ap.add_argument('--flat', action='store_true',
+                    help='put all mscx in one folder (no per-score subfolders / companions)')
     args = ap.parse_args()
 
     TD = os.path.join(os.getcwd(), 'workspace', 'project', args.project, 'song_engineer', 'track')
     OUT = args.o or os.path.join(TD, 'musescore')
     os.makedirs(OUT, exist_ok=True)
+
+    load_conf(TD)
+    print('  loaded sound config: ' + str(len(CONF.get('tracks', {}))) + ' tracks')
 
     ALL = ["01_吉他","02_主唱","05_solo吉他主","06_solo吉他辅1","06_solo吉他辅2",
            "08_节奏吉他","09_和声","10_氛围垫音pad","11_自然白噪音",
@@ -345,14 +469,22 @@ if __name__ == '__main__':
             print('  [skip] ' + nm)
             continue
         xml = gen_single(nm, n, args.bpm)
-        out = os.path.join(OUT, nm + '.mscx')
-        with open(out, 'w', encoding='utf-8') as f: f.write(xml)
+        mscx_name = nm + '.mscx'
+        if args.flat:
+            with open(os.path.join(OUT, mscx_name), 'w', encoding='utf-8') as f:
+                f.write(xml)
+        else:
+            write_score_bundle(os.path.join(OUT, nm), mscx_name, xml, [(nm, 1)])
         print('  [OK] ' + nm + ' (' + str(len(n)) + ' notes)')
         data.append({'name': nm, 'notes': n})
 
     if args.full and len(data) > 1:
         xml = gen_full(data, args.bpm)
-        out = os.path.join(OUT, 'full_score.mscx')
-        with open(out, 'w', encoding='utf-8') as f: f.write(xml)
+        tl = [(t['name'], i+1) for i, t in enumerate(data)]
+        if args.flat:
+            with open(os.path.join(OUT, 'full_score.mscx'), 'w', encoding='utf-8') as f:
+                f.write(xml)
+        else:
+            write_score_bundle(os.path.join(OUT, 'full_score'), 'full_score.mscx', xml, tl)
         print('\n  [OK] full_score (' + str(len(data)) + ' tracks)')
     print('\noutput: ' + OUT)
