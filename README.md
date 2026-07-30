@@ -2,6 +2,7 @@
 
 基于 AI 的轻量化音乐创作辅助工具。通过哼唱或构思，快速生成和弦、旋律、歌词，并导出为多轨道 MIDI 工程。
 
+宿主：WorkBuddy/agent cli/自研desktop app agent(待开发)/自研 agent web(待开发)
 ---
 
 ## 核心定位
