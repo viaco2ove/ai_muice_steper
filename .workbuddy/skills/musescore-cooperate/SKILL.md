@@ -158,3 +158,40 @@ song_engineer → 合并编辑结果
 - `.mscx` 生成为简化版本（单声部、无和弦/琶音装饰），MuseScore 打开后可进一步美化
 - 歌词需在 MuseScore 中手动添加（`Ctrl+L`）
 - 多轨总谱 `full_score.mscx` 每轨单独一个 Staff，MuseScore 中可拖拽调整排版
+
+
+# 查阅
+[musescore](../../../md/kb_repo/info/text_score_xml/musescore)
+## MSCX 格式规范完整查阅渠道（MuseScore 原生XML乐谱格式）
+- github 代码
+https://github.com/musescore/
+https://github.com/musescore/MuseScore/tree/main/src/importexport/musicxml
+
+- demo
+https://github.com/musescore/MuseScore/tree/main/demos
+https://github.com/musescore/MuseScore/blob/main/demos/Dawn.mscx
+
+- 模板
+https://github.com/musescore/MuseScore/tree/main/share/templates
+https://github.com/musescore/MuseScore/blob/main/share/templates/My_First_Score.mscx
+https://github.com/musescore/MuseScore/blob/main/share/templates/04-Solo/01-Guitar/01-Guitar.mscx
+
+## templates 目录结构
+01-General
+02-Choral
+03-Chamber_Music
+04-Solo
+05-Jazz
+06-Popular
+07-Band_and_Percussion
+08-Orchestral
+CMakeLists.txt
+Marching_Bass_Drums.drm
+Marching_Cymbals.drm
+Marching_Snare_Drums.drm
+Marching_Tenors.drm
+My_First_Score.mscx
+categories.json
+convert.json
+drumset_fr.drm
+orchestral.drm

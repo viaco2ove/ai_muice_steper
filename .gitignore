@@ -94,3 +94,4 @@ _test*
 torch/
 cache/
 /.workbuddy/memory/
+/.cache/
