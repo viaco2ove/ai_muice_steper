@@ -3,6 +3,8 @@ https://github.com/openutau/OpenUtau/wiki/%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB-%
 中文文档
 https://github.com/openutau/OpenUtau/wiki/%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB-(%E4%B8%AD%E6%96%87)
 
+https://juejin.cn/post/7495598559221907482
+
 Step 1：装 OpenUTAU
 
   1. 打开 https://www.openutau.com/  → 点 Download for Windows
@@ -213,14 +215,4 @@ https://utau.fandom.com/wiki/UTAU_Wiki
 OpenUtau Lunai
 https://lunaiproject.github.io/singers/memoka_ater
 
-https://huggingface.co/spaces/SJTU/diffsinger-webui
-
-https://aistudio.baidu.com/projectdetail/7458093
-
-https://github.com/bingcheng1998/diffsinger-webui
-
-https://github.com/MoonInTheRiver/DiffSinger
-
-https://blog.csdn.net/gitblog_00549/article/details/156377485
-
-https://github.com/openvpi/DiffSinger
+[more_singer_tools.md](../Diffsinger/more_singer_tools.md)

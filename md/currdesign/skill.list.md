@@ -361,6 +361,71 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 - `.workbuddy/skills/song_engineer/references/engineer_format.md`
 - `md/currdesign/工程MD格式规范.md`（工程MD格式契约）
 
+### remix-master
+
+配置驱动混音技能。读 `remix.json` 配置每条音轨的音量/增益/静音/声像，混合成最终母带 wav。**主唱轨默认用真实干声 wav**（如 OpenUTAU 导出的 `02_主唱.wav`），改 `gain_db`/`vol` 重混立即见效——解决"放大主唱没有效果"问题（旧混音脚本对主唱是 FluidSynth 合成人声，从没读真实干声）。
+
+| 项目 | 内容 |
+|------|------|
+| **触发词** | 混音、remix、放大主唱、调音量、音轨平衡、母带、调音、声音太小、主唱听不见 |
+| **输入** | `workspace/project/{歌名}/song_engineer/track/*.wav`（真实干声）+ `*.mid`/`*.json`（fallback 合成）+ `remix.json`（混音配置） |
+| **输出** | `workspace/project/{歌名}/song_engineer/track/full_remix.wav`（最终母带） |
+| **配置** | `workspace/project/{歌名}/song_engineer/remix.json` |
+
+**核心字段：**
+
+| 字段 | 作用 |
+|------|------|
+| `source` | 音源类型：`auto`（默认，wav 优先）/ `wav`（强制干声）/ `midi`（强制合成） |
+| `vol` | 线性音量倍率（0.0~2.0） |
+| `gain_db` | 分贝增益（+6 约翻倍，-6 约减半） |
+| `mute` | 静音该轨 |
+| `pan` | 声像（-1左 ~ +1右） |
+| `master` | 母带：normalize/target_peak/limiter/output |
+
+**用法：**
+
+```bash
+# 1. 生成默认 remix.json
+./.venv/python.exe .workbuddy/skills/remix-master/scripts/remix.py --project 走在 --init
+# 2. 编辑 remix.json（如 02_主唱 gain_db: 3.0）
+# 3. 重混
+./.venv/python.exe .workbuddy/skills/remix-master/scripts/remix.py --project 走在
+```
+
+**参考文件：**
+- `.workbuddy/skills/remix-master/SKILL.md`
+- `.workbuddy/skills/remix-master/scripts/remix.py`（配置驱动混音器，wav 优先 + midi fallback）
+
+---
+
+### muse-score-cooperate
+
+与 MuseScore 协作生成/读取多轨 `.mscx` 乐谱文件，支持在 MuseScore 中精细编辑后再导回工程。
+
+| 项目 | 内容 |
+|------|------|
+| **触发词** | MuseScore、mscx、乐谱、多轨总谱、乐谱导出、打谱 |
+| **输入** | `workspace/project/{歌名}/song_engineer/track/*.json` / `*.mid` |
+| **输出** | `workspace/project/{歌名}/song_engineer/track/musescore/*.mscx` |
+
+**工作流：**
+1. `mscx_generator.py --project 歌名 --full` → 生成全部分轨 .mscx + 多轨总谱 full_score.mscx
+2. MuseScore Studio 打开 → 修正音符/添加歌词/调整力度/美化排版
+3. `mscx_reader.py` → 读取编辑后的乐谱数据回工程
+
+**核心脚本：**
+
+| 脚本 | 功能 |
+|------|------|
+| `mscx_generator.py` | 从 track.json / .mid 生成 .mscx，支持三种 JSON 格式 |
+| `mscx_reader.py` | 解析 .mscx 提取音符/歌词/调号/BPM，支持 JSON 导出和 diff 对比 |
+
+**参考文件：**
+- `.workbuddy/skills/musescore-cooperate/SKILL.md`
+- `.workbuddy/skills/musescore-cooperate/scripts/mscx_generator.py`
+- `.workbuddy/skills/musescore-cooperate/scripts/mscx_reader.py`
+
 ---
 
 ## 技能协作关系

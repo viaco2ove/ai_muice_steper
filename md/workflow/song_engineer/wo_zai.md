@@ -447,17 +447,18 @@ cd D:\Users\viaco\PycharmProjects\ai_muice_steper
 
 ## 七、制作状态
 
-| 阶段              | 状态 | 说明                                                           |
-|-----------------|------|--------------------------------------------------------------|
-| 阶段1 初始化与参考分析    | ✅ 完成 | audio_chord_recognizer 已产出 report + 分轨                       |
-| 阶段2 和弦方案设计      | ✅ 完成 | ai_chords_master 已生成 01_吉他轨                                  |
-| 阶段3 歌词创作        | ✅ 完成 | muse-lyrics-gen 已生成完整歌词                                      |
+| 阶段              | 状态 | 说明                                                             |
+|-----------------|------|----------------------------------------------------------------|
+| 阶段1 初始化与参考分析    | ✅ 完成 | audio_chord_recognizer 已产出 report + 分轨                         |
+| 阶段2 和弦方案设计      | ✅ 完成 | ai_chords_master 已生成 01_吉他轨                                    |
+| 阶段3 歌词创作        | ✅ 完成 | muse-lyrics-gen 已生成完整歌词                                        |
 | 阶段4 旋律设计        | ✅ 完成 | melody_master 已重写 221 音符旋律 （MiniMaxmuisc->Melodyne 5->json和md） |
-| 阶段5 OpenUTAU 渲染 | ✅ 完成 | 02_主唱.ustx 已生成（79.7KB）                                       |
-| 阶段6 多轨道编曲       | 🟡 完成 | 吉他轨系完整，人声轨待 AI 生成                                            |
-| 阶段7 AI人声与成品     | 🟡 完成 | MiniMax 生成半成品，OpenUTAU 待渲染                                   |
-| 阶段8 AI人声与成品     | 🟡 完成 | OpenUTAU导出wav,合成多轨                                           |
-| 阶段9 AI翻唱        | 🟡 完成 | MiniMax 翻唱，优化，然后再分轨                                          |
+| 阶段5 OpenUTAU 渲染 | ✅ 完成 | 02_主唱.ustx 已生成（79.7KB）,已改为"x studio" 工具                        |
+| 阶段6 多轨道编曲       | 🟡 完成 | 吉他轨系完整，人声轨待 AI 生成                                              |
+| 阶段7 AI人声与成品     | 🟡 完成 | MiniMax 生成半成品，OpenUTAU 待渲染                                     |
+| 阶段8 AI人声与成品     | 🟡 完成 | OpenUTAU导出wav,合成多轨 ，"x studio" 工具                              |
+| 阶段9 AI翻唱        | 🟡 完成 | MiniMax 翻唱，优化，然后再分轨，主要是人声                                      |
+| 阶段10 音轨ui工具接入   | 🟡 完成 | musescore-cooperate -》文件和json 文件转换为mscx 接入 musescore 软件        |
 
 **下一步**：
 1. 在 OpenUTAU 中打开 `02_主唱.ustx` 渲染人声.如果失败改为 加载mid 文件 再导入歌词试试。

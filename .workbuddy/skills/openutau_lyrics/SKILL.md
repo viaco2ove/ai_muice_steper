@@ -315,15 +315,39 @@ agent_created: true
 4. 逐个音符输入歌词（从 `02_主唱_phonemes.md` 复制 CV 音素）
 5. 或直接粘贴汉字，让音素器自动转换
 
-## 相关文件
+## 自动化脚本
 
 ```
-.workbuddy/skills/openutau_lyrics/
-├── SKILL.md                          # 本文件
-└── scripts/
-    ├── lyrics_to_phonemes.py         # 歌词转音素脚本
-    └── pinyin_phoneme_map.json       # 拼音-音素映射表 v2.0
+.workbuddy/skills/openutau_lyrics/scripts/
+├── lyrics_to_phonemes.py       # 歌词文本 → CV音素（逐字拼音映射）
+├── pinyin_phoneme_map.json     # 拼音-音素映射表 v2.0
+├── adapt_melody.py             # AI旋律 MIDI 转调+时长适配（1920→480 TPB, C→Eb）
+└── gen_phonemes.py             # MIDI + 音素列表 → OpenUTAU 音素对照表 MD
 ```
+
+**典型流水线**（以 `走在` 为例）：
+
+```bash
+# 1. 旋律识别（audio_chord_recognizer）
+#    → workspace/audio_output/走在/melody/vocals.ai.mid
+
+# 2. AI 旋律转调 + 时长适配
+./.venv/python.exe .workbuddy/skills/openutau_lyrics/scripts/adapt_melody.py \
+    --project 走在 --transpose 3 --bpm 68 --bars 52
+#    → workspace/project/走在/song_engineer/ai-track/02_主唱.mid
+
+# 3. 从歌词设计文档获取音素数据，运行配对脚本
+./.venv/python.exe .workbuddy/skills/openutau_lyrics/scripts/gen_phonemes.py \
+    --project 走在 --midi 02_主唱.mid \
+    --phonemes "门,men,b+en 虚,xu,x+v 掩,yan,j+an ..." \
+    -o 02_主唱_phonemes.md
+#    → workspace/project/走在/song_engineer/ai-track/02_主唱_phonemes.md
+
+# 4. 导入 OpenUTAU，粘贴音素，渲染导出 02_主唱.wav
+```
+
+> **注意**：音素数据（字/拼音/CV音素）需从歌词设计文档手工获取，
+> 本脚本只负责将音素与 MIDI 音符配对输出对照表。
 
 ## 相关技能
 
