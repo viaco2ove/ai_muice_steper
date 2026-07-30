@@ -11,7 +11,11 @@
 - [音频分析与处理](#音频分析与处理)
 - [人声转 MIDI](#人声转-midi)
 - [沙发小曲创作](#沙发小曲创作)
+- [歌词与音素](#歌词与音素)
+- [旋律设计](#旋律设计)
 - [歌曲工程中枢](#歌曲工程中枢)
+- [工具类](#工具类)
+- [技能协作关系](#技能协作关系)
 
 ---
 
@@ -40,7 +44,6 @@
 
 **参考文件：**
 - `.workbuddy/skills/muse-lyrics-gen/SKILL.md`
-- `.workbuddy/skills/muse-lyrics-gen/references/lyric_prosody.md`
 
 ---
 
@@ -72,9 +75,6 @@ Muse AI 大师模式歌词创作技能，包含完整的歌词结构标签、格
 
 **参考文件：**
 - `.workbuddy/skills/muse_ai_master/SKILL.md`
-- `.workbuddy/skills/muse_ai_master/references/lyric_structure.md`
-- `.workbuddy/skills/muse_ai_master/references/style_tags.md`
-- `.workbuddy/skills/muse_ai_master/references/templates.md`
 
 ---
 
@@ -92,7 +92,6 @@ mmx CLI 入口技能，用于通过 mmx 命令行工具生成音乐。
 
 **参考文件：**
 - `.workbuddy/skills/minimax-music-gen/SKILL.md`
-- `.workbuddy/skills/minimax-music-gen/references/prompt_guide.md`
 
 ---
 
@@ -119,8 +118,6 @@ MiniMax API 编程调用技能，用于程序化集成和批量生成。
 
 **参考文件：**
 - `.workbuddy/skills/minimax-music-api/SKILL.md`
-- `.workbuddy/skills/minimax-music-api/references/control_tags.md`
-- `.workbuddy/skills/minimax-music-api/references/prompt_guide.md`
 
 ---
 
@@ -144,18 +141,8 @@ MiniMax Music 3 网页端技能，用于手动粘贴歌词和风格描述到网�
 | 歌词行 | 每行一句，空行分隔段落 |
 | 气声/呢喃 | `…嗯…` 用省略号 |
 
-**控制标签体系：**
-
-| 维度 | 标签示例 |
-|------|---------|
-| 编曲 | `[吉他分解和弦]` `[钢琴轻柔铺底]` `[氛围垫音渐隐]` |
-| 人声 | `[人声低输出呢喃]` `[气声极轻]` `[低声细语]` |
-| 情绪 | `[平静慵懒]` `[迷茫疏离]` `[内敛克制]` |
-| 禁用 | `[无鼓组]` `[禁止电音]` `[不爆发]` |
-
 **参考文件：**
 - `.workbuddy/skills/minimax-music-web/SKILL.md`
-- `.workbuddy/skills/minimax-music-web/references/control_tags.md`
 
 ---
 
@@ -170,23 +157,8 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 | **输出** | `lyrics_*.txt` + `style_*.txt` |
 | **输出目录** | `workspace/minimax_music_v3/` |
 
-**工作流程：**
-
-1. 读取歌词设计文件或标准歌词
-2. 转换为 MiniMax Music 3 格式
-3. 分离纯歌词和风格描述
-4. 输出可粘贴到网页的文件
-
-**核心发现：**
-
-| 方案 | 说明 |
-|------|------|
-| 方案 A | 控制写在歌词内（`[编曲说明]` 方括号标签） |
-| 方案 B（推荐） | 控制写在风格里，歌词保持干净 |
-
 **参考文件：**
 - `.workbuddy/skills/minimax_music_v3/SKILL.md`
-- `.workbuddy/skills/minimax_music_v3/references/control_tags.md`
 
 ---
 
@@ -219,7 +191,6 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 
 **参考文件：**
 - `.workbuddy/skills/audio_chord_recognizer/SKILL.md`
-- `.workbuddy/skills/audio_chord_recognizer/references/usage_guide.md`
 
 ---
 
@@ -227,11 +198,11 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 
 ### wav_mid_human
 
-人声 WAV 转可听旋律 MIDI 技能，专门解决 `audio_chord_recognizer` 产出的 MIDI 碎音问题。支持双后端：basic_pitch 神经网络（优先，贴合人声轮廓）+ pyin 8步清洗（fallback）。
+人声 WAV 转可听旋律 MIDI 技能，专门解决碎音问题。支持双后端：basic_pitch 神经网络（优先）+ pyin 8步清洗（fallback）。
 
 | 项目 | 内容 |
 |------|------|
-| **触发词** | 人声转MIDI、wav转mid、旋律线MIDI、干净MIDI、清洗碎音、听出旋律、hum to midi |
+| **触发词** | 人声转MIDI、wav转mid、旋律线MIDI、干净MIDI、清洗碎音、hum to midi |
 | **输入** | 人声干声 WAV（带伴奏需先分轨取 vocals） |
 | **输出目录** | `melody_basicpitch/`（推荐）或 `melody_human/`（pyin后端）|
 | **依赖** | 项目 `.venv`（basic_pitch+onnxruntime / librosa / soundfile / mido）|
@@ -247,22 +218,8 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 
 **8 步清洗管线：** 加载 -> 预处理(noise gate) -> pyin提取 -> 有声帧过滤 -> 中值滤波 -> 跳变修正 -> 音符合并 -> 碎音过滤
 
-**实测效果**（vocals.wav）：音符数 196->29，碎音率 57.1%->0.0%，平均时长 0.084s->0.524s
-
-**核心脚本：**
-
-| 脚本 | 功能 |
-|------|------|
-| `wav_to_midi_bp.py` | **推荐** basic_pitch神经网络后端，贴合人声轮廓+velocity |
-| `wav_to_midi.py` | pyin后端，8步清洗管线（fallback） |
-| `merge_vocal_notes.py` | **连贯性后处理**：修正basic_pitch把长音抖碎成幻音的问题 |
-| `compare_quality.py` | 对比新旧MIDI质量，生成quality_report.md |
-
 **参考文件：**
 - `.workbuddy/skills/wav_mid_human/SKILL.md`
-- `.workbuddy/skills/wav_mid_human/references/wav_to_mid_principles.md`（清洗原理）
-- `.workbuddy/skills/wav_mid_human/references/usage_examples.md`（使用场景）
-- `md/kb_repo/info/wav_to_mid.md`（问题根源知识库）
 
 ---
 
@@ -284,23 +241,6 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 2. 段落结构设计（完整的前奏/主歌/副歌/间奏/尾奏规划）
 3. 旋律构思（基于识别到的旋律音给出走向建议）
 
-**基础信息记录：**
-
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| capo | 夹几品 | 3（三品） |
-| capo_key | 编配在哪个调 | C（C大调） |
-| actual_key | 实际弹出的调（自动计算） | Eb |
-
-**和弦丰富化方向：**
-
-| 方向 | 候选和弦 | 效果 |
-|------|---------|------|
-| 色彩注入 | Cmaj9、Cadd9、C9、C13、C7sus4 | 更柔和的主调氛围 |
-| 转位优化 | Em11/B、C7/E | 低音线条更流动 |
-| 挂留和弦 | C7sus4、Em7sus4 | 减速感 |
-| 爵士色彩 | Cmaj7、Em11、Bm9 | 更迷蒙的过渡 |
-
 **禁止事项：**
 
 - 不使用大横按强力和弦
@@ -310,7 +250,65 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 
 **参考文件：**
 - `.workbuddy/skills/ai_chords_master/SKILL.md`
-- `.workbuddy/skills/ai_chords_master/references/沙发小曲_丰富化编曲方案_慵懒版.md`
+
+---
+
+## 歌词与音素
+
+### openutau_lyrics
+
+将中文歌词转换为 OpenUTAU 可唱的音素序列（CV Phonemes）。
+
+| 项目 | 内容 |
+|------|------|
+| **触发词** | 歌词音素、音素设计、openutau lyrics、拼音转音素、中文歌词转音素、ustx 歌词编辑、生成 openutau 歌词 |
+| **输入** | `track/02_主唱.md`（旋律设计文档）|
+| **输出** | `ai-track/02_主唱_lyrics.txt`（每行一个音节）|
+
+**音素类型：**
+
+| 类型 | 格式 | 示例 |
+|------|------|------|
+| CV Phonemes | 声母+韵母 | `门=m+en` |
+| VC Phonemes | 韵母+声母 | `门=en+m` |
+| 纯汉字 | 直接汉字 | `门`（音素器自动转换）|
+
+**OpenUTAU 导入流程：**
+
+1. 用生成的 `.mid` 文件在 OpenUTAU 新建音轨
+2. 导入 `.txt` 歌词文件（每行对应一个音符）
+3. 选择音色库
+4. 渲染人声
+
+**参考文件：**
+- `.workbuddy/skills/openutau_lyrics/SKILL.md`
+
+---
+
+## 旋律设计
+
+### melody_master
+
+旋律设计与改编技能，基于参考曲扒谱 + 旋律写作规范 + 转音设计，重写/优化人声主旋律。
+
+| 项目 | 内容 |
+|------|------|
+| **触发词** | 旋律设计、主旋律改编、分析旋律、写主旋律 |
+| **输入** | 参考曲 pitch.csv / `track/02_主唱.md` |
+| **输出** | `track/02_主唱.md`（更新后的旋律设计）|
+
+**旋律写作黄金规则：**
+
+| 维度 | 规则 |
+|------|------|
+| 音域控制 | 舒适区间：C3 ~ F4 |
+| 音高走向 | 温柔抒情下行为主，副歌高潮上行回落 |
+| 节奏搭配 | 长短音结合，重拍放高音长音 |
+| 发展手法 | 起-承-转-合四句体，动机重复/模进 |
+
+**参考文件：**
+- `.workbuddy/skills/melody_master/SKILL.md`
+- `md/kb_repo/info/主旋律/如何写出好听的主旋律.md`
 
 ---
 
@@ -318,165 +316,147 @@ MiniMax Music 3 歌词格式化技能，将歌词从标准格式转换为网页�
 
 ### song_engineer
 
-歌曲工程聚合、诊断与优化技能，是「半成品聚合 + 持续优化编辑」闭环的中枢。读半成品现状 -> 诊断 -> 给方向+教学 -> 直接改工程MD。不替代生成技能，而是聚合+闭环。
+歌曲工程聚合、诊断与优化技能，是「半成品聚合 + 持续优化编辑」闭环的中枢。
 
 | 项目 | 内容 |
 |------|------|
 | **触发词** | 诊断工程、优化歌曲、看现状、下一步怎么改、继续打磨、工程体检、初始化工程、聚合半成品 |
 | **输入** | `workspace/project/{歌名}/project.md` 或散件产物 |
-| **输出** | 更新 `project.md`（诊断区块 + 工程日志） |
-| **工作目录** | `workspace/project/{歌_name}/` |
+| **输出** | 更新 `project.md`（诊断区块 + 工程日志）|
+| **工作目录** | `workspace/project/{歌名}/` |
 
 **三种工作模式：**
 
 | 模式 | 说明 |
 |------|------|
-| 初始化模式 | 扫描散件（和弦方案/lyrics/audio report）-> 按字段对照表聚合进规范工程MD |
-| 诊断模式（默认） | 读工程MD -> 五维诊断（完整性/一致性/对齐/风格契合度/优化空间）-> 写入诊断区块 |
-| 优化模式 | 按方向调用生成技能（ai_chords/muse-lyrics等）-> 合并结果回工程MD -> 追加日志 |
+| 初始化模式 | 扫描散件 -> 聚合进规范工程MD |
+| 诊断模式（默认） | 五维诊断 -> 写入诊断区块 |
+| 优化模式 | 调用生成技能 -> 合并回工程MD |
 
 **五维诊断：**
 
 | 维度 | 检查内容 |
 |------|---------|
-| 完整性 | 段落/轨道/字段是否齐全，给出完成度百分比 |
+| 完整性 | 段落/轨道/字段是否齐全 |
 | 一致性 | BPM/调号/Capo 跨文件是否矛盾 |
 | 段落-和弦-歌词对齐 | 三者对应关系是否匹配 |
-| 风格契合度 | 对照 kb_repo/style/ 风格规范检查（如沙发小曲禁鼓组） |
-| 优化空间 | 和弦丰富化/结构平衡/歌词韵律/多轨完整性 |
+| 风格契合度 | 对照风格规范检查 |
+| 优化空间 | 和弦丰富化/结构平衡/多轨完整性 |
 
 **关键区别：**
-- 生成技能（其余9个）：输入->输出文件，一次一个任务，无状态
-- song_engineer：读工程MD现状->分析->决策->调用生成技能->合并回工程MD，有状态、有迭代记忆
+- 生成技能：输入->输出文件，一次一个任务，无状态
+- song_engineer：有状态、有迭代记忆，读现状->分析->决策->调用技能->写回工程
 
 **参考文件：**
 - `.workbuddy/skills/song_engineer/SKILL.md`
-- `.workbuddy/skills/song_engineer/scripts/export_track_to_midi.py`（分轨 JSON -> MIDI）
-- `.workbuddy/skills/song_engineer/scripts/synthesize_midi_fs.py`（FluidSynth+SoundFont 真实合成，推荐）
-- `.workbuddy/skills/song_engineer/scripts/synthesize_midi.py`（numpy 极简合成，无 SoundFont 时 fallback）
-- `.workbuddy/skills/song_engineer/scripts/synth_full_song_fs.py`（FluidSynth 合成全曲，推荐）
-- `.workbuddy/skills/song_engineer/scripts/synth_full_song.py`（numpy 合成全曲，fallback）
-- `.workbuddy/skills/song_engineer/references/diagnosis_dimensions.md`
-- `.workbuddy/skills/song_engineer/references/workflow.md`
-- `.workbuddy/skills/song_engineer/references/engineer_format.md`
-- `md/currdesign/工程MD格式规范.md`（工程MD格式契约）
+- `md/currdesign/工程MD格式规范.md`
+
+---
 
 ### remix-master
 
-配置驱动混音技能。读 `remix.json` 配置每条音轨的音量/增益/静音/声像，混合成最终母带 wav。**主唱轨默认用真实干声 wav**（如 OpenUTAU 导出的 `02_主唱.wav`），改 `gain_db`/`vol` 重混立即见效——解决"放大主唱没有效果"问题（旧混音脚本对主唱是 FluidSynth 合成人声，从没读真实干声）。
+配置驱动混音技能，读 `remix.json` 配置每条音轨的音量/增益/静音/声像，混合成最终母带。
 
 | 项目 | 内容 |
 |------|------|
-| **触发词** | 混音、remix、放大主唱、调音量、音轨平衡、母带、调音、声音太小、主唱听不见 |
-| **输入** | `workspace/project/{歌名}/song_engineer/track/*.wav`（真实干声）+ `*.mid`/`*.json`（fallback 合成）+ `remix.json`（混音配置） |
-| **输出** | `workspace/project/{歌名}/song_engineer/track/full_remix.wav`（最终母带） |
-| **配置** | `workspace/project/{歌名}/song_engineer/remix.json` |
+| **触发词** | 混音、remix、放大主唱、调音量、音轨平衡、母带、调音 |
+| **输入** | `track/*.wav`（真实干声）+ `*.mid` + `remix.json` |
+| **输出** | `track/full_remix.wav` |
 
 **核心字段：**
 
 | 字段 | 作用 |
 |------|------|
-| `source` | 音源类型：`auto`（默认，wav 优先）/ `wav`（强制干声）/ `midi`（强制合成） |
+| `source` | 音源类型：`auto` / `wav` / `midi` |
 | `vol` | 线性音量倍率（0.0~2.0） |
-| `gain_db` | 分贝增益（+6 约翻倍，-6 约减半） |
+| `gain_db` | 分贝增益 |
 | `mute` | 静音该轨 |
 | `pan` | 声像（-1左 ~ +1右） |
-| `master` | 母带：normalize/target_peak/limiter/output |
-
-**用法：**
-
-```bash
-# 1. 生成默认 remix.json
-./.venv/python.exe .workbuddy/skills/remix-master/scripts/remix.py --project 走在 --init
-# 2. 编辑 remix.json（如 02_主唱 gain_db: 3.0）
-# 3. 重混
-./.venv/python.exe .workbuddy/skills/remix-master/scripts/remix.py --project 走在
-```
 
 **参考文件：**
 - `.workbuddy/skills/remix-master/SKILL.md`
-- `.workbuddy/skills/remix-master/scripts/remix.py`（配置驱动混音器，wav 优先 + midi fallback）
 
 ---
 
-### muse-score-cooperate
+### musescore-cooperate
 
-与 MuseScore 协作生成/读取多轨 `.mscx` 乐谱文件，支持在 MuseScore 中精细编辑后再导回工程。
+与 MuseScore 协作生成/读取多轨 `.mscx` 乐谱文件。
 
 | 项目 | 内容 |
 |------|------|
 | **触发词** | MuseScore、mscx、乐谱、多轨总谱、乐谱导出、打谱 |
-| **输入** | `workspace/project/{歌名}/song_engineer/track/*.json` / `*.mid` |
-| **输出** | `workspace/project/{歌名}/song_engineer/track/musescore/*.mscx` |
+| **输入** | `track/*.json` / `*.mid` |
+| **输出** | `track/musescore/*.mscx` |
 
 **工作流：**
-1. `mscx_generator.py --project 歌名 --full` → 生成全部分轨 .mscx + 多轨总谱 full_score.mscx
-2. MuseScore Studio 打开 → 修正音符/添加歌词/调整力度/美化排版
+1. `mscx_generator.py` → 生成全部分轨 .mscx + 多轨总谱
+2. MuseScore Studio 打开 → 精细编辑
 3. `mscx_reader.py` → 读取编辑后的乐谱数据回工程
-
-**核心脚本：**
-
-| 脚本 | 功能 |
-|------|------|
-| `mscx_generator.py` | 从 track.json / .mid 生成 .mscx，支持三种 JSON 格式 |
-| `mscx_reader.py` | 解析 .mscx 提取音符/歌词/调号/BPM，支持 JSON 导出和 diff 对比 |
 
 **参考文件：**
 - `.workbuddy/skills/musescore-cooperate/SKILL.md`
-- `.workbuddy/skills/musescore-cooperate/scripts/mscx_generator.py`
-- `.workbuddy/skills/musescore-cooperate/scripts/mscx_reader.py`
+
+---
+
+## 工具类
+
+### ftp-download
+
+FTP/FTPS 文件下载工具，支持递归目录下载、断点续传、同步模式。
+
+| 项目 | 内容 |
+|------|------|
+| **触发词** | FTP下载、FTPS、递归FTP、FTP同步、FTP续传、从FTP获取文件 |
+| **接口** | Python 标准库（ftplib, argparse） |
+| **零依赖** | 仅使用 Python 标准库，无需安装额外包 |
+
+**参考文件：**
+- `.workbuddy/skills/ftp-download/SKILL.md`
 
 ---
 
 ## 技能协作关系
 
-以 `song_engineer` 为中枢的迭代闭环（其余生成技能是工具）：
+### 单向流水线（生成阶段，从0到半成品）
 
 ```
-                          ┌─────────────────────┐
-                          │   song_engineer     │
-                          │  读现状/诊断/优化/   │
-                          │  教学中枢（有状态）  │
-                          └──────────┬──────────┘
-                 读取现状 ◄───────────┼───────────► 写回工程
-                                     │ 调用
-        ┌────────────────────────────┼────────────────────────────┐
-        ▼                            ▼                            ▼
- ai_chords_master            muse-lyrics-gen            audio_chord_recognizer
- (和弦/段落/结构)             (歌词/韵律)                (扒谱/和弦识别/MIDI)
-        │                            │                            │
-        └────────────────────────────┼────────────────────────────┘
-                                     ▼
-                          workspace/project/{歌名}/project.md
-                          ★ 工程MD = 唯一真相源 ★
-                                     │
-                          ┌──────────┴──────────┐
-                          ▼                     ▼
-                   minimax_music_v3        muse_ai_master
-                   (格式化->生成)          (歌词结构->生成)
-                                     │
-                                     ▼
-                              成品音频 (mp3)
+哼唱 ──audio_chord_recognizer──▶ 和弦/旋律
+                                      │
+         ai_chords_master ◄──────────┘
+              │
+muse-lyrics-gen ◄── 和弦骨架
+              │
+              ▼ lyrics.md ──minimax_music_v3──▶ MiniMax生成
 ```
 
-**单向流水线（生成阶段，从0到半成品）：**
+### 迭代闭环（优化阶段，song_engineer 主导）
+
 ```
-哼唱 ──audio_chord_recognizer──▶ 和弦/旋律 ──ai_chords_master──▶ 和弦方案+段落
-                                                                      │
-              muse-lyrics-gen ◄──和弦骨架────────────────────────────┘
-                    │
-                    ▼ lyrics.md ──minimax_music_v3──▶ 歌词.txt+风格.txt ──▶ MiniMax生成
+project.md 现状 ──诊断──▶ 五维报告+优化建议
+     ▲                              │
+     │                         调用生成技能
+     │                              │
+     └──────── 合并回工程MD + 日志 ◄─┘
 ```
 
-**迭代闭环（优化阶段，从半成品持续优化到成品，song_engineer 主导）：**
-```
-project.md 现状 ──诊断──▶ 五维报告+优化建议+知识点 ──决策──▶ 调用生成技能
-     ▲                                                    │
-     └────────────── 合并回工程MD + 工程日志 ◄────────────┘
-     （持续循环：看现状->给方向->改->再看->再改）
-```
+### 协作图
 
-**关键：** 生成技能之间靠文件传递（单向流水线）；song_engineer 靠读写工程MD形成闭环（有状态迭代）。两者互补：流水线负责"从0到半成品"，闭环负责"从半成品持续优化到成品"。
+```
+                    ┌─────────────────────┐
+                    │   song_engineer     │
+                    │  诊断/优化/教学中枢  │
+                    └──────────┬──────────┘
+                               │ 调用
+     ┌─────────────────────────┼─────────────────────────┐
+     ▼                         ▼                         ▼
+ai_chords_master        muse-lyrics-gen          audio_chord_recognizer
+  (和弦/段落)              (歌词/韵律)              (扒谱/分离)
+     │                         │                         │
+     └─────────────────────────┼─────────────────────────┘
+                               ▼
+              workspace/project/{歌名}/project.md
+              ★ 工程MD = 唯一真相源 ★
+```
 
 ---
 
@@ -487,13 +467,16 @@ project.md 现状 ──诊断──▶ 五维报告+优化建议+知识点 ─�
 | 聚合散件半成品为统一工程 | `song_engineer`（初始化模式） |
 | 诊断歌曲工程现状/下一步怎么改 | `song_engineer`（诊断模式） |
 | 持续优化打磨半成品 | `song_engineer`（优化模式） |
-| 分轨导出 MIDI 并合成 WAV 试听 | `song_engineer` scripts(export_track_to_midi + synthesize_midi) |
-| 合成全曲 wav(吉他+人声叠加) | `song_engineer` scripts(synth_full_song) |
+| 生成 OpenUTAU 可用人声歌词 | `openutau_lyrics` |
+| 旋律设计与改编 | `melody_master` |
 | 根据歌词设计规范生成歌词 | `muse-lyrics-gen` |
 | 用 Muse AI 生成歌曲 | `muse_ai_master` |
-| MiniMax Music 3 网页端生成 | `minimax-music-web` + `minimax_music_v3` |
+| MiniMax 网页端生成 | `minimax-music-web` + `minimax_music_v3` |
 | mmx CLI 命令行生成 | `minimax-music-gen` |
 | API 编程集成 | `minimax-music-api` |
 | 从音频识别和弦/旋律 | `audio_chord_recognizer` |
-| 人声转可听旋律MIDI（清洗碎音） | `wav_mid_human` |
+| 人声转可听旋律MIDI | `wav_mid_human` |
 | 设计沙发小曲和弦编曲 | `ai_chords_master` |
+| 混音/母带 | `remix-master` |
+| MuseScore 乐谱协作 | `musescore-cooperate` |
+| FTP 文件下载 | `ftp-download` |
