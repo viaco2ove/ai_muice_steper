@@ -2,6 +2,7 @@
 name: muse_ai_master
 description: 创建 Muse AI 大师模式歌词结构和生成歌曲。用于用户想要用 Muse AI 生成歌曲、需要设计歌词段落结构、选择音乐风格时触发。包含完整的歌词结构标签、格式规范、风格推荐和示例模板。
 agent_created: true
+executable: false
 ---
 
 # Muse AI 大师模式歌词创作技能

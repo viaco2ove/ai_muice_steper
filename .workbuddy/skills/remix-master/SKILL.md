@@ -2,6 +2,9 @@
 name: remix-master
 description: 配置驱动混音技能。读 remix.json 配置每条音轨的音量/增益/静音/声像，混合成最终母带 wav。优先用真实干声 wav（如 OpenUTAU 导出的主唱），改配置重混立即见效。触发词：混音、remix、放大主唱、调音量、音轨平衡、母带、调音、声音太小、主唱听不见。
 agent_created: true
+entry_script: "scripts/remix.py"
+params: {"--project": "歌曲名", "--track-dir": "音轨目录"}
+executable: true
 ---
 
 # Remix Master - 配置驱动混音

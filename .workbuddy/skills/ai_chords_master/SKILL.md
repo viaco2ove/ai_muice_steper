@@ -24,6 +24,9 @@
 
 **最低只需提供**：`基础和弦` + `风格: 沙发小曲`（旋律可选）
 
+entry_script: "scripts/composer.py"
+params: {"--title": "歌曲名", "--progression": "基础和弦进行逗号分隔(required)"}
+executable: true
 ---
 ## 输出目录
 输出到 /workspace/ai_chords/{song_name}/

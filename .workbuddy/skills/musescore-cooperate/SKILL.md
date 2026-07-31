@@ -4,6 +4,9 @@ description: >
   与 MuseScore 协作：生成 .mscx 乐谱文件、读取 .mscx 提取音符/歌词/调号/速度，在 MuseScore 中编辑后导回工程。
   触发词：MuseScore、mscx、乐谱、多轨总谱、乐谱导出、打谱
 agent_created: true
+entry_script: "scripts/mscx_generator.py"
+params: {"--project": "歌曲名(required)", "--tracks": "逗号分隔轨道", "--full": "生成总谱", "--bpm": "BPM"}
+executable: true
 ---
 
 # MuseScore Cooperate — 与 MuseScore 协作技能
@@ -52,12 +55,14 @@ MuseScore、mscx、乐谱、多轨总谱、乐谱导出、打谱、和 MuseScore
 输出：
 ```
 workspace/project/{歌名}/song_engineer/track/musescore/
-├── 01_吉他.mscx
-├── 02_主唱.mscx
-├── 05_solo吉他主.mscx
+├── 01_吉他/01_吉他.mscx
+├── 02_主唱/02_主唱.mscx
+├── 05_solo吉他主/05_solo吉他主.mscx
 ├── ...
-└── full_score.mscx   ← 多轨总谱，用 MuseScore 打开
+└── full_score/full_score.mscx   ← 多轨总谱，用 MuseScore 打开
 ```
+
+默认只生成多轨总谱 full_score/full_score.mscx
 
 用 **MuseScore Studio** 打开 `.mscx` 文件即可查看/编辑。
 

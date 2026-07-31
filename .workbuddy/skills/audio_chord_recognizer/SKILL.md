@@ -2,6 +2,9 @@
 name: audio_chord_recognizer
 description: 音频和弦识别与旋律分析技能。当用户想要从音频中识别和弦进行、提取旋律生成MIDI、分离人声/伴奏，或需要AI辅助扒谱时触发。
 agent_created: true
+entry_script: "scripts/recognize_chords.py"
+params: {"input": "音频文件路径(required)"}
+executable: true
 ---
 
 # Audio Chord Recognizer 技能

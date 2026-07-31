@@ -72,11 +72,13 @@ def load(name, td):
             for r in raw:
                 raw_note = r.get('actual') or r.get('note')
                 nn = _p(raw_note)
+                if not nn and r.get('midi') is not None:
+                    nn = int(r['midi'])  # percussion: actual stores GM note number
                 if not nn: continue
                 bn = int(r.get('bar', r.get('beat_pos','1').split('.')[0]))
                 t = (bn-1)*BT + _pos(r.get('beat_pos','1.1'))
                 dur = DT.get(r.get('duration', r.get('dur','4分')), 480)
-                n.append({'t':int(t),'n':nn,'d':dur,'name':raw_note,
+                n.append({'t':int(t),'n':nn,'d':dur,'name':str(raw_note),
                          'v':r.get('velocity', DV.get(r.get('dynamics','mf'),85)),'b':bn})
             if n: return n
     if os.path.exists(mp):
@@ -466,7 +468,7 @@ if __name__ == '__main__':
 
     ALL = ["01_吉他","02_主唱","05_solo吉他主","06_solo吉他辅1","06_solo吉他辅2",
            "08_节奏吉他","09_和声","10_氛围垫音pad","11_自然白噪音",
-           "12_泛音环境点缀","13_轻贝斯"]
+           "12_泛音环境点缀","13_轻贝斯","14_slap"]
     sel = [t.strip() for t in args.tracks.split(',')] if args.tracks else ALL
 
     data = []

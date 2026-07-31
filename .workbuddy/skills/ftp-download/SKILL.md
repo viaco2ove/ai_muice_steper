@@ -2,6 +2,7 @@
 name: ftp-download
 description: "FTP file downloader. Download files and directories from FTP/FTPS servers with support for recursive directory download, file pattern matching, resume of partial downloads, sync mode, dry-run listing, and TLS encryption. Trigger when downloading from an FTP server, fetching files via FTP, mirroring an FTP directory, or listing remote FTP contents. Keywords: FTP download, FTPS, recursive FTP, FTP sync, FTP resume, retrieve files from FTP."
 agent_created: true
+executable: false
 ---
 
 # FTP Download

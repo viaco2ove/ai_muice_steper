@@ -2,6 +2,9 @@
 name: song_engineer
 description: 歌曲工程聚合、诊断与优化技能。用于初始化/聚合歌曲工程MD、诊断半成品完成度与一致性、给出优化建议并辅助教学。触发词：诊断工程、优化歌曲、看现状、下一步怎么改、继续打磨、工程体检、初始化工程、聚合半成品、工程初始化。
 agent_created: true
+entry_script: "scripts/export_track_to_midi.py"
+params: {"input": "输入JSON(required)", "-o": "输出MIDI路径"}
+executable: true
 ---
 
 # Song Engineer — 歌曲工程聚合、诊断与优化
@@ -260,7 +263,7 @@ PYTHONUTF8=1 ./.venv/python.exe .workbuddy/skills/song_engineer/scripts/synth_fu
 ##### 难道人声生成
 [hunman_gen.md](../../../md/kb_repo/info/hunman_gen.md)
 ##### 乐器音色
-[track_up_level.md](../../../md/kb_repo/info/track_up_level.md)
+[track_up_level.md](../../../md/kb_repo/info/trach_up_level/track_up_level.md)
 
 #### 步骤
 ```bash

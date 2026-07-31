@@ -2,6 +2,9 @@
 name: wav_mid_human
 description: 人声WAV转MIDI技能，产出可听出旋律线的干净MIDI。专门解决pyin逐帧转换产生的密密麻麻碎音问题。当用户想把人声哼唱/干声转成可听旋律MIDI、抱怨MIDI乱码碎音、需要清洗人声MIDI时触发。触发词：人声转MIDI、wav转mid、旋律线MIDI、干净MIDI、清洗碎音、听出旋律、hum to midi。
 agent_created: true
+entry_script: "scripts/wav_to_midi.py"
+params: {"input": "输入WAV(required)", "-o": "输出目录"}
+executable: true
 ---
 
 # Wav Mid Human - 人声 WAV 转可听旋律 MIDI

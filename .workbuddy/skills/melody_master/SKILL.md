@@ -2,6 +2,7 @@
 name: melody_master
 description: 旋律设计与改编技能。当用户想要设计/改编主旋律、分析参考曲旋律、写人声旋律时触发。
 agent_created: true
+executable: false
 ---
 
 # Melody Master 旋律设计技能

@@ -2,6 +2,7 @@
 name: muse-lyrics-gen
 description: Generate lyrics for Muse AI music projects following Lo-Fi sofa song conventions. Use when user asks to "生成歌词", "写歌词", "根据 design 写歌词", or when working with muse_ai project directories containing lyrics.design.md files. Reads design specifications and outputs lyrics.md with proper 8-beat structures, weak rhymes, and lazy murmuring tone.
 agent_created: true
+executable: false
 ---
 
 # Muse Lyrics Gen

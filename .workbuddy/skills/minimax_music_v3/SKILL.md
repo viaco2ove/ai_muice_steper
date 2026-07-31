@@ -2,6 +2,7 @@
 name: minimax_music_v3
 description: 将歌词转换为 MiniMax Music 3 网页端可识别的格式。读取 muse_ai 项目的 lyrics.md 和 lyrics.design.md，输出带结构标签和编曲说明的纯文本歌词 + 风格描述，用于粘贴到 https://www.minimaxi.com/audio/music 网页端生成音乐。触发词：MiniMax 音乐生成、music v3、转换歌词格式、生成 MiniMax 歌词。
 agent_created: true
+executable: false
 ---
 
 # MiniMax Music v3 歌词格式化

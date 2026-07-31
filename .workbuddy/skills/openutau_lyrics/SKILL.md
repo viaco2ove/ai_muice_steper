@@ -4,6 +4,9 @@ description: >
   将中文歌词转换为 OpenUTAU 可唱的音素序列（CV Phonemes）。支持音节拆分、声母+韵母映射、音素优化。
   Triggers on: 歌词音素、音素设计、openutau lyrics、拼音转音素、中文歌词转音素、ustx 歌词编辑、生成 openutau 歌词
 agent_created: true
+entry_script: "scripts/gen_phonemes.py"
+params: {"--project": "歌曲名(required)", "--midi": "MIDI文件名(required)"}
+executable: true
 ---
 
 # OpenUTAU Lyrics — 歌词音素设计技能 v2.0

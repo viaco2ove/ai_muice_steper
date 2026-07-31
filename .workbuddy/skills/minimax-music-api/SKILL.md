@@ -9,6 +9,7 @@ license: MIT
 metadata:
   version: "1.0"
   category: creative
+executable: false
 ---
 
 # MiniMax Music API Skill

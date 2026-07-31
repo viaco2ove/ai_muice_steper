@@ -10,6 +10,7 @@ license: MIT
 metadata:
   version: "1.1"
   category: creative
+executable: false
 ---
 
 # MiniMax Music Generation Skill
