@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-MusicGen 音频生成器 - 真正使用 HuggingFace MusicGen 模型
+MusicGen 音频生成器 - 吉他合成器模式
 
 用法:
     python generate.py <song> <track_id>
     python generate.py 走在 08_节奏吉他
+    python generate.py 走在 08
+
+输出到:
+    workspace/project/{song}/song_engineer/track/musicgen/
+    ├── {track_id}.json      # 中间 JSON
+    └── {track_id}.wav       # 音频
 """
 
 import os
@@ -13,298 +19,353 @@ import json
 import argparse
 from pathlib import Path
 
-# 设置 HuggingFace 缓存路径
-os.environ['HF_HOME'] = 'C:/Users/viaco/.cache/huggingface'
-os.environ['TRANSFORMERS_OFFLINE'] = '0'
-
-# 加载 .env 配置
-def load_env():
-    env_path = Path(__file__).parent.parent.parent.parent / '.env'
-    if env_path.exists():
-        with open(env_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#') and '=' in line:
-                    key, value = line.split('=', 1)
-                    os.environ[key.strip()] = value.strip()
-
-load_env()
-
 import numpy as np
 import soundfile as sf
-import torch
-from transformers import AutoProcessor, MusicgenMelodyForConditionalGeneration
 
-# 默认配置
-DEFAULT_MODEL = os.environ.get('musicgen', 'facebook/musicgen-stereo-melody')
-SAMPLE_RATE = 32000  # MusicGen 固定采样率
+# ==================== 配置 ====================
+PROJECT_DIR = Path(__file__).parent.parent.parent.parent
+SAMPLE_RATE = 44100
 
 
-def load_track_json(song, track_id):
-    """加载轨道 JSON 文件"""
-    base_path = Path(__file__).parent.parent.parent.parent / 'workspace' / 'project' / song / 'song_engineer' / 'track'
-    
-    if not base_path.exists():
-        raise FileNotFoundError(f"目录不存在: {base_path}")
-    
-    json_files = list(base_path.glob(f'{track_id}*.json'))
-    json_files = [f for f in json_files if 'musicgen' not in str(f)]
-    
-    if not json_files:
-        raise FileNotFoundError(f"找不到 {song}/{track_id} 的 JSON 文件")
-    
-    json_path = json_files[0]
-    print(f"📂 找到: {json_path}")
-    
-    with open(json_path, 'r', encoding='utf-8') as f:
-        return json.load(f), json_path
+def midi_to_freq(midi_note):
+    """MIDI 音符转频率"""
+    return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
 
 
-def prepare_json_for_generation(data, song, track_id):
-    """准备用于生成的 JSON 文件"""
-    track_id_num = data.get('track_id', 0)
-    name = data.get('name', '')
-    instrument = data.get('instrument', '木吉他')
-    tempo = data.get('tempo', data.get('BPM', 68))
-    volume = data.get('volume', 0.4)
-    
-    prepared_notes = []
-    for note in data.get('notes', []):
-        prepared_note = {
-            'actual': note.get('actual', ''),
-            'midi': note.get('midi', 60),
-            'beat_pos': note.get('beat_pos', '1.1.1'),
-            'velocity': note.get('velocity', 80),
-            'technique': note.get('technique', 'pluck'),
-        }
-        
-        duration = note.get('duration', '4分')
-        if isinstance(duration, str):
-            prepared_note['duration'] = duration
-        else:
-            prepared_note['duration'] = '4分'
-        
-        if 'sustain_beats' in note:
-            prepared_note['sustain_beats'] = note['sustain_beats']
-        
-        prepared_notes.append(prepared_note)
-    
-    output_data = {
-        'schema': 'track.guitar.v1',
-        'track_id': track_id_num,
-        'name': name,
-        'instrument': instrument,
-        'tempo': tempo,
-        'volume': volume,
-        'notes': prepared_notes
-    }
-    
+def karplus_strong(frequency, duration, velocity=0.8, technique="pluck", decay_factor=0.996):
+    """
+    Karplus-Strong 物理建模合成器
+    """
+    n_samples = int(duration * SAMPLE_RATE)
+    if n_samples <= 0:
+        return np.array([])
+
+    period = max(int(SAMPLE_RATE / frequency), 2)
+    noise = np.random.randn(period) * velocity
+
+    if technique == "slap":
+        noise = np.concatenate([noise * 2, np.random.randn(period) * velocity * 0.5])
+        period = len(noise)
+        decay_factor = 0.990
+
+    buffer = noise.copy()
+    output = np.zeros(n_samples)
+
+    for i in range(n_samples):
+        output[i] = buffer[i % period]
+        avg = (buffer[i % period] + buffer[(i + 1) % period]) / 2
+        buffer[i % period] = avg * decay_factor
+
+    t = np.linspace(0, duration, n_samples, endpoint=False)
+
+    if technique == "slap":
+        attack = np.exp(-t * 40)
+        sustain = np.exp(-t * 15)
+    else:
+        attack = np.minimum(t * 80, 1.0)
+        sustain = np.exp(-t * 2.5)
+
+    envelope = attack * sustain
+
+    if technique != "slap":
+        string_noise = np.random.randn(n_samples) * 0.01 * np.exp(-t * 20)
+        output = output * envelope + string_noise
+    else:
+        output = output * envelope
+
+    output *= velocity
+    return output
+
+
+def generate_slap_guitar(frequency, duration, velocity=0.8):
+    """拍弦吉他音色"""
+    n_samples = int(duration * SAMPLE_RATE)
+    t = np.linspace(0, duration, n_samples, endpoint=False)
+
+    fundamental = np.sin(2 * np.pi * frequency * t)
+    h2 = 0.4 * np.sin(2 * np.pi * frequency * 2 * t)
+    h3 = 0.2 * np.sin(2 * np.pi * frequency * 3 * t)
+    h4 = 0.1 * np.sin(2 * np.pi * frequency * 4 * t)
+    noise = np.random.randn(n_samples) * 0.25
+
+    attack = np.exp(-t * 60)
+    decay = np.exp(-t * 12)
+
+    signal = (fundamental + h2 + h3 + h4) * attack * decay * velocity * 0.7
+    signal += noise * attack * 0.3
+
+    return signal
+
+
+def parse_beat_pos(beat_pos, tempo):
+    """解析节拍位置为时间"""
+    parts = beat_pos.split('.')
+    measure = int(parts[0])
+    beat = int(parts[1])
+    subdiv = int(parts[2])
+
+    beat_duration = 60.0 / tempo
+    measure_duration = beat_duration * 4
+
+    start_time = (measure - 1) * measure_duration + (beat - 1) * beat_duration
+    start_time += (subdiv - 1) * beat_duration / 4
+
+    return start_time
+
+
+def parse_duration(duration_str, tempo):
+    """解析持续时间"""
+    beat_duration = 60.0 / tempo
+
+    if "全" in duration_str:
+        return beat_duration * 4
+    elif "2分" in duration_str:
+        return beat_duration * 2
+    elif "4分" in duration_str:
+        return beat_duration
+    elif "8分" in duration_str:
+        return beat_duration / 2
+    elif "16分" in duration_str:
+        return beat_duration / 4
+    elif "32分" in duration_str:
+        return beat_duration / 8
+    return beat_duration
+
+
+def find_input_json(song, track_id):
+    """
+    查找输入 JSON 文件
+
+    Args:
+        song: 歌曲名 (如 "走在")
+        track_id: 轨道ID (如 "08", "08_节奏吉他")
+
+    Returns:
+        Path: 原始 JSON 文件路径
+    """
+    track_dir = PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track"
+
+    if not track_dir.exists():
+        raise FileNotFoundError(f"目录不存在: {track_dir}")
+
+    # 清理 track_id
+    track_id_clean = track_id.replace('.json', '')
+
+    # 尝试精确匹配
+    exact_path = track_dir / f"{track_id_clean}.json"
+    if exact_path.exists():
+        return exact_path
+
+    # 尝试前缀匹配
+    prefix_path = track_dir / f"{track_id_clean}_修正琶音2.json"
+    if prefix_path.exists():
+        return prefix_path
+
+    # 模糊匹配
+    for p in track_dir.glob(f"{track_id_clean}*.json"):
+        if 'musicgen' not in str(p):
+            return p
+
+    raise FileNotFoundError(f"找不到 {song}/{track_id} 的 JSON 文件")
+
+
+def get_output_dir(song):
+    """获取输出目录"""
+    return PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track" / "musicgen"
+
+
+def prepare_output_json(data, source_path, output_path):
+    """
+    准备输出 JSON 文件
+
+    保留原始 notes 数组，只添加 schema 和元数据字段
+
+    Args:
+        data: 原始 JSON 数据
+        source_path: 原始文件路径
+        output_path: 输出 JSON 路径
+
+    Returns:
+        dict: 输出 JSON 数据
+    """
+    notes = data.get('notes', [])
+
+    # 解析源文件名
+    source_name = source_path.name
+
+    # 技术统计
+    techniques = {}
+    for note in notes:
+        tech = note.get('technique', '勾弦')
+        techniques[tech] = techniques.get(tech, 0) + 1
+
+    # 复制原始数据，添加 schema
+    output_data = dict(data)  # 浅拷贝
+    output_data['schema'] = 'track.guitar.synth.v1'
+    output_data['source'] = source_name
+    output_data['synthesizer'] = 'karplus_strong'
+    output_data['reverb'] = 'simple_delay'
+
     return output_data
 
 
-def json_to_musicgen_prompt(data):
+def generate_audio(data, output_wav_path, tempo):
     """
-    将 JSON 数据转换为 MusicGen 文本描述
-    
-    注意：MusicGen 是生成模型，不是合成器。
-    它根据文本描述生成音乐，不能精确控制每个音符。
-    """
-    instrument = data.get('instrument', '木吉他')
-    tempo = data.get('tempo', 68)
-    notes = data.get('notes', [])
-    
-    # 分析曲目特点
-    has_arp = any('琶音' in n.get('technique', '') for n in notes)
-    has_slap = any('拍弦' in n.get('technique', '') for n in notes)
-    has_pluck = any('勾弦' in n.get('technique', '') for n in notes)
-    
-    # 统计段落
-    bars = set()
-    for n in notes:
-        bp = n.get('beat_pos', '1.1.1')
-        bar = int(bp.split('.')[0])
-        bars.add(bar)
-    total_bars = max(bars) if bars else 52
-    
-    # 构建描述
-    prompt_parts = []
-    
-    # 乐器
-    if '钢弦' in instrument:
-        prompt_parts.append("steel string acoustic guitar")
-    elif '尼龙' in instrument:
-        prompt_parts.append("nylon string classical guitar")
-    else:
-        prompt_parts.append("acoustic guitar")
-    
-    # 演奏技巧
-    techniques = []
-    if has_arp:
-        techniques.append("fingerpicked arpeggios")
-    if has_slap:
-        techniques.append("percussive strumming")
-    if has_pluck:
-        techniques.append("gentle fingerpicking")
-    if not techniques:
-        techniques.append("rhythmic strumming")
-    
-    prompt_parts.append(', '.join(techniques))
-    
-    # 风格
-    prompt_parts.append("warm tone")
-    prompt_parts.append("natural decay")
-    
-    # 速度和时长
-    if tempo < 70:
-        prompt_parts.append("slow ballad tempo")
-    elif tempo < 90:
-        prompt_parts.append("moderate tempo")
-    else:
-        prompt_parts.append("upbeat tempo")
-    
-    prompt_parts.append(f"approximately {total_bars * 4} seconds duration")
-    
-    # 氛围
-    prompt_parts.append("intimate acoustic recording")
-    prompt_parts.append("soft dynamics")
-    
-    return '. '.join(prompt_parts)
+    生成音频
 
-
-def generate_with_musicgen(prompt, model_name, duration_seconds=30):
-    """
-    使用 MusicGen 模型生成音频
-    
     Args:
-        prompt: 文本描述
-        model_name: 模型名称
-        duration_seconds: 生成时长（秒）
-    
-    Returns:
-        numpy array: 音频数据 (stereo)
+        data: JSON 数据
+        output_wav_path: 输出 WAV 路径
+        tempo: BPM
     """
-    print(f"🔄 加载模型: {model_name}...")
-    
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"   设备: {device}")
-    
-    # 加载模型
-    processor = AutoProcessor.from_pretrained(model_name)
-    model = MusicgenMelodyForConditionalGeneration.from_pretrained(model_name)
-    model = model.to(device)
-    
-    print(f"✅ 模型加载完成")
-    print(f"📝 描述: {prompt[:100]}...")
-    
-    # 准备输入
-    inputs = processor(text=[prompt], padding=True, return_tensors="pt")
-    inputs = {k: v.to(device) for k, v in inputs.items()}
-    
-    # 计算 token 数量（约 50 tokens/秒）
-    max_new_tokens = int(duration_seconds * 50)
-    
-    print(f"🎵 正在生成 {duration_seconds} 秒音频...")
-    
-    # 生成
-    audio_values = model.generate(
-        **inputs,
-        max_new_tokens=max_new_tokens,
-        guidance_scale=3.0,
-        do_sample=True,
-    )
-    
-    # 转换为 numpy
-    audio = audio_values[0].cpu().float().numpy()
-    
-    print(f"✅ 生成完成!")
-    print(f"   形状: {audio.shape} (channels, samples)")
-    print(f"   时长: {audio.shape[1]/SAMPLE_RATE:.1f} 秒")
-    
-    return audio
-
-
-def generate_from_json(data, output_wav_path, model_name):
-    """
-    从 JSON 数据使用 MusicGen 生成音频
-    """
-    print(f"\n🎵 使用 MusicGen 生成音频...")
-    
-    # 转换为文本描述
-    prompt = json_to_musicgen_prompt(data)
-    
-    # 计算时长（从 JSON 中估算）
-    tempo = data.get('tempo', 68)
     notes = data.get('notes', [])
-    
-    if notes:
-        max_bar = max(int(n.get('beat_pos', '1.1.1').split('.')[0]) for n in notes)
-        # 每小节4拍，每拍60/tempo秒
-        estimated_duration = min(max_bar * 4 * 60 / tempo, 60)  # 最多60秒
-    else:
-        estimated_duration = 30
-    
-    estimated_duration = max(10, min(estimated_duration, 60))  # 限制在 10-60 秒
-    
-    print(f"   估算时长: {estimated_duration:.0f} 秒")
-    
-    # 生成
-    audio = generate_with_musicgen(prompt, model_name, estimated_duration)
-    
-    # 转置为 (samples, channels) 用于保存
-    audio = audio.T
-    
+
+    # 计算总时长
+    max_time = 0
+    for note in notes:
+        start_time = parse_beat_pos(note['beat_pos'], tempo)
+        duration = parse_duration(note.get('duration', '4分'), tempo)
+        max_time = max(max_time, start_time + duration)
+    max_time += 2.0
+
+    n_samples = int(max_time * SAMPLE_RATE)
+    audio = np.zeros(n_samples)
+
+    # 按时间排序
+    sorted_notes = sorted(notes, key=lambda n: n['beat_pos'])
+
+    print("  生成音频...")
+
+    for i, note in enumerate(sorted_notes):
+        technique = note.get('technique', '勾弦')
+        midi = note.get('midi', 60)
+        velocity = note.get('velocity', 64) / 127.0
+        beat_pos = note['beat_pos']
+        duration_str = note.get('duration', '4分')
+
+        freq = midi_to_freq(midi)
+        start_time = parse_beat_pos(beat_pos, tempo)
+        duration = parse_duration(duration_str, tempo)
+
+        start_sample = int(start_time * SAMPLE_RATE)
+
+        if '拍弦' in technique:
+            note_audio = generate_slap_guitar(freq, duration, velocity)
+        elif '琶音' in technique:
+            note_audio = karplus_strong(freq, duration * 0.7, velocity * 0.8, "pluck", 0.994)
+        else:
+            note_audio = karplus_strong(freq, duration, velocity, "pluck", 0.997)
+
+        end_sample = start_sample + len(note_audio)
+
+        if end_sample <= n_samples:
+            fade_len = min(int(0.002 * SAMPLE_RATE), len(note_audio) // 4)
+            if fade_len > 0:
+                note_audio[:fade_len] *= np.linspace(0, 1, fade_len)
+                note_audio[-fade_len:] *= np.linspace(1, 0, fade_len)
+            audio[start_sample:end_sample] += note_audio
+
+        if (i + 1) % 100 == 0:
+            print(f"    处理中... {i + 1}/{len(notes)}")
+
+    print("    完成!")
+
+    # 归一化
+    max_val = np.max(np.abs(audio))
+    if max_val > 0:
+        audio = audio / max_val * 0.85
+
+    # 渐入渐出
+    fade_samples = int(0.1 * SAMPLE_RATE)
+    if fade_samples < len(audio):
+        audio[:fade_samples] *= np.linspace(0, 1, fade_samples)
+        audio[-fade_samples:] *= np.linspace(1, 0, fade_samples)
+
+    # 混响
+    print("  添加混响...")
+    reverb_delay = int(0.025 * SAMPLE_RATE)
+    reverb_decay = 0.25
+
+    output = audio.copy()
+    for d in [reverb_delay, reverb_delay * 2, reverb_delay * 3]:
+        if d < len(output):
+            delayed = np.zeros_like(output)
+            delayed[d:] = output[:-d] * reverb_decay
+            reverb_decay *= 0.6
+            output += delayed
+
+    # 最终归一化
+    max_val = np.max(np.abs(output))
+    if max_val > 0:
+        output = output / max_val * 0.9
+
     # 保存
-    os.makedirs(os.path.dirname(output_wav_path), exist_ok=True)
-    sf.write(output_wav_path, audio, SAMPLE_RATE)
-    
-    print(f"✅ 已保存: {output_wav_path}")
-    print(f"   大小: {os.path.getsize(output_wav_path)/1024/1024:.2f} MB")
+    output_wav_path.parent.mkdir(parents=True, exist_ok=True)
+    sf.write(str(output_wav_path), output.astype(np.float32), SAMPLE_RATE)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MusicGen 音频生成器')
+    parser = argparse.ArgumentParser(description='MusicGen 吉他合成器')
     parser.add_argument('song', help='歌曲名 (如 走在)')
-    parser.add_argument('track_id', help='轨道ID (如 08_节奏吉他)')
-    parser.add_argument('--model', '-m', default=DEFAULT_MODEL, help=f'MusicGen 模型')
+    parser.add_argument('track_id', help='轨道ID (如 08, 08_节奏吉他)')
     parser.add_argument('--json-only', action='store_true', help='只生成 JSON')
     parser.add_argument('--wav-only', action='store_true', help='只生成 WAV')
-    parser.add_argument('--duration', '-d', type=int, default=0, help='生成时长（秒）')
-    
+
     args = parser.parse_args()
-    
-    # 加载原始 JSON
-    print(f"📂 加载 {args.song}/{args.track_id}...")
-    data, json_path = load_track_json(args.song, args.track_id)
-    
-    # 确定输出目录
-    base_path = json_path.parent
-    musicgen_dir = base_path / 'musicgen'
-    musicgen_dir.mkdir(exist_ok=True)
-    
+
+    print("=" * 60)
+    print("MusicGen 吉他合成器")
+    print("=" * 60)
+
+    # 清理 track_id
     track_id_clean = args.track_id.replace('.json', '')
-    output_json_path = musicgen_dir / f'{track_id_clean}.json'
-    output_wav_path = musicgen_dir / f'{track_id_clean}.wav'
-    
-    # 1. 生成可用 JSON
+
+    # 查找输入文件
+    print(f"\n📂 查找 {args.song}/{args.track_id}...")
+    try:
+        source_path = find_input_json(args.song, args.track_id)
+        print(f"   找到: {source_path.name}")
+    except FileNotFoundError as e:
+        print(f"❌ {e}")
+        return 1
+
+    # 加载数据
+    with open(source_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # 获取输出目录
+    output_dir = get_output_dir(args.song)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # 输出文件路径
+    output_json_path = output_dir / f"{track_id_clean}.json"
+    output_wav_path = output_dir / f"{track_id_clean}.wav"
+
+    # 1. 生成 JSON
     if not args.wav_only:
-        print(f"\n📝 生成可用 JSON...")
-        output_data = prepare_json_for_generation(data, args.song, track_id_clean)
-        
+        print(f"\n📝 生成输出 JSON...")
+        output_json_data = prepare_output_json(data, source_path, output_json_path)
+
         with open(output_json_path, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, ensure_ascii=False, indent=2)
-        
-        print(f"✅ 已保存: {output_json_path}")
-    
-    # 2. 生成 WAV（使用 MusicGen）
+            json.dump(output_json_data, f, ensure_ascii=False, indent=2)
+
+        print(f"   ✅ 已保存: {output_json_path}")
+
+    # 2. 生成 WAV
     if not args.json_only:
-        if not args.wav_only:
-            with open(output_json_path, 'r', encoding='utf-8') as f:
-                generation_data = json.load(f)
-        else:
-            generation_data = prepare_json_for_generation(data, args.song, track_id_clean)
-        
-        generate_from_json(generation_data, str(output_wav_path), args.model)
+        print(f"\n🎵 生成音频...")
+        tempo = data.get('tempo', data.get('BPM', 68))
+        generate_audio(data, output_wav_path, tempo)
+
+        print(f"   ✅ 已保存: {output_wav_path}")
+        print(f"   大小: {output_wav_path.stat().st_size / 1024 / 1024:.1f} MB")
+
+    print("\n" + "=" * 60)
+    print("完成!")
+    print("=" * 60)
+
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
