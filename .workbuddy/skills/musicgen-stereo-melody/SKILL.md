@@ -30,48 +30,23 @@ python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
 - `--output, -o`: 自定义输出路径
 
 ## 输入
-例如 
-track_id=08_节奏吉他
 
-从 `workspace/project/{song}/song_engineer/track/` 目录查找 JSON 文件：
-- `{track_id}.json` 这个文件不能直接用于生成音频！
-
-JSON 格式：
-
-```json
-{
-  "schema": "track.guitar.v1",
-  "track_id": 8,
-  "name": "节奏吉他",
-  "instrument": "木吉他(钢弦)",
-  "tempo": 68,
-  "volume": 0.4,
-  "notes": [
-    {
-      "actual": "Eb3",
-      "midi": 51,
-      "duration": "4分",
-      "beat_pos": "1.1.1",
-      "velocity": 64,
-      "technique": "拍弦",
-      "sustain_beats": 3
-    }
-  ]
-}
-```
+从 `workspace/project/{song}/song_engineer/track/` 目录查找同名 JSON 文件：
+- `08_节奏吉他` → 查找 `08_节奏吉他*.json`
 
 ## 输出
-例如 
-track_id=08_节奏吉他
-先输出
-```
-workspace/project/{song}/song_engineer/track/musicgen/{track_id}.josn
-```
-这个文件直接用于生成音频！
 
-再输出
-```
-workspace/project/{song}/song_engineer/track/musicgen/{track_id}.wav
+自动输出到 `workspace/project/{song}/song_engineer/track/musicgen/`：
+
+1. **`{track_id}.json`** - 转换后的可用 JSON（用于生成音频）
+2. **`{track_id}.wav`** - 生成的音频文件
+
+示例：
+```bash
+python generate.py 走在 08_节奏吉他
+# 输出:
+# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.json
+# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.wav
 ```
 
 ## 配置

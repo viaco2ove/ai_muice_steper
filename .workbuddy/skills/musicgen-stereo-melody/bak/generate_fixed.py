@@ -6,7 +6,7 @@ import soundfile as sf
 import os
 
 # 读取修正后的JSON
-json_path = r'D:\Users\viaco\PycharmProjects\ai_muice_steper\workspace\project\走在\song_engineer\track\08_节奏吉他_修正琶音v2.json'
+json_path = r'/workspace/project/走在/song_engineer/track/08_节奏吉他_修正琶音v2.json'
 with open(json_path, 'r', encoding='utf-8') as f:
     data = json.load(f)
 
@@ -105,7 +105,7 @@ if max_val > 0:
     audio = audio / max_val * 0.9
 
 # 保存
-output_path = r'D:\Users\viaco\PycharmProjects\ai_muice_steper\workspace\project\走在\song_engineer\track\output\08_节奏吉他_修正版.wav'
+output_path = r'/workspace/project/走在/song_engineer/track/output/08_节奏吉他_修正版.wav'
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 sf.write(output_path, audio, SAMPLE_RATE)
 
