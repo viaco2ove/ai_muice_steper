@@ -44,7 +44,8 @@ python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
 输出到 `workspace/project/{song}/song_engineer/track/musicgen/`：
 
 1. **`{track_id}.json`** - 中间 JSON 元数据
-2. **`{track_id}.wav`** - 生成的音频文件
+2. **`{track_id}.inputs.md`** - 最终的model.generate(inputs) 的 inputs 内容
+3.**`{track_id}.wav`** - 生成的音频文件
 
 示例：
 ```bash
