@@ -3,9 +3,9 @@
 ## 目录结构
 
 ```
-workspace/project/{song}/song_engineer/track/musicgen/
+workspace/project/{song}/song_engineer/track/ karplus/
 ├── {track_id}.json          # 中间 JSON (保留完整 notes 数组)
-├── {track_id}.inputs.md     # MusicGen 文本提示词输入
+├── {track_id}.inputs.md     #  karplus 文本提示词输入
 └── {track_id}.wav           # 生成的音频文件 (可选)
 ```
 
@@ -38,7 +38,7 @@ workspace/project/{song}/song_engineer/track/musicgen/
 ## {track_id}.inputs.md 模板
 
 ```markdown
-# MusicGen 输入提示词
+#  karplus 输入提示词
 
 ## 基本信息
 
@@ -70,7 +70,7 @@ acoustic steel string guitar, fingerpicking, gentle chord strumming, slow tempo 
 |------|-----|
 | Duration | 183.31 seconds |
 | Sampling Rate | 44100 Hz |
-| Model | facebook/musicgen-stereo-melody |
+| Model | facebook/ karplus-stereo-melody |
 ```
 
 ## 字段说明
@@ -101,12 +101,12 @@ acoustic steel string guitar, fingerpicking, gentle chord strumming, slow tempo 
 | 时值 | 计算得出 | 总时长（秒） |
 | 音符数量 | len(JSON.notes) | 音符总数 |
 | 技术构成 | 统计得出 | 各技术出现次数和占比 |
-| 提示词 | 组合生成 | MusicGen 文本提示词 |
+| 提示词 | 组合生成 |  karplus 文本提示词 |
 
 ## 路径规则
 
 - **输入 JSON**: `workspace/project/{song}/song_engineer/track/{track_id}.json`
-- **输出目录**: `workspace/project/{song}/song_engineer/track/musicgen/`
+- **输出目录**: `workspace/project/{song}/song_engineer/track/ karplus/`
 - **输出 JSON**: `{output_dir}/{track_id}.json`
 - **输出 inputs.md**: `{output_dir}/{track_id}.inputs.md`
 - **输出 WAV**: `{output_dir}/{track_id}.wav`
@@ -118,9 +118,9 @@ acoustic steel string guitar, fingerpicking, gentle chord strumming, slow tempo 
 workspace/project/走在/song_engineer/track/08_节奏吉他.json
 
 # 输出
-workspace/project/走在/song_engineer/track/musicgen/
+workspace/project/走在/song_engineer/track/ karplus/
 ├── 08_节奏吉他.json       # 中间 JSON
-├── 08_节奏吉他.inputs.md  # MusicGen 提示词
+├── 08_节奏吉他.inputs.md  #  karplus 提示词
 └── 08_节奏吉他.wav        # 音频文件
 ```
 
@@ -129,4 +129,4 @@ workspace/project/走在/song_engineer/track/musicgen/
 1. **保留完整 notes 数组** - JSON 不做任何删减或转换
 2. **只添加元数据字段** - `schema`、`source`、`synthesizer`、`reverb`
 3. **不修改原始字段** - `notes` 内的每个音符保持原样
-4. **生成 inputs.md** - 自动从 JSON 数据生成 MusicGen 提示词
+4. **生成 inputs.md** - 自动从 JSON 数据生成  karplus 提示词

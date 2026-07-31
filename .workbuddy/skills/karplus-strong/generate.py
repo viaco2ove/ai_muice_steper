@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MusicGen 音频生成器 - 吉他合成器模式
+ karplus 音频生成器 - 吉他合成器模式
 
 用法:
     python generate.py <song> <track_id>
@@ -8,7 +8,7 @@ MusicGen 音频生成器 - 吉他合成器模式
     python generate.py 走在 08
 
 输出到:
-    workspace/project/{song}/song_engineer/track/musicgen/
+    workspace/project/{song}/song_engineer/track/ karplus/
     ├── {track_id}.json      # 中间 JSON
     └── {track_id}.wav       # 音频
 """
@@ -163,7 +163,7 @@ def find_input_json(song, track_id):
 
     # 模糊匹配
     for p in track_dir.glob(f"{track_id_clean}*.json"):
-        if 'musicgen' not in str(p):
+        if ' karplus' not in str(p):
             return p
 
     raise FileNotFoundError(f"找不到 {song}/{track_id} 的 JSON 文件")
@@ -171,7 +171,7 @@ def find_input_json(song, track_id):
 
 def get_output_dir(song):
     """获取输出目录"""
-    return PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track" / "musicgen"
+    return PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track" / " karplus"
 
 
 def prepare_output_json(data, source_path, output_path):
@@ -211,7 +211,7 @@ def prepare_output_json(data, source_path, output_path):
 
 def generate_inputs_md(data, techniques, output_path):
     """
-    生成 MusicGen 输入提示词文件
+    生成  karplus 输入提示词文件
 
     Args:
         data: JSON 数据
@@ -375,7 +375,7 @@ def generate_audio(data, output_wav_path, tempo):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='MusicGen 吉他合成器')
+    parser = argparse.ArgumentParser(description=' karplus 吉他合成器')
     parser.add_argument('song', help='歌曲名 (如 走在)')
     parser.add_argument('track_id', help='轨道ID (如 08, 08_节奏吉他)')
     parser.add_argument('--json-only', action='store_true', help='只生成 JSON')
@@ -384,7 +384,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 60)
-    print("MusicGen 吉他合成器")
+    print(" karplus 吉他合成器")
     print("=" * 60)
 
     # 清理 track_id
@@ -423,7 +423,7 @@ def main():
         print(f"   ✅ 已保存: {output_json_path}")
 
         # 生成 inputs.md
-        print(f"\n📄 生成 MusicGen 输入提示词...")
+        print(f"\n📄 生成  karplus 输入提示词...")
         generate_inputs_md(data, techniques, output_inputs_path)
         print(f"   ✅ 已保存: {output_inputs_path}")
 

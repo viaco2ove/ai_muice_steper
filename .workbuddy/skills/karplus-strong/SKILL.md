@@ -1,9 +1,6 @@
-# MusicGen 音频生成技能
+#  karplus 音频生成技能
 
 基于 JSON 数据使用 Karplus-Strong 物理建模合成吉他音频。
-
-## 特别提示
-一般情况需求gpu
 
 ## 触发词
 
@@ -17,9 +14,9 @@
 ### 命令行
 
 ```bash
-python .workbuddy/skills/musicgen-stereo-melody/generate.py <song> <track_id>
-python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08_节奏吉他
-python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
+python .workbuddy/skills/ karplus-stereo-melody/generate.py <song> <track_id>
+python .workbuddy/skills/ karplus-stereo-melody/generate.py 走在 08_节奏吉他
+python .workbuddy/skills/ karplus-stereo-melody/generate.py 走在 08
 ```
 
 ### 参数
@@ -44,7 +41,7 @@ python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
 
 ## 输出
 
-输出到 `workspace/project/{song}/song_engineer/track/musicgen/`：
+输出到 `workspace/project/{song}/song_engineer/track/ karplus/`：
 
 1. **`{track_id}.json`** - 中间 JSON 元数据
 2. **`{track_id}.inputs.md`** - 最终的model.generate(inputs) 的 inputs 内容
@@ -54,8 +51,8 @@ python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
 ```bash
 python generate.py 走在 08_节奏吉他
 # 输出:
-# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.json
-# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.wav
+# workspace/project/走在/song_engineer/track/ karplus/08_节奏吉他.json
+# workspace/project/走在/song_engineer/track/ karplus/08_节奏吉他.wav
 ```
 
 ## 合成器
@@ -79,10 +76,10 @@ python generate.py 走在 08_节奏吉他
 
 ## 配置
 
-从 `.env` 文件读取 `musicgen` 配置（保留用于未来 MusicGen 模型调用）
+从 `.env` 文件读取 ` karplus` 配置（保留用于未来  karplus 模型调用）
 
 ```bash
-musicgen=facebook/musicgen-stereo-melody
+ karplus=facebook/ karplus-stereo-melody
 ```
 
 ## 依赖
