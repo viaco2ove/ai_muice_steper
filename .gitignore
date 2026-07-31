@@ -95,3 +95,4 @@ torch/
 cache/
 /.workbuddy/memory/
 /.cache/
+/models.json
