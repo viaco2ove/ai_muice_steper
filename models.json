@@ -1,0 +1,15 @@
+[
+  {
+    "id": "orcg",
+    "name": "orcg",
+    "vendor": "Custom",
+    "url": "http://127.0.0.1:3428/v1/chat/completions",
+    "apiKey": "orcg",
+    "supportsToolCall": true,
+    "supportsImages": true,
+    "supportsReasoning": true,
+    "useCustomProtocol": false,
+    "maxInputTokens": 131072,
+    "maxOutputTokens": 8192
+  }
+]
