@@ -54,7 +54,7 @@ python .workbuddy/skills/musicgen-stereo-melody/generate.py 走在 08
 ```bash
 python generate.py 走在 08_节奏吉他
 # 输出:
-# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.json
+# workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.conf.json
 # workspace/project/走在/song_engineer/track/musicgen/08_节奏吉他.wav
 ```
 

@@ -19,7 +19,7 @@ workspace/project/{song}/song_engineer/track/ karplus/
   "instrument": "木吉他(钢弦)",
   "tempo": 68,
   "volume": 0.4,
-  "source": "08_节奏吉他.json",
+  "source": "08_节奏吉他.conf.json",
   "synthesizer": "karplus_strong",
   "reverb": "simple_delay",
   "notes": [

@@ -45,5 +45,6 @@ notes: |
 
 输出到 `workspace/project/{song}/song_engineer/track/ample_sound/`：
 
-1. **`{track_id}.json`** - 中间 JSON 元数据
+1. **`{track_id}.data.json`** - 谱子数据
+2. **`{track_id}.json`** - 中间 JSON 元数据
 3.**`{track_id}.wav`** - 生成的音频文件
