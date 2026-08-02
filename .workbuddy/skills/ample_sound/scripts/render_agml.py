@@ -187,8 +187,9 @@ def main():
                 # 比较坑的地方是 5 ~ 6 区，中间隐藏了一堆高频键位。
                 # 实际到了89 才是音效区。89 是弦摩擦音换和弦等时加入可以增加真实感，90 是拍弦音
                 fx_midi = 90  # 可根据喜好在 90~100 之间调整
-                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.01, 0.5)
-                print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}")
+                slap_duration = 0.5
+                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.01, slap_duration)
+                print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}，slap_duration={slap_duration}")
             # 按音高排序并过滤占位符
             group_sorted = sorted(group, key=lambda x: x.get("midi", 60))
             valid_notes = [n for n in group_sorted if n.get("technique") != "拍弦"]
@@ -227,7 +228,7 @@ def main():
                     guitar.add_midi_note(ks_note, 127, human_start - 0.005, 0.01)
                     print(f"     弹奏{technique} t={human_start - 0.005:.3f}s, midi={ks_note}, human_vel={127}, final_duration={final_duration}")
                 guitar.add_midi_note(midi, human_vel, human_start, final_duration)
-                print( f"     弹奏{technique} t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration}")
+                print( f"     弹奏{technique} t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration},delay={delay},t + WARMUP_OFFSET={human_start + WARMUP_OFFSET:.3f}")
         # 计算总时长（含预热段）并一次性渲染
         max_time = WARMUP_OFFSET  # 至少包含预热段
         if sorted_times:
