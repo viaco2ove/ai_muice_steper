@@ -176,8 +176,8 @@ def main():
         # 真实音符：从 WARMUP_OFFSET 开始
         index =1
         for t in sorted_times:
-            index = index + 1
             print(f"### 同一个时间的音素 {index}### ")
+            index = index + 1
             group = time_groups[t]
             is_slap = any(n.get("technique") == "拍弦" for n in group)
 
