@@ -215,6 +215,7 @@ def main():
                 fx_vel = 127
                 fx_dur = 0.5
                 slap_pre_time = - 0.01
+                slap_string_pre_time = 0.01
                 for sn in slap_notes:
                     base_t = t + WARMUP_OFFSET
                     # FX 打击音效
@@ -223,7 +224,7 @@ def main():
                     ring_dur = parse_duration(sn.get("duration", "4分"), tempo) * 1.3
                     ring_vel = min(127, max(1, int(sn.get("velocity", 50) * 0.6)))  # 余音力度低些
                     for m, _ in expand_note(sn):
-                        guitar.add_midi_note(m, ring_vel, base_t, ring_dur)
+                        guitar.add_midi_note(m, ring_vel, base_t -slap_string_pre_time, ring_dur)
                     print(f"      拍弦 t={base_t:.3f}s FX(midi={fx_midi},vel={fx_vel},dur={fx_dur}) + 余音(midi={sn.get('midi')},vel={ring_vel},dur={ring_dur:.3f})")
 
             # 按音高展开成单音列表并排序（拍弦占位符已过滤）
