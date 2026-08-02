@@ -174,7 +174,10 @@ def main():
                     guitar.add_midi_note(note.get("midi", 60), note.get("velocity", 80), wt, 0.5)
 
         # 真实音符：从 WARMUP_OFFSET 开始
+        index =1
         for t in sorted_times:
+            index = index + 1
+            print(f"### 同一个时间的音素 {index}### ")
             group = time_groups[t]
             is_slap = any(n.get("technique") == "拍弦" for n in group)
 
@@ -209,9 +212,11 @@ def main():
                     arp_delay = arp_total_time / max(1, note_count - 1)
                     delay = valid_idx * arp_delay
                     final_duration = duration * 1.6
+                    print(f"     琶音 delay={delay}")
                 elif "勾" in technique:
                     delay = random.uniform(-0.003, 0.003)
                     final_duration = duration * 1.3
+                    print(f"     勾 delay={delay}")
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3
