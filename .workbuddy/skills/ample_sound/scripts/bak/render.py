@@ -69,6 +69,7 @@ def parse_duration(duration_str, tempo=68):
     """解析中文时值，返回秒"""
     beat_duration = 60.0 / tempo
     mapping = {
+        "全全": beat_duration * 8,
         "全": beat_duration * 4,
         "2分": beat_duration * 2,
         "4分": beat_duration,

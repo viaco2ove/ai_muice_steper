@@ -116,8 +116,9 @@ def parse_beat_pos(beat_pos, tempo):
 def parse_duration(duration_str, tempo):
     """解析持续时间"""
     beat_duration = 60.0 / tempo
-
-    if "全" in duration_str:
+    if "全全" in duration_str:
+        return beat_duration * 8
+    elif "全" in duration_str:
         return beat_duration * 4
     elif "2分" in duration_str:
         return beat_duration * 2

@@ -69,6 +69,7 @@ def parse_duration(duration_str, tempo=68):
     """解析中文时值，返回秒"""
     beat_duration = 60.0 / tempo
     mapping = {
+        "全全": beat_duration * 8,
         "全": beat_duration * 4,
         "2分": beat_duration * 2,
         "4分": beat_duration,
@@ -81,18 +82,30 @@ def parse_duration(duration_str, tempo=68):
 
 def find_input_json(song, track_id):
     """查找输入 JSON 文件。track_id 可能带子路径前缀(如 ample_sound/08_节奏吉他)。
-    在 track/ 及其子目录下查找。"""
+    优先按完整路径匹配，避免误命中 track/ 下同名旧文件。"""
     track_dir = PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track"
-    name = track_id.replace("\\", "/").split("/")[-1].replace(".json", "")
-    # 1. track/ 下直接同名
+    clean = track_id.replace("\\", "/").strip("/")
+    if clean.endswith(".json"):
+        clean = clean[:-5]
+    # 1. 优先：完整相对路径（如 track/ample_sound/08_节奏吉他.json）
+    full = track_dir / (clean + ".json")
+    if full.exists():
+        return full
+    # 2. 完整路径前缀模糊（如 ample_sound/08_节奏吉他.data.test）
+    for sub in track_dir.rglob(clean.split("/")[-1] + "*.json"):
+        # 只接受路径以 clean 为后缀的（含子目录前缀的优先）
+        rel = str(sub.relative_to(track_dir)).replace("\\", "/")
+        if rel.startswith(clean) or rel == clean.split("/")[-1] + ".json":
+            # 但要排除 track/{name}.json 旧文件当 clean 带前缀时
+            if "/" in clean and rel == clean.split("/")[-1] + ".json":
+                continue
+            return sub
+    # 3. 仅文件名匹配（clean 不带前缀时）
+    name = clean.split("/")[-1]
     exact = track_dir / f"{name}.json"
     if exact.exists():
         return exact
-    # 2. track/ 各子目录下同名（含 ample_sound/）
     for sub in track_dir.rglob(f"{name}.json"):
-        return sub
-    # 3. 前缀模糊匹配
-    for sub in track_dir.rglob(f"{name}*.json"):
         return sub
     return None
 
@@ -136,6 +149,7 @@ def expand_note(note):
 
 
 def main():
+    global n
     parser = argparse.ArgumentParser(description="Ample Sound 吉他渲染 v7.1")
     parser.add_argument("song", help="歌曲名")
     parser.add_argument("track_id", help="轨道ID，如 08_节奏吉他")
@@ -212,12 +226,12 @@ def main():
                 # 拍弦：1) FX音效(90) 短促打击 2) 弦的余音(用note自己的midi+duration)
                 slap_notes = [n for n in group if n.get("technique") == "拍弦"]
                 fx_midi = 90  # 89弦摩擦/换和弦, 90拍弦音
-                fx_vel = min(127, max(1, int(n.get("velocity", 50)*2.5 )))
                 fx_dur = 0.5
                 slap_pre_time = - 0.01
-                slap_string_pre_time = 0.01
+                slap_string_pre_time = 0.00
                 for sn in slap_notes:
                     base_t = t + WARMUP_OFFSET
+                    fx_vel = min(127, max(1, int(sn.get("velocity", 50) * 2.5)))
                     # FX 打击音效
                     guitar.add_midi_note(fx_midi, fx_vel, base_t - slap_pre_time, fx_dur)
                     # 弦余音：用 note 自己的 midi(支持数组) 和 duration
