@@ -216,6 +216,7 @@ def main():
                 elif "勾" in technique:
                     delay = random.uniform(-0.003, 0.003)
                     final_duration = duration * 1.3
+
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3
