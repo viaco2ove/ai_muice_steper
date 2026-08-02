@@ -150,7 +150,6 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     if not args.json_only:
-        print(f"### 同一个时间的音素 ###")
         engine = daw.RenderEngine(SAMPLE_RATE, BUFFER_SIZE)
         try:
             guitar = engine.make_plugin_processor("AmpleGuitar", VST_PATH)
@@ -176,6 +175,7 @@ def main():
 
         # 真实音符：从 WARMUP_OFFSET 开始
         for t in sorted_times:
+            print(f"### 同一个时间的音素 ###")
             group = time_groups[t]
             is_slap = any(n.get("technique") == "拍弦" for n in group)
 
