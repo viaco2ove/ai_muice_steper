@@ -1,0 +1,29 @@
+{
+  "schema": "track.ample_sound.v1",
+  "track_id": 8,
+  "name": "节奏吉他",
+  "instrument": "Ample Guitar M Lite",
+  "vst3": "C:/Program Files/Common Files/VST3/AGML.vst3",
+  "tempo": 68,
+  "sample_rate": 44100,
+  "notes_count": 781,
+  "duration_seconds": 191.02941176470588,
+  "techniques": {
+    "拍弦": 74,
+    "5勾弦": 171,
+    "四勾": 408,
+    "琶音": 128
+  },
+  "source": "ample_sound/08_节奏吉他.data.test.json",
+  "renderer": "dawdreamer_v5",
+  "improvements": [
+    "修复 VST3 冷启动无声 Bug（两步渲染法）",
+    "删除 NOTE_OVERLAP，恢复正确节拍",
+    "拍弦改为 F#5 (MIDI 78) 真实拍弦 FX 音效（之前错用 C6 上扫噪声）",
+    "KeySwitch 映射修正：闷音 D0 / 泛音 C#0 / 连奏滑音 E0 / 击勾弦 F0",
+    "拍弦是打击音效，叠加在弦音上（不再跳过其他音符）",
+    "逐弦时差 18ms（勾弦）/ 30ms（琶音）",
+    "力度+10% 加随机起伏（人感）",
+    "琶音保留自然延音，不压缩时长"
+  ]
+}
