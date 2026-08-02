@@ -207,16 +207,18 @@ def main():
             group = time_groups[t]
             is_slap = any(n.get("technique") == "拍弦" for n in group)
 
+
             if is_slap:
                 # 拍弦：1) FX音效(90) 短促打击 2) 弦的余音(用note自己的midi+duration)
                 slap_notes = [n for n in group if n.get("technique") == "拍弦"]
                 fx_midi = 90  # 89弦摩擦/换和弦, 90拍弦音
                 fx_vel = 127
                 fx_dur = 0.5
+                slap_pre_time = - 0.01
                 for sn in slap_notes:
                     base_t = t + WARMUP_OFFSET
                     # FX 打击音效
-                    guitar.add_midi_note(fx_midi, fx_vel, base_t - 0.03, fx_dur)
+                    guitar.add_midi_note(fx_midi, fx_vel, base_t - slap_pre_time, fx_dur)
                     # 弦余音：用 note 自己的 midi(支持数组) 和 duration
                     ring_dur = parse_duration(sn.get("duration", "4分"), tempo) * 1.3
                     ring_vel = min(127, max(1, int(sn.get("velocity", 50) * 0.6)))  # 余音力度低些
