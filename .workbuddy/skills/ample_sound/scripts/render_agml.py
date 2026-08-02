@@ -80,15 +80,20 @@ def parse_duration(duration_str, tempo=68):
 
 
 def find_input_json(song, track_id):
-    """查找输入 JSON 文件"""
+    """查找输入 JSON 文件。track_id 可能带子路径前缀(如 ample_sound/08_节奏吉他)。
+    在 track/ 及其子目录下查找。"""
     track_dir = PROJECT_DIR / "workspace" / "project" / song / "song_engineer" / "track"
-    track_id_clean = track_id.replace(".json", "")
-    exact = track_dir / f"{track_id_clean}.json"
+    name = track_id.replace("\\", "/").split("/")[-1].replace(".json", "")
+    # 1. track/ 下直接同名
+    exact = track_dir / f"{name}.json"
     if exact.exists():
         return exact
-    prefix_matches = sorted(track_dir.glob(f"{track_id_clean}*.json"))
-    if prefix_matches:
-        return prefix_matches[-1]
+    # 2. track/ 各子目录下同名（含 ample_sound/）
+    for sub in track_dir.rglob(f"{name}.json"):
+        return sub
+    # 3. 前缀模糊匹配
+    for sub in track_dir.rglob(f"{name}*.json"):
+        return sub
     return None
 
 
@@ -111,6 +116,25 @@ def group_notes_by_time(notes):
     return time_groups
 
 
+def expand_note(note):
+    """把一个 note 展开成 [(midi, velocity), ...] 单音列表。
+    midi/actual/velocity 字段可能是单值或数组（柱式和弦/琶音多音）。"""
+    midi_field = note.get("midi", 60)
+    vel_field = note.get("velocity", 80)
+    if isinstance(midi_field, list):
+        midis = midi_field
+    else:
+        midis = [midi_field]
+    if isinstance(vel_field, list):
+        vels = vel_field
+    else:
+        vels = [vel_field] * len(midis)
+    # 长度对齐
+    while len(vels) < len(midis):
+        vels.append(vels[-1] if vels else 80)
+    return [(int(m), int(v)) for m, v in zip(midis, vels)]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Ample Sound 吉他渲染 v7.1")
     parser.add_argument("song", help="歌曲名")
@@ -121,7 +145,8 @@ def main():
     
     song = args.song
     track_id = args.track_id
-    track_id_clean = track_id.replace(".json", "")
+    # track_id 可能带路径前缀(如 ample_sound/08_节奏吉他)，只取文件名部分做输出名
+    track_id_clean = track_id.replace("\\", "/").split("/")[-1].replace(".json", "")
     
     print("=" * 60)
     print(f"Ample Sound 渲染 v7.1 - {song} / {track_id_clean}")
@@ -171,10 +196,11 @@ def main():
             for i, t in enumerate(warmup_times):
                 wt = i * step
                 for note in time_groups[t]:
-                    guitar.add_midi_note(note.get("midi", 60), note.get("velocity", 80), wt, 0.5)
+                    for m, v in expand_note(note):
+                        guitar.add_midi_note(m, v, wt, 0.5)
 
         # 真实音符：从 WARMUP_OFFSET 开始
-        index =1
+        index = 1
         for t in sorted_times:
             print(f"### 同一个时间的音素 {index}### ")
             index = index + 1
@@ -188,18 +214,30 @@ def main():
                 # 实际到了89 才是音效区。89 是弦摩擦音换和弦等时加入可以增加真实感，90 是拍弦音
                 fx_midi = 90  # 可根据喜好在 90~100 之间调整
                 slap_duration = 0.5
-                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.01, slap_duration)
+                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.03, slap_duration)
                 print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}，slap_duration={slap_duration}")
-            # 按音高排序并过滤占位符
-            group_sorted = sorted(group, key=lambda x: x.get("midi", 60))
-            valid_notes = [n for n in group_sorted if n.get("technique") != "拍弦"]
-            note_count = len(valid_notes)
+                # 拍弦 余音
+                midi_string =60
+                slap_vel_string = 50
+                human_start_string = min(127, max(1, int(slap_vel_string * VELOCITY_BOOST) + random.randint(-5, 5)))
+                final_duration_string = parse_duration( n.get("duration", "4分"), tempo)  * 1.3
+                print( f"      拍弦 余音 midi={midi_string}, slap_vel_voice={slap_vel_string}，slap_duration={final_duration_string}")
 
-            for valid_idx, note in enumerate(valid_notes):
-                technique = note.get("technique", "勾弦")
-                midi = note.get("midi", 60)
-                velocity = note.get("velocity", 80)
-                duration = parse_duration(note.get("duration", "4分"), tempo)
+                guitar.add_midi_note(midi_string, slap_vel_string, human_start_string, final_duration_string)
+
+            # 按音高展开成单音列表并排序（拍弦占位符已过滤）
+            flat_notes = []  # [(midi, velocity, technique, beat_pos, duration_str)]
+            for n in group:
+                if n.get("technique") == "拍弦":
+                    continue
+                tech = n.get("technique", "勾弦")
+                for m, v in expand_note(n):
+                    flat_notes.append((m, v, tech, n.get("beat_pos", "N/A"),n.get("sepa_factor",1.0), n.get("duration", "4分")))
+            flat_notes.sort(key=lambda x: x[0])  # 按音高升序
+            note_count = len(flat_notes)
+
+            for valid_idx, (midi, velocity, technique, beat_pos, sepa_factor,dur_str) in enumerate(flat_notes):
+                duration = parse_duration(dur_str, tempo)
 
                 human_vel = min(127, max(1, int(velocity * VELOCITY_BOOST) + random.randint(-5, 5)))
 
@@ -209,14 +247,18 @@ def main():
 
                 # 技法时长与延迟微调
                 if technique == "琶音":
-                    arp_total_time = min(0.3, beat_duration * 0.4)
-                    arp_delay = arp_total_time / max(1, note_count - 1)
+                    # sepa_factor: 琶音分离系数（默认1）。>1 更分散(慢琶音), <1 更紧凑(快琶音), 0=柱式齐奏
+                    # arp_total_time = 琶音首尾音的间隔时间(秒)
+                    base_arp_time = min(0.3, beat_duration * 0.4)
+                    arp_total_time = base_arp_time * sepa_factor
+                    # 每相邻两音的间隔
+                    arp_delay = arp_total_time / max(1, note_count - 1) if note_count > 1 else 0.0
                     delay = valid_idx * arp_delay
                     final_duration = duration * 1.6
+                    print(f"  valid_idx={valid_idx},sepa_factor={sepa_factor}, arp_total_time={arp_total_time:.3f}, arp_delay={arp_delay:.3f}, delay={delay:.3f}, final_duration={final_duration:.3f}")
                 elif "勾" in technique:
                     delay = random.uniform(-0.003, 0.003)
                     final_duration = duration * 1.3
-
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3
@@ -227,9 +269,9 @@ def main():
                 if tech_key:
                     ks_note = KEYSWITCH[tech_key]
                     guitar.add_midi_note(ks_note, 127, human_start - 0.005, 0.01)
-                    print(f"     弹奏{technique} t={human_start - 0.005:.3f}s, midi={ks_note}, human_vel={127}, final_duration={final_duration}")
+                    print(f"     弹奏 tech:{technique} t={human_start - 0.005:.3f}s, ks_midi={ks_note}, human_vel={127}")
                 guitar.add_midi_note(midi, human_vel, human_start, final_duration)
-                print( f"     弹奏{technique} t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration},delay={delay},t + WARMUP_OFFSET={human_start + WARMUP_OFFSET:.3f}")
+                print(f"     弹奏{technique} beat_pos={beat_pos}, t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration:.3f}, delay={delay:.4f}")
         # 计算总时长（含预热段）并一次性渲染
         max_time = WARMUP_OFFSET  # 至少包含预热段
         if sorted_times:
@@ -281,10 +323,10 @@ def main():
         shutil.copy2(tmp_path, str(output_wav))
         Path(tmp_path).unlink()
         print(f"    ✅ 音频已保存(已裁预热段): {output_wav}")
-    
+
     # 5. 生成元数据 JSON
     if not args.wav_only:
-        output_json = output_dir / f"{track_id_clean}.json"
+        output_json = output_dir / f"{track_id_clean}.conf.json"
         output_data = {
             "schema": "track.ample_sound.v1",
             "track_id": data.get("track_id", 8),
