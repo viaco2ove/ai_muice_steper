@@ -212,7 +212,7 @@ def main():
                 # 拍弦：1) FX音效(90) 短促打击 2) 弦的余音(用note自己的midi+duration)
                 slap_notes = [n for n in group if n.get("technique") == "拍弦"]
                 fx_midi = 90  # 89弦摩擦/换和弦, 90拍弦音
-                fx_vel = min(127, max(1, int(n.get("velocity", 50) )))
+                fx_vel = min(127, max(1, int(n.get("velocity", 50)*1.5 )))
                 fx_dur = 0.5
                 slap_pre_time = - 0.01
                 slap_string_pre_time = 0.01
@@ -222,7 +222,7 @@ def main():
                     guitar.add_midi_note(fx_midi, fx_vel, base_t - slap_pre_time, fx_dur)
                     # 弦余音：用 note 自己的 midi(支持数组) 和 duration
                     ring_dur = parse_duration(sn.get("duration", "4分"), tempo) * 1.3
-                    ring_vel = min(127, max(1, int(sn.get("velocity", 50) * 0.6)))  # 余音力度低些
+                    ring_vel = min(127, max(1, int(sn.get("velocity", 50) * 0.5)))  # 余音力度低些
                     for m, _ in expand_note(sn):
                         guitar.add_midi_note(m, ring_vel, base_t -slap_string_pre_time, ring_dur)
                     print(f"      拍弦 t={base_t:.3f}s FX(midi={fx_midi},vel={fx_vel},dur={fx_dur}) + 余音(midi={sn.get('midi')},vel={ring_vel},dur={ring_dur:.3f})")
