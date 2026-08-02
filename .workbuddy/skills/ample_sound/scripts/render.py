@@ -180,10 +180,10 @@ def main():
 
             if is_slap:
                 # 纯净的拍弦 FX 音效（不再有低音闷响，也不会出现长度为 0 的报错）
-                fx_vel = 127
+                slap_vel_voice = 127
                 fx_midi = 72  # 可根据喜好在 72~84 之间调整
-                guitar.add_midi_note(fx_midi, fx_vel, t + WARMUP_OFFSET - 0.01, 0.5)
-                print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice},slap_vel_string={slap_vel_string}")
+                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.01, 0.5)
+                print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}")
             # 按音高排序并过滤占位符
             group_sorted = sorted(group, key=lambda x: x.get("midi", 60))
             valid_notes = [n for n in group_sorted if n.get("technique") != "拍弦"]
