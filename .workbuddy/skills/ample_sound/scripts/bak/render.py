@@ -150,7 +150,6 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     if not args.json_only:
-        print(f"### 同一个时间的音素 ###")
         engine = daw.RenderEngine(SAMPLE_RATE, BUFFER_SIZE)
         try:
             guitar = engine.make_plugin_processor("AmpleGuitar", VST_PATH)
@@ -182,9 +181,7 @@ def main():
             if is_slap:
                 # 纯净的拍弦 FX 音效（不再有低音闷响，也不会出现长度为 0 的报错）
                 slap_vel_voice = 127
-                # 比较坑的地方是 5 ~ 6 区，中间隐藏了一堆高频键位。
-                # 实际到了89 才是音效区。89 是弦摩擦音换和弦等时加入可以增加真实感，90 是拍弦音
-                fx_midi = 90  # 可根据喜好在 90~100 之间调整
+                fx_midi = 90  # 可根据喜好在 72~84 之间调整
                 guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.01, 0.5)
                 print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}")
             # 按音高排序并过滤占位符
@@ -210,11 +207,9 @@ def main():
                     arp_delay = arp_total_time / max(1, note_count - 1)
                     delay = valid_idx * arp_delay
                     final_duration = duration * 1.6
-                    print(f"     琶音 delay={delay}")
                 elif "勾" in technique:
                     delay = random.uniform(-0.003, 0.003)
                     final_duration = duration * 1.3
-                    print(f"     勾 delay={delay}")
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3
@@ -224,10 +219,10 @@ def main():
                 tech_key = TECH_TO_KEYSWITCH.get(technique, None)
                 if tech_key:
                     ks_note = KEYSWITCH[tech_key]
-                    guitar.add_midi_note(ks_note, 127, human_start - 0.005, 0.01)
-                    print(f"     弹奏{technique} t={human_start - 0.005:.3f}s, midi={ks_note}, human_vel={127}, final_duration={final_duration}")
-                guitar.add_midi_note(midi, human_vel, human_start, final_duration)
-                print( f"     弹奏{technique} t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration}")
+                    # guitar.add_midi_note(ks_note, 127, human_start - 0.005, 0.01)
+                    # print(f"     弹奏 t={human_start - 0.005:.3f}s, midi={ks_note}, human_vel={127}, final_duration={final_duration}")
+                # guitar.add_midi_note(midi, human_vel, human_start, final_duration)
+                # print( f"     弹奏 t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration}")
         # 计算总时长（含预热段）并一次性渲染
         max_time = WARMUP_OFFSET  # 至少包含预热段
         if sorted_times:

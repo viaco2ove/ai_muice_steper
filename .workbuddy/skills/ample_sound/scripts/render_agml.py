@@ -150,7 +150,6 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     if not args.json_only:
-        print(f"### 同一个时间的音素 ###")
         engine = daw.RenderEngine(SAMPLE_RATE, BUFFER_SIZE)
         try:
             guitar = engine.make_plugin_processor("AmpleGuitar", VST_PATH)
@@ -210,11 +209,9 @@ def main():
                     arp_delay = arp_total_time / max(1, note_count - 1)
                     delay = valid_idx * arp_delay
                     final_duration = duration * 1.6
-                    print(f"     琶音 delay={delay}")
                 elif "勾" in technique:
                     delay = random.uniform(-0.003, 0.003)
                     final_duration = duration * 1.3
-                    print(f"     勾 delay={delay}")
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3

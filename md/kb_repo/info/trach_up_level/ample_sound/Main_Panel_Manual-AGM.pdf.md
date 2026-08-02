@@ -494,29 +494,29 @@ switch to a particular position.
 2.15 FX Sound Group
 
 
-Note	FX Sound
+Note	FX Sound	fx_midi
 
-F5	Scratch
+F5	Scratch  89
 
-F#5	Slap
+F#5	Slap  90
 
-G5	Muting
+G5	Muting  91
 
-G#5	Strum Mute
+G#5	Strum Mute  92
 
-A5	Downstroke Noise 1
+A5	Downstroke Noise 1  93
 
-A#5	Upstroke Noise 1
+A#5	Upstroke Noise 1 
 
-B5	Downstroke Noise 2
+B5	Downstroke Noise 2  94
 
-C6	Upstroke Noise 2
+C6	Upstroke Noise 2  95
 
-F6	Hit Top (Open)
+F6	Hit Top (Open)  96
 
-F#6	Hit Top (Mute)
+F#6	Hit Top (Mute)  97
 
-G6	Hit Rim
+G6	Hit Rim  98
 
 
 2.16 Note Repeater
