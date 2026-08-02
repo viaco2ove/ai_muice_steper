@@ -208,22 +208,21 @@ def main():
             is_slap = any(n.get("technique") == "拍弦" for n in group)
 
             if is_slap:
-                # 纯净的拍弦 FX 音效（不再有低音闷响，也不会出现长度为 0 的报错）
-                slap_vel_voice = 127
-                # 比较坑的地方是 5 ~ 6 区，中间隐藏了一堆高频键位。
-                # 实际到了89 才是音效区。89 是弦摩擦音换和弦等时加入可以增加真实感，90 是拍弦音
-                fx_midi = 90  # 可根据喜好在 90~100 之间调整
-                slap_duration = 0.5
-                guitar.add_midi_note(fx_midi, slap_vel_voice, t + WARMUP_OFFSET - 0.03, slap_duration)
-                print(f"      拍弦 t={t + WARMUP_OFFSET:.3f}s, midi={fx_midi}, slap_vel_voice={slap_vel_voice}，slap_duration={slap_duration}")
-                # 拍弦 余音
-                midi_string =60
-                slap_vel_string = 50
-                human_start_string = min(127, max(1, int(slap_vel_string * VELOCITY_BOOST) + random.randint(-5, 5)))
-                final_duration_string = parse_duration( n.get("duration", "4分"), tempo)  * 1.3
-                print( f"      拍弦 余音 midi={midi_string}, slap_vel_voice={slap_vel_string}，slap_duration={final_duration_string}")
-
-                guitar.add_midi_note(midi_string, slap_vel_string, human_start_string, final_duration_string)
+                # 拍弦：1) FX音效(90) 短促打击 2) 弦的余音(用note自己的midi+duration)
+                slap_notes = [n for n in group if n.get("technique") == "拍弦"]
+                fx_midi = 90  # 89弦摩擦/换和弦, 90拍弦音
+                fx_vel = 127
+                fx_dur = 0.5
+                for sn in slap_notes:
+                    base_t = t + WARMUP_OFFSET
+                    # FX 打击音效
+                    guitar.add_midi_note(fx_midi, fx_vel, base_t - 0.03, fx_dur)
+                    # 弦余音：用 note 自己的 midi(支持数组) 和 duration
+                    ring_dur = parse_duration(sn.get("duration", "4分"), tempo) * 1.3
+                    ring_vel = min(127, max(1, int(sn.get("velocity", 50) * 0.6)))  # 余音力度低些
+                    for m, _ in expand_note(sn):
+                        guitar.add_midi_note(m, ring_vel, base_t, ring_dur)
+                    print(f"      拍弦 t={base_t:.3f}s FX(midi={fx_midi},vel={fx_vel},dur={fx_dur}) + 余音(midi={sn.get('midi')},vel={ring_vel},dur={ring_dur:.3f})")
 
             # 按音高展开成单音列表并排序（拍弦占位符已过滤）
             flat_notes = []  # [(midi, velocity, technique, beat_pos, duration_str)]
@@ -257,8 +256,14 @@ def main():
                     final_duration = duration * 1.6
                     print(f"  valid_idx={valid_idx},sepa_factor={sepa_factor}, arp_total_time={arp_total_time:.3f}, arp_delay={arp_delay:.3f}, delay={delay:.3f}, final_duration={final_duration:.3f}")
                 elif "勾" in technique:
-                    delay = random.uniform(-0.003, 0.003)
+                    # 勾弦(5勾弦/四勾): 多指依次拨弦, 用 sepa_factor 控制分离度
+                    # 基准比琶音短(勾弦是快速依次拨), sepa_factor=1 时约0.12s跨度
+                    base_pick_time = min(0.12, beat_duration * 0.15)
+                    pick_total_time = base_pick_time * sepa_factor
+                    pick_delay = pick_total_time / max(1, note_count - 1) if note_count > 1 else 0.0
+                    delay = valid_idx * pick_delay + random.uniform(-0.002, 0.002)  # 顺序拨 + 微抖动
                     final_duration = duration * 1.3
+                    print(f"  valid_idx={valid_idx},sepa_factor={sepa_factor}, pick_total_time={pick_total_time:.3f}, delay={delay:.4f}, final_duration={final_duration:.3f}")
                 else:
                     delay = valid_idx * STRUM_DELAY
                     final_duration = duration * 1.3
