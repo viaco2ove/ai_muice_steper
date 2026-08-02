@@ -212,7 +212,7 @@ def main():
                 # 拍弦：1) FX音效(90) 短促打击 2) 弦的余音(用note自己的midi+duration)
                 slap_notes = [n for n in group if n.get("technique") == "拍弦"]
                 fx_midi = 90  # 89弦摩擦/换和弦, 90拍弦音
-                fx_vel = min(127, max(1, int(n.get("velocity", 50)*1.5 )))
+                fx_vel = min(127, max(1, int(n.get("velocity", 50)*2.5 )))
                 fx_dur = 0.5
                 slap_pre_time = - 0.01
                 slap_string_pre_time = 0.01
