@@ -4,7 +4,7 @@ import { useWebSocket } from '../../hooks/useWebSocket'
 import { uploadAudio } from '../../services/api'
 
 export default function ChatPanel() {
-  const { chat, audioPath, setAudioPath } = useProjectStore()
+  const { chat, audioPath, setAudioPath, currentProject } = useProjectStore()
   const { sendChat } = useWebSocket()
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -16,7 +16,7 @@ export default function ChatPanel() {
 
   const handleSend = () => {
     if (!input.trim()) return
-    sendChat(input, audioPath || undefined)
+    sendChat(input, audioPath || undefined, currentProject || undefined)
     setInput('')
     setAudioPath(null)
   }
@@ -33,7 +33,7 @@ export default function ChatPanel() {
     if (!file) return
     try {
       const result = await uploadAudio(file)
-      setAudioPath(result.path)
+      setAudioPath(result.audio_path)
       setInput((prev) => prev + ` [已上传音频: ${file.name}]`)
     } catch (err) {
       console.error('Upload failed:', err)

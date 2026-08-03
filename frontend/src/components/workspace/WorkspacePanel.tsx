@@ -36,7 +36,7 @@ export default function WorkspacePanel() {
     if (name) {
       selectProject(name)
       loadProjectData({ name })
-      loadProjects([...projects, name])
+      loadProjects([...projects, { name }])
     }
   }
 
@@ -51,7 +51,7 @@ export default function WorkspacePanel() {
         >
           <option value="">-- 选择工程 --</option>
           {projects.map((p) => (
-            <option key={p} value={p}>{p}</option>
+            <option key={p.name} value={p.name}>{p.name}</option>
           ))}
         </select>
         <button
@@ -85,35 +85,45 @@ export default function WorkspacePanel() {
 }
 
 function ProjectContent({ data }: { data: any }) {
+  // 后端 song_engineer.json: basic_info 嵌套, sections 项有 name/chords/bars, tracks 项有 name/role/status/type
+  const basic = data.basic_info || data.basic || data.meta || {}
+  const bpm = basic.bpm || data.bpm
+  const key = basic.key || basic.arranged_key || data.key
+  const style = basic.style || data.style
+  const mood = basic.mood || data.mood
+  const sections = data.sections || []
+  const tracks = data.tracks || []
   return (
     <div className="space-y-4">
       {/* Basic Info Card */}
       <div className="border rounded-lg p-4">
         <h3 className="font-medium text-gray-700 mb-3">基本信息</h3>
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <InfoItem label="调性" value={data.key || '-'} />
-          <InfoItem label="BPM" value={data.bpm || '-'} />
-          <InfoItem label="风格" value={data.style || '-'} />
-          <InfoItem label="情绪" value={data.mood || '-'} />
+          <InfoItem label="调性" value={key || '-'} />
+          <InfoItem label="BPM" value={bpm || '-'} />
+          <InfoItem label="风格" value={style || '-'} />
+          <InfoItem label="情绪" value={mood || '-'} />
         </div>
       </div>
 
       {/* Section Table */}
-      {data.sections && data.sections.length > 0 && (
+      {sections.length > 0 && (
         <div className="border rounded-lg p-4">
           <h3 className="font-medium text-gray-700 mb-3">段落与和弦</h3>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
                 <th className="text-left py-2 font-medium text-gray-600">段落</th>
+                <th className="text-left py-2 font-medium text-gray-600">小节</th>
                 <th className="text-left py-2 font-medium text-gray-600">和弦</th>
               </tr>
             </thead>
             <tbody>
-              {data.sections.map((sec: any, idx: number) => (
+              {sections.map((sec: any, idx: number) => (
                 <tr key={idx} className="border-b last:border-0">
-                  <td className="py-2">{sec.section}</td>
-                  <td className="py-2 text-gray-600">{sec.chord}</td>
+                  <td className="py-2">{sec.name || sec.section}</td>
+                  <td className="py-2 text-gray-600">{sec.bars || sec.bar || '-'}</td>
+                  <td className="py-2 text-gray-600">{sec.chords || sec.chord || '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -122,7 +132,7 @@ function ProjectContent({ data }: { data: any }) {
       )}
 
       {/* Track List */}
-      {data.tracks && data.tracks.length > 0 && (
+      {tracks.length > 0 && (
         <div className="border rounded-lg p-4">
           <h3 className="font-medium text-gray-700 mb-3">分轨列表</h3>
           <table className="w-full text-sm">
@@ -131,18 +141,18 @@ function ProjectContent({ data }: { data: any }) {
                 <th className="text-left py-2 font-medium text-gray-600">名称</th>
                 <th className="text-left py-2 font-medium text-gray-600">角色</th>
                 <th className="text-left py-2 font-medium text-gray-600">状态</th>
-                <th className="text-left py-2 font-medium text-gray-600">音色</th>
+                <th className="text-left py-2 font-medium text-gray-600">类型</th>
               </tr>
             </thead>
             <tbody>
-              {data.tracks.map((track: any, idx: number) => (
+              {tracks.map((track: any, idx: number) => (
                 <tr key={idx} className="border-b last:border-0">
                   <td className="py-2">{track.name}</td>
                   <td className="py-2 text-gray-600">{track.role}</td>
                   <td className="py-2">
                     <StatusBadge status={track.status} />
                   </td>
-                  <td className="py-2 text-gray-600">{track.timbre}</td>
+                  <td className="py-2 text-gray-600">{track.type || '-'}</td>
                 </tr>
               ))}
             </tbody>

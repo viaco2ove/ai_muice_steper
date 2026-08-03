@@ -9,7 +9,7 @@ import re
 from typing import Optional
 
 from .agent_core import AgentCore
-from .llm_client import llm_client
+from .llm_client import get_llm
 from .project_manager import ProjectManager
 
 SYSTEM_PROMPT = """你是音乐创作调度助手，可调用本地音乐技能完成歌曲制作。
@@ -28,8 +28,12 @@ song_engineer: {input(输入JSON绝对路径,required), -o(输出MIDI路径)}  �
 - --full 生成总谱时传 true(布尔),不要传字符串。
 - 生成全部轨道总谱时,用 musescore-cooperate 带 --full=true,不需要指定 --tracks。
 
-(以下为纯提示词技能，由LLM按SKILL.md执行，不在task_chain中调用脚本)
-melody_master / muse-lyrics-gen / muse_ai_master / minimax_music_v3
+## 纯提示词技能(也可放入 task_chain，后端用对应模型按SKILL.md执行)
+melody_master: {project}  旋律设计与优化
+muse-lyrics-gen: {project}  生成歌词
+muse_ai_master: {project}  Muse AI歌词结构+生成
+minimax_music_v3: {project}  MiniMax歌词格式转换
+这些技能无脚本，放入 task_chain 时只需给 {project} 参数，后端会调用各自配置的模型执行。
 
 ## 输出规则（严格遵守）
 - 需要执行技能：仅输出纯净JSON，禁止任何解释文字、禁止markdown代码块
@@ -56,13 +60,13 @@ class LLMAgent:
         messages = [{"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": user_content}]
 
-        # 请求 LLM
+        # 意图解析用默认模型(skill_ai)
+        orchestrator = get_llm("skill_ai")
         try:
-            resp = await llm_client.chat(messages)
+            resp = await orchestrator.chat(messages)
         except Exception as e:
             if ws_send:
                 await ws_send({"type": "error", "msg": f"LLM请求失败: {e}"})
-            # 规则兜底
             await self._rule_fallback(user_msg, project, audio_path, ws_send)
             return
 
@@ -70,16 +74,13 @@ class LLMAgent:
             await self._rule_fallback(user_msg, project, audio_path, ws_send)
             return
 
-        # 调试：推送 LLM 原始输出（截断）
         if ws_send:
             await ws_send({"type": "llm_raw", "msg": resp[:500]})
 
-        # 分流：尝试解析 JSON 任务链
         task = self._try_parse_task(resp)
         if task and task.get("need_tool"):
             await self._run_chain(task["task_chain"], project, ws_send)
         else:
-            # 纯文字，流式回前端
             if ws_send:
                 await ws_send({"type": "text", "msg": resp, "stream": True, "done": True})
 
@@ -109,7 +110,7 @@ class LLMAgent:
             return None
 
     async def _run_chain(self, task_chain: list, project: str, ws_send):
-        """串行执行任务链"""
+        """串行执行任务链。可执行技能走 subprocess, 纯提示词技能走对应模型 LLM"""
         if ws_send:
             await ws_send({"type": "chain_start",
                            "tools": [t.get("tool") for t in task_chain],
@@ -119,35 +120,41 @@ class LLMAgent:
         for step in task_chain:
             tool = step.get("tool")
             args = step.get("args", {})
-            # 自动补 project
-            if project and "project" not in args and "--project" not in args:
-                if any(k in str(self.core.get_skill(tool).get("params", {})).lower() for k in ["--project", "project"]):
-                    args["--project"] = project
+            skill_meta = self.core.get_skill(tool) or {}
+            is_executable = skill_meta.get("executable", False)
+
             if ws_send:
                 await ws_send({"type": "log", "tool": tool, "msg": f"▶ 开始执行 {tool}"})
 
-            async def on_log(line, _tool=tool):
-                if ws_send:
-                    await ws_send({"type": "log", "tool": _tool, "msg": line})
+            if is_executable:
+                # 可执行技能: subprocess
+                if project and "project" not in args and "--project" not in args:
+                    if any(k in str(skill_meta.get("params", {})).lower() for k in ["--project", "project"]):
+                        args["--project"] = project
+                result = self.core.run_skill(tool, args, on_log=lambda l: None)
+                for log_line in result.get("logs", []):
+                    if ws_send:
+                        await ws_send({"type": "log", "tool": tool, "msg": log_line})
+                status = result["status"]
+                files = result.get("files", [])
+                err = result.get("error")
+            else:
+                # 纯提示词技能: 读 SKILL.md, 用该技能自己的模型执行
+                status, files, err = await self._run_prompt_skill(tool, args, project, ws_send)
 
-            result = self.core.run_skill(tool, args, on_log=lambda l: None)
-            # 同步回调转 async 推送
-            for log_line in result.get("logs", []):
-                if ws_send:
-                    await ws_send({"type": "log", "tool": tool, "msg": log_line})
-            if result["status"] == "ok":
+            if status == "ok":
                 ok += 1
-                all_files.extend(result.get("files", []))
+                all_files.extend(files)
                 if ws_send:
                     await ws_send({"type": "skill_done", "tool": tool,
-                                   "files": result.get("files", []), "status": "ok"})
+                                   "files": files, "status": "ok"})
             else:
                 fail += 1
                 if ws_send:
                     await ws_send({"type": "skill_done", "tool": tool,
-                                   "files": [], "status": "error", "error": result.get("error")})
-                    await ws_send({"type": "error", "tool": tool, "msg": result.get("error", "")})
-                break  # 失败中断
+                                   "files": [], "status": "error", "error": err})
+                    await ws_send({"type": "error", "tool": tool, "msg": err or ""})
+                break
 
         if ws_send:
             await ws_send({"type": "chain_done", "total": len(task_chain), "ok": ok, "fail": fail})
@@ -155,6 +162,46 @@ class LLMAgent:
                 await ws_send({"type": "text", "msg": f"本次生成产物：\n" + "\n".join(all_files),
                                "stream": True, "done": True})
             await ws_send({"type": "project_updated", "project": project})
+
+    async def _run_prompt_skill(self, tool: str, args: dict, project: str, ws_send):
+        """执行纯提示词技能: 读 SKILL.md 当系统提示, 用该技能对应模型调用 LLM。
+        返回 (status, files, error)"""
+        skill_meta = self.core.get_skill(tool) or {}
+        skill_dir = skill_meta.get("dir")
+        if not skill_dir:
+            return "error", [], f"技能 {tool} 无目录"
+        from pathlib import Path
+        skill_md = Path(skill_dir) / "SKILL.md"
+        if not skill_md.exists():
+            return "error", [], f"技能 {tool} 无 SKILL.md"
+        skill_text = skill_md.read_text(encoding="utf-8")
+
+        # 用该技能自己的模型
+        client = get_llm(tool)
+        if not client.api_key:
+            return "error", [], f"技能 {tool} 无可用模型配置"
+
+        ctx = self.pm.summary(project) if project else ""
+        user_content = f"【工程上下文】\n{ctx}\n\n【技能规范 SKILL.md】\n{skill_text}\n\n【本次参数】\n{json.dumps(args, ensure_ascii=False)}\n\n请按 SKILL.md 规范执行该技能，产出写入工程目录。直接输出技能产物内容。"
+        messages = [{"role": "system", "content": f"你是音乐技能 {tool} 的执行器，严格按 SKILL.md 规范产出。"},
+                    {"role": "user", "content": user_content}]
+        try:
+            if ws_send:
+                await ws_send({"type": "log", "tool": tool, "msg": f"调用模型({client.model})执行提示词技能..."})
+            resp = await client.chat(messages)
+            # 把产物写入工程目录 track/{tool}_llm.md
+            files = []
+            if project and resp:
+                out_dir = self.pm.pdir / project / "song_engineer" / "track"
+                out_dir.mkdir(parents=True, exist_ok=True)
+                out = out_dir / f"{tool}_llm.md"
+                out.write_text(f"# {tool} (LLM执行)\n\n{resp}\n", encoding="utf-8")
+                files.append(str(out.relative_to(self.pm.pdir)))
+            if ws_send:
+                await ws_send({"type": "log", "tool": tool, "msg": resp[:300] if resp else "(空)"})
+            return "ok", files, None
+        except Exception as e:
+            return "error", [], f"技能 {tool} LLM执行失败: {e}"
 
     async def _rule_fallback(self, user_msg: str, project: str, audio_path: Optional[str], ws_send):
         """LLM 不可用时的规则兜底：关键词匹配预设任务链"""

@@ -21,6 +21,13 @@ export interface SectionInfo {
   chord: string
 }
 
+export interface ProjectListItem {
+  name: string
+  has_engineer?: boolean
+  tracks_count?: number
+  updated?: number
+}
+
 export interface ProjectData {
   name: string
   key?: string
@@ -32,14 +39,14 @@ export interface ProjectData {
 }
 
 interface ProjectState {
-  projects: string[]
+  projects: ProjectListItem[]
   currentProject: string | null
   projectData: ProjectData | null
   chat: ChatMessage[]
   wsStatus: WsStatus
   audioPath: string | null
   // actions
-  loadProjects: (projects: string[]) => void
+  loadProjects: (projects: ProjectListItem[]) => void
   selectProject: (name: string | null) => void
   loadProjectData: (data: ProjectData | null) => void
   addChat: (message: ChatMessage) => void

@@ -1,100 +1,125 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useProjectStore } from '../store/projectStore'
+import { getProject } from '../services/api'
 
 const WS_URL = 'ws://127.0.0.1:8000/ws/chat'
 
 export function useWebSocket() {
   const wsRef = useRef<WebSocket | null>(null)
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const { addChat, loadProjectData, setWsStatus } = useProjectStore()
+  const manualCloseRef = useRef(false)
+  const storeRef = useRef(useProjectStore.getState())
+
+  // 保持 store 引用最新（不放进 connect 依赖，避免重连）
+  useEffect(() => {
+    const unsub = useProjectStore.subscribe((s) => {
+      storeRef.current = s
+    })
+    return unsub
+  }, [])
+
+  const handleMessage = useCallback((data: any) => {
+    const s = storeRef.current
+    const type = data.type
+    // 后端字段: log/skill_done 用 msg, text 用 msg, project_updated 用 project(工程名)
+    switch (type) {
+      case 'pong':
+        break
+      case 'log':
+        s.addChat({ role: 'log', msg: (data.tool ? `[${data.tool}] ` : '') + (data.msg || '') })
+        break
+      case 'text':
+        s.addChat({ role: 'assistant', msg: data.msg || '' })
+        break
+      case 'llm_raw':
+        s.addChat({ role: 'log', msg: '[LLM] ' + (data.msg || '').slice(0, 200) })
+        break
+      case 'skill_done':
+        s.addChat({ role: 'skill_done', msg: `${data.tool || ''} ${data.status === 'ok' ? '✓' : '✗'}`, files: data.files })
+        break
+      case 'chain_start':
+        s.addChat({ role: 'log', msg: `▶ 任务链: ${(data.tools || []).join(' → ')}` })
+        s.setWsStatus('running')
+        break
+      case 'chain_done':
+        s.addChat({ role: 'log', msg: `■ 完成: ok=${data.ok} fail=${data.fail}` })
+        s.setWsStatus('connected')
+        break
+      case 'project_updated':
+        // 后端发工程名, 重新拉取工程数据
+        if (data.project) {
+          getProject(data.project)
+            .then((d) => s.loadProjectData(d))
+            .catch(() => {})
+        }
+        break
+      case 'error':
+        s.addChat({ role: 'log', msg: '❌ ' + (data.msg || '') })
+        break
+      default:
+        console.log('[WS] Unknown msg:', type, data)
+    }
+  }, [])
 
   const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return
+    if (wsRef.current?.readyState === WebSocket.OPEN || wsRef.current?.readyState === WebSocket.CONNECTING) return
 
+    manualCloseRef.current = false
     try {
       const ws = new WebSocket(WS_URL)
 
       ws.onopen = () => {
         console.log('[WS] Connected')
-        setWsStatus('connected')
+        storeRef.current.setWsStatus('connected')
       }
 
       ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data)
-          handleMessage(data)
+          handleMessage(JSON.parse(event.data))
         } catch (e) {
-          console.error('[WS] Failed to parse message:', e)
+          console.error('[WS] parse failed:', e)
         }
       }
 
       ws.onclose = () => {
         console.log('[WS] Disconnected')
-        setWsStatus('idle')
-        // auto reconnect after 3s
-        reconnectTimerRef.current = setTimeout(() => {
-          console.log('[WS] Reconnecting...')
-          connect()
-        }, 3000)
+        storeRef.current.setWsStatus('idle')
+        wsRef.current = null
+        if (!manualCloseRef.current) {
+          reconnectTimerRef.current = setTimeout(() => {
+            console.log('[WS] Reconnecting...')
+            connect()
+          }, 2000)
+        }
       }
 
-      ws.onerror = (err) => {
-        console.error('[WS] Error:', err)
+      ws.onerror = () => {
+        // onclose 会紧跟触发, 这里不额外处理避免重复
       }
 
       wsRef.current = ws
     } catch (e) {
       console.error('[WS] Connection failed:', e)
-      setWsStatus('idle')
     }
-  }, [addChat, loadProjectData, setWsStatus])
-
-  const handleMessage = useCallback((data: any) => {
-    const type = data.type || data.msg_type
-
-    switch (type) {
-      case 'log':
-        addChat({ role: 'log', msg: data.content || data.text || '' })
-        break
-      case 'text':
-      case 'assistant':
-        addChat({ role: 'assistant', msg: data.content || data.text || '' })
-        break
-      case 'skill_done':
-        addChat({ role: 'skill_done', msg: data.content || '技能执行完成', files: data.files })
-        break
-      case 'project_updated':
-        if (data.project) {
-          loadProjectData(data.project)
-        }
-        break
-      case 'running':
-        setWsStatus('running')
-        break
-      default:
-        console.log('[WS] Unknown message type:', type, data)
-    }
-  }, [addChat, loadProjectData, setWsStatus])
+  }, [handleMessage])
 
   const sendChat = useCallback((msg: string, audioPath?: string, project?: string) => {
     if (wsRef.current?.readyState !== WebSocket.OPEN) {
       console.warn('[WS] Not connected, cannot send')
-      return
+      return false
     }
-
     const payload: any = { type: 'chat', msg }
     if (audioPath) payload.audio_path = audioPath
     if (project) payload.project = project
-
     wsRef.current.send(JSON.stringify(payload))
+    return true
   }, [])
 
   useEffect(() => {
     connect()
     return () => {
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current)
-      }
+      manualCloseRef.current = true
+      if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current)
       wsRef.current?.close()
     }
   }, [connect])
