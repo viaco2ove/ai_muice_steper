@@ -1,3 +1,4 @@
+总结：推荐用deepseek v4 pro，方式为对接官网api 或者workbuddy 的deepseek-V4-pro
 ## 音乐AI模型
 - MusicLang:https://huggingface.co/musiclang
 https://huggingface.co/musiclang
@@ -82,8 +83,35 @@ c 端：豆包桌面程序，同理完全可以让其他厂商的客户端写单
 
 需要我帮你整理一份 Windows 系统本地部署其中某款模型的最简步骤清单吗？
 
+# 选型建议：哪个更适合做音乐？
+如果你要追求“最专业的音乐深度分析与理解”（例如：分析一首歌的副歌结构、识别复杂的伴奏风格、做歌词时间戳对齐）：
 
-##
+👉 首选 OpenMOSS-Music-8B-Instruct。因为它在架构上针对音乐和复杂音频做了重度特化（如 DeepStack 跨层特征注入，能更好保留音色、节奏和瞬态特征）。
+
+如果你需要便捷、开箱即用、希望稳定且支持通用语音/音频问答：
+
+👉 选 Qwen2-Audio-7B-Instruct。它的代码库非常稳定，不会像某些极新或高度自定义的远端代码那样容易报环境配置错误。
+
+如果你追求免部署、全托管的商业应用或实时语音交互：
+
+👉 选豆包在线接口。
+ 
+## 模型工具list
 https://huggingface.co/m-a-p/ChatMusician?text=%E4%BD%A0%E5%A5%BD
 https://huggingface.co/mradermacher/ChatMusician-GGUF
 https://huggingface.co/spaces/nvidia/music-flamingo
+https://huggingface.co/OpenMOSS-Team/MOSS-Music-8B-Instruct
+https://huggingface.co/OpenMOSS-Team/MOSS-Music-8B-Thinking
+thelongview/composer-llm-7b
+Qwen/Qwen2-Audio-7B-Instruct
+Alanine-nya/MOSS-Music-8B-Thinking-Q5_K_M-GGUF
+
+
+## 五个模型的"音乐文本知识"排名
+模型	音乐知识	理由
+Qwen2.5-7B	⭐⭐⭐⭐	训练量大，中文音乐知识丰富，歌词/乐理都能聊
+Yi-1.5-9B	⭐⭐⭐⭐	中文语料多，音乐知识扎实
+MOSS-Music GGUF	⭐⭐⭐½	专门喂过音乐数据，但对话能力不如专优模型
+DeepSeek-R1-Distill-7B	⭐⭐⭐	推理强，但知识面偏窄，不是百科型
+Llama-3.1-8B	⭐⭐½	中文音乐知识一般，英文音乐还行
+gemma-2-9b	⭐⭐⭐	逻辑好，但中文音乐知识偏少

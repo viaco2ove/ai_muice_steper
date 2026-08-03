@@ -21,8 +21,25 @@ PROJECT_DIR = Path(__file__).parent.parent.parent.parent.parent
 SAMPLE_RATE = 44100
 BUFFER_SIZE = 512
 
-# VST3 路径
-VST_PATH = "C:/Program Files/Common Files/VST3/AGML.vst3"
+
+def _load_env():
+    """从项目根 .env 读取配置（轻量解析，不引入 dotenv 依赖）"""
+    env = {}
+    env_path = PROJECT_DIR / ".env"
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            env[k.strip()] = v.strip()
+    return env
+
+
+_ENV = _load_env()
+
+# VST3 路径（从 .env 的 AGML_PATH 读取，回退到默认值）
+VST_PATH = _ENV.get("AGML_PATH", "C:/Program Files/Common Files/VST3/AGML.vst3")
 
 # 吉他参数
 STRUM_DELAY = 0.018       # 普通扫弦逐弦时差（秒）

@@ -71,15 +71,41 @@ def load(name, td):
             n = []
             for r in raw:
                 raw_note = r.get('actual') or r.get('note')
-                nn = _p(raw_note)
-                if not nn and r.get('midi') is not None:
-                    nn = int(r['midi'])  # percussion: actual stores GM note number
-                if not nn: continue
+                # midi/actual 可能是单值或数组(多音和弦/琶音合并格式)
+                midi_field = r.get('midi')
+                if isinstance(midi_field, list):
+                    midis = midi_field
+                elif midi_field is not None:
+                    midis = [midi_field]
+                else:
+                    midis = None
+                # actual 也可能是数组
+                if isinstance(raw_note, list):
+                    actuals = raw_note
+                else:
+                    actuals = [raw_note] if raw_note else None
+
+                # 确定每个音的 pitch
+                pitches = []
+                if midis:
+                    for m in midis:
+                        mm = _p(m) if isinstance(m, str) else (int(m) if m is not None else None)
+                        if not mm and midis is not None:
+                            mm = int(m)
+                        pitches.append(mm)
+                elif actuals:
+                    for a in actuals:
+                        pitches.append(_p(a))
+                pitches = [p for p in pitches if p]
+
                 bn = int(r.get('bar', r.get('beat_pos','1').split('.')[0]))
                 t = (bn-1)*BT + _pos(r.get('beat_pos','1.1'))
                 dur = DT.get(r.get('duration', r.get('dur','4分')), 480)
-                n.append({'t':int(t),'n':nn,'d':dur,'name':str(raw_note),
-                         'v':r.get('velocity', DV.get(r.get('dynamics','mf'),85)),'b':bn})
+                vel = r.get('velocity', DV.get(r.get('dynamics','mf'),85))
+                for idx, nn in enumerate(pitches):
+                    nm = actuals[idx] if actuals and idx < len(actuals) else str(nn)
+                    n.append({'t':int(t),'n':nn,'d':dur,'name':str(nm),
+                             'v':vel,'b':bn})
             if n: return n
     if os.path.exists(mp):
         mid = mido.MidiFile(mp); tp = mid.ticks_per_beat or TP
