@@ -11,6 +11,22 @@
    - Agent Core：独立的技能执行内核（原简化版WorkBuddy，改名隔离概念），仅用于本地调用 `.workbuddy` 下所有音乐技能，只接收结构化参数、生成工程文件，无AI理解能力
 3. 底层资源：`.workbuddy` 音乐技能库、`workspace/project` 歌曲工程目录
 
+## 核心能力
+用户发送一个问题，llm 分析，然后多步调用工具和skill 来完成任务
+在终端web/desktop ,流式 显示思考过程（有的话），分步过程，用户可以点击暂停，中断任务。
+前端流式返回文字，思考过程跟正文分开显示
+代码编写能力：暂时不做，但是以后也可以考虑加入（[.cache](../../.cache)）中生成临时代码
+### 基础工具
+Read、Grep、Bash、Edit
+
+
+## 代码参考
+https://github.com/manoskary/weavemuse
+https://github.com/MoonshotAI/kimi-cli
+https://github.com/OpenHands/OpenHands
+https://github.com/continuedev/continue
+
+
 ## 完整数据流主干
 Electron前端 → WebSocket → Python后端LLM Agent → 调用大模型
 LLM返回结果分两条分支：
