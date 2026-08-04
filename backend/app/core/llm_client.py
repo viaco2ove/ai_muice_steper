@@ -35,11 +35,13 @@ class LLMClient:
             data = r.json()
             return data["choices"][0]["message"]["content"]
 
-    async def chat_stream(self, messages: list) -> AsyncIterator[str]:
-        """流式：yield 文本分片"""
+    async def chat_stream(self, messages: list) -> AsyncIterator[tuple]:
+        """流式：yield (kind, text) 元组, kind='reasoning'|'content'。
+        reasoning 来自 delta.reasoning_content(deepseek/orcg) 或 delta.reasoning。
+        若模型无思考字段，全部为 content。"""
         if not self.api_key:
             return
-        async with httpx.AsyncClient(timeout=120) as c:
+        async with httpx.AsyncClient(timeout=180) as c:
             async with c.stream(
                 "POST", f"{self.base_url}/chat/completions",
                 headers={"Authorization": f"Bearer {self.api_key}"},
@@ -54,9 +56,14 @@ class LLMClient:
                         try:
                             import json
                             d = json.loads(chunk)
-                            delta = d["choices"][0].get("delta", {}).get("content")
-                            if delta:
-                                yield delta
+                            delta = d["choices"][0].get("delta", {})
+                            # 思考过程: reasoning_content(deepseek) / reasoning(部分模型)
+                            reasoning = delta.get("reasoning_content") or delta.get("reasoning")
+                            if reasoning:
+                                yield ("reasoning", reasoning)
+                            content = delta.get("content")
+                            if content:
+                                yield ("content", content)
                         except Exception:
                             pass
 

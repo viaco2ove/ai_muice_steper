@@ -218,6 +218,8 @@ def main():
         # 但这段音频最终会被裁掉，不会出现在输出 wav 里。
         WARMUP_OFFSET = 5.5
         sorted_times = sorted(time_groups.keys())
+        # t -> 在 sorted_times 的下标, 用于查下一音 onset(legato 连奏需要)
+        time_idx = {t: i for i, t in enumerate(sorted_times)}
 
         # 预热音符：铺在 0 ~ WARMUP_OFFSET-0.5 之间（留 0.5s 间隙让尾音自然衰减）
         warmup_times = sorted_times[:5]
@@ -278,39 +280,70 @@ def main():
                 if is_slap:
                     human_vel = max(1, int(human_vel * 0.3))
 
-                # 技法时长与延迟微调
+                # ── 技法精确匹配（不再用模糊 "勾" in 判断）──
+                # 击勾弦(hammer-on/pull-off): legato连奏, 不重新拨弦
+                if technique == "击勾弦":
+                    delay = 0.0
+                    # legato: 时值延续到下一音 onset(真正连奏, 前音余响不断接到下一音)
+                    # 但间隔超过2拍(非连奏)时用原时值, 不延续
+                    ti = time_idx.get(t)
+                    final_duration = duration * 1.05  # 默认: 原时值略延
+                    if ti is not None and ti + 1 < len(sorted_times):
+                        gap = sorted_times[ti + 1] - t
+                        if gap <= beat_duration * 2:  # 2拍内才算连奏
+                            final_duration = max(0.05, gap * 1.02)
+                    # 力度降低: 左手击/勾弦比拨弦轻
+                    human_vel = max(1, int(human_vel * 0.7))
+                    ks_name = "hammer_pull"
+                    ks_note = KEYSWITCH[ks_name]
+                    # keyswitch 在本音前发(切到 legato 模式), 本音不拨只击/勾
+                    guitar.add_midi_note(ks_note, 127, t + WARMUP_OFFSET - 0.005, 0.01)
+                    guitar.add_midi_note(midi, human_vel, t + WARMUP_OFFSET, final_duration)
+                    print(f"     击勾弦(legato) beat_pos={beat_pos} t={t+WARMUP_OFFSET:.3f}s midi={midi} vel={human_vel} dur={final_duration:.3f}")
+                    continue
+
+                # 连奏滑音(slide): 从前音滑到本音
+                if technique == "连奏滑音":
+                    delay = 0.0
+                    ti = time_idx.get(t)
+                    final_duration = duration * 1.2
+                    if ti is not None and ti + 1 < len(sorted_times):
+                        gap = sorted_times[ti + 1] - t
+                        if gap <= beat_duration * 2:
+                            final_duration = max(0.05, gap * 1.05)
+                    ks_name = "legato_slide"
+                    ks_note = KEYSWITCH[ks_name]
+                    guitar.add_midi_note(ks_note, 127, t + WARMUP_OFFSET - 0.005, 0.01)
+                    guitar.add_midi_note(midi, human_vel, t + WARMUP_OFFSET, final_duration)
+                    print(f"     连奏滑音(slide) beat_pos={beat_pos} t={t+WARMUP_OFFSET:.3f}s midi={midi} vel={human_vel} dur={final_duration:.3f}")
+                    continue
+
+                # 普通拨弦 / 5勾弦 / 四勾 / 琶音: 需要重新拨弦, 用 sepa_factor 控制分离
                 if technique == "琶音":
-                    # sepa_factor: 琶音分离系数（默认1）。>1 更分散(慢琶音), <1 更紧凑(快琶音), 0=柱式齐奏
-                    # arp_total_time = 琶音首尾音的间隔时间(秒)
                     base_arp_time = min(0.3, beat_duration * 0.4)
                     arp_total_time = base_arp_time * sepa_factor
-                    # 每相邻两音的间隔
                     arp_delay = arp_total_time / max(1, note_count - 1) if note_count > 1 else 0.0
                     delay = valid_idx * arp_delay
                     final_duration = duration * 1.6
                     print(f"  valid_idx={valid_idx},sepa_factor={sepa_factor}, arp_total_time={arp_total_time:.3f}, arp_delay={arp_delay:.3f}, delay={delay:.3f}, final_duration={final_duration:.3f}")
-                elif "勾" in technique:
-                    # 勾弦(5勾弦/四勾): 多指依次拨弦, 用 sepa_factor 控制分离度
-                    # 基准比琶音短(勾弦是快速依次拨), sepa_factor=1 时约0.12s跨度
+                elif technique in ("5勾弦", "四勾"):
+                    # 柱式和弦多指依次拨弦
                     base_pick_time = min(0.12, beat_duration * 0.15)
                     pick_total_time = base_pick_time * sepa_factor
                     pick_delay = pick_total_time / max(1, note_count - 1) if note_count > 1 else 0.0
-                    delay = valid_idx * pick_delay + random.uniform(-0.002, 0.002)  # 顺序拨 + 微抖动
+                    delay = valid_idx * pick_delay + random.uniform(-0.002, 0.002)
                     final_duration = duration * 1.3
                     print(f"  valid_idx={valid_idx},sepa_factor={sepa_factor}, pick_total_time={pick_total_time:.3f}, delay={delay:.4f}, final_duration={final_duration:.3f}")
                 else:
-                    delay = valid_idx * STRUM_DELAY
+                    # 默认拨弦(空技法/sustain): 单音正常拨
+                    delay = 0.0
                     final_duration = duration * 1.3
 
                 human_start = t + WARMUP_OFFSET + delay
 
-                tech_key = TECH_TO_KEYSWITCH.get(technique, None)
-                if tech_key:
-                    ks_note = KEYSWITCH[tech_key]
-                    guitar.add_midi_note(ks_note, 127, human_start - 0.005, 0.01)
-                    print(f"     弹奏 tech:{technique} t={human_start - 0.005:.3f}s, ks_midi={ks_note}, human_vel={127}")
+                # 拨弦类技法不发 keyswitch(用默认 sustain), 击勾弦/滑音已在上面 continue 处理
                 guitar.add_midi_note(midi, human_vel, human_start, final_duration)
-                print(f"     弹奏{technique} beat_pos={beat_pos}, t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration:.3f}, delay={delay:.4f}")
+                print(f"     弹奏{technique or '拨弦'} beat_pos={beat_pos}, t={human_start:.3f}s, midi={midi}, human_vel={human_vel}, final_duration={final_duration:.3f}, delay={delay:.4f}")
         # 计算总时长（含预热段）并一次性渲染
         max_time = WARMUP_OFFSET  # 至少包含预热段
         if sorted_times:

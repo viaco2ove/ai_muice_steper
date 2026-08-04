@@ -54,33 +54,43 @@ class LLMAgent:
 
     async def handle(self, user_msg: str, project: str, history: list,
                      audio_path: Optional[str] = None, ws_send=None):
-        """主处理：拼上下文 -> 请求LLM -> 分流执行"""
+        """主处理：流式拼上下文 -> 请求LLM -> 分流执行。
+        reasoning(思考)实时推 WS, content 累积后判断任务链/正文。"""
         ctx = self.pm.summary(project) if project else "（未选择工程）"
         user_content = self._build_user_content(user_msg, ctx, history, audio_path)
         messages = [{"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": user_content}]
 
-        # 意图解析用默认模型(skill_ai)
         orchestrator = get_llm("skill_ai")
+        content_buf = []
         try:
-            resp = await orchestrator.chat(messages)
+            async for kind, text in orchestrator.chat_stream(messages):
+                if kind == "reasoning":
+                    if ws_send:
+                        await ws_send({"type": "reasoning", "msg": text, "done": False})
+                else:  # content
+                    content_buf.append(text)
+            # 流结束
+            if ws_send:
+                await ws_send({"type": "reasoning", "msg": "", "done": True})
         except Exception as e:
             if ws_send:
                 await ws_send({"type": "error", "msg": f"LLM请求失败: {e}"})
+                await ws_send({"type": "reasoning", "msg": "", "done": True})
             await self._rule_fallback(user_msg, project, audio_path, ws_send)
             return
 
+        resp = "".join(content_buf).strip()
         if not resp:
             await self._rule_fallback(user_msg, project, audio_path, ws_send)
             return
 
-        if ws_send:
-            await ws_send({"type": "llm_raw", "msg": resp[:500]})
-
+        # 判断任务链 vs 正文
         task = self._try_parse_task(resp)
         if task and task.get("need_tool"):
             await self._run_chain(task["task_chain"], project, ws_send)
         else:
+            # 纯文字正文，整段推(已流式过思考，正文一次性发)
             if ws_send:
                 await ws_send({"type": "text", "msg": resp, "stream": True, "done": True})
 

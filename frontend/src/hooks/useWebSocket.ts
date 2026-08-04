@@ -25,6 +25,10 @@ export function useWebSocket() {
     switch (type) {
       case 'pong':
         break
+      case 'reasoning':
+        // 流式思考过程: 后端发 {msg:text, done:bool}
+        s.streamReasoning(data.msg || '', !!data.done)
+        break
       case 'log':
         s.addChat({ role: 'log', msg: (data.tool ? `[${data.tool}] ` : '') + (data.msg || '') })
         break

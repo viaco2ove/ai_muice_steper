@@ -85,8 +85,8 @@ export default function ChatPanel() {
             <p className="text-sm mt-1">AI会帮你完成音乐工程</p>
           </div>
         )}
-        {chat.map((item, idx) => (
-          <MessageBubble key={idx} message={item} />
+        {chat.map((item) => (
+          <MessageBubble key={item.id} message={item} />
         ))}
         <div ref={messagesEndRef} />
       </div>
@@ -115,14 +115,27 @@ export default function ChatPanel() {
   )
 }
 
-function MessageBubble({ message }: { message: { role: string; msg: string; files?: string[] } }) {
+function MessageBubble({ message }: { message: { id: string; role: string; msg: string; files?: string[] } }) {
   const { role, msg, files } = message
+
+  if (role === 'reasoning') {
+    // 思考过程: 折叠的灰色框, 与正文分开
+    if (!msg) return null
+    return (
+      <details className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2" open>
+        <summary className="text-xs text-amber-700 cursor-pointer select-none flex items-center gap-1">
+          <span>💭</span><span>思考过程</span>
+        </summary>
+        <p className="text-xs text-amber-800 whitespace-pre-wrap mt-1 max-h-60 overflow-y-auto">{msg}</p>
+      </details>
+    )
+  }
 
   if (role === 'log') {
     return (
       <div className="flex items-start gap-2">
         <span className="text-xs text-gray-400 mt-1 shrink-0">[LOG]</span>
-        <p className="text-xs text-gray-400">{msg}</p>
+        <p className="text-xs text-gray-400 whitespace-pre-wrap">{msg}</p>
       </div>
     )
   }
