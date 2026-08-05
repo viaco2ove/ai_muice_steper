@@ -238,17 +238,27 @@ def render_midi_track(json_path, sf_path, program, bpm=68, gain=2.5):
 # ==================== 单轨音源解析 ====================
 def resolve_track_source(name, cfg, track_dir):
     """返回 (audio_or_None, src_label, sr)。
-    src_label: 'wav:<file>' / 'midi:<json>' / None(跳过)。"""
+    src_label: 'wav:<file>' / 'midi:<json>' / None(跳过)。
+
+    source 取值：
+      'auto'（默认）：优先 <track>.wav 真实干声，找不到 fallback <track>.mid
+      'wav'：强制用 wav 干声
+      'midi'：强制 <track>.mid 走 FluidSynth 合成
+      其它字符串：当作显式 wav 路径（相对仓库根或绝对），优先读该路径的 wav
+    """
     source = cfg.get("source", "auto")
     wav_path = os.path.join(track_dir, name + ".wav")
     mid_path = os.path.join(track_dir, name + ".mid")
     json_path = os.path.join(track_dir, name + ".json")
 
-    def try_wav():
-        if os.path.exists(wav_path):
-            audio, sr = load_wav_mono(wav_path)
-            return audio, f"wav:{os.path.basename(wav_path)}", sr
+    def load_wav_at(path):
+        if os.path.exists(path):
+            audio, sr = load_wav_mono(path)
+            return audio, f"wav:{os.path.basename(path)}", sr
         return None, None, None
+
+    def try_wav():
+        return load_wav_at(wav_path)
 
     def try_midi():
         if not os.path.exists(mid_path) and not os.path.exists(json_path):
@@ -289,6 +299,14 @@ def resolve_track_source(name, cfg, track_dir):
     if source == "midi":
         a, lbl, sr = try_midi()
         return a, lbl, sr
+    # 显式 wav 路径（非 auto/wav/midi 关键字）：优先读该路径
+    if source not in ("auto", "midi", "wav"):
+        # 相对路径以仓库根解析（cwd 即仓库根）；已是绝对路径则原样
+        explicit = source if os.path.isabs(source) else os.path.abspath(source)
+        a, lbl, sr = load_wav_at(explicit)
+        if a is not None:
+            return a, lbl, sr
+        print(f"    [警告] source={source} 指定的 wav 不存在，回退到 auto")
     # auto: wav 优先
     a, lbl, sr = try_wav()
     if a is not None:

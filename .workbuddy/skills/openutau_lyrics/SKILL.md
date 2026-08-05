@@ -325,32 +325,34 @@ executable: true
 ├── lyrics_to_phonemes.py       # 歌词文本 → CV音素（逐字拼音映射）
 ├── pinyin_phoneme_map.json     # 拼音-音素映射表 v2.0
 ├── adapt_melody.py             # AI旋律 MIDI 转调+时长适配（1920→480 TPB, C→Eb）
-└── gen_phonemes.py             # MIDI + 音素列表 → OpenUTAU 音素对照表 MD
+├── gen_phonemes.py             # MIDI + 音素列表 → OpenUTAU 音素对照表 MD
+└── gen_xstudio_lyrics.py       # MIDI → X Studio 歌词对齐（自动按段落/时间序填词，装饰音R）
 ```
 
-**典型流水线**（以 `走在` 为例）：
+### X Studio 歌词生成（gen_xstudio_lyrics.py）
 
 ```bash
-# 1. 旋律识别（audio_chord_recognizer）
-#    → workspace/audio_output/走在/melody/vocals.ai.mid
-
-# 2. AI 旋律转调 + 时长适配
-./.venv/python.exe .workbuddy/skills/openutau_lyrics/scripts/adapt_melody.py \
-    --project 走在 --transpose 3 --bpm 68 --bars 52
-#    → workspace/project/走在/song_engineer/ai-track/02_主唱.mid
-
-# 3. 从歌词设计文档获取音素数据，运行配对脚本
-./.venv/python.exe .workbuddy/skills/openutau_lyrics/scripts/gen_phonemes.py \
-    --project 走在 --midi 02_主唱.mid \
-    --phonemes "门,men,b+en 虚,xu,x+v 掩,yan,j+an ..." \
-    -o 02_主唱_phonemes.md
-#    → workspace/project/走在/song_engineer/ai-track/02_主唱_phonemes.md
-
-# 4. 导入 OpenUTAU，粘贴音素，渲染导出 02_主唱.wav
+./.venv/python.exe .workbuddy/skills/openutau_lyrics/scripts/gen_xstudio_lyrics.py \
+    --project 走在 --midi 02_主唱.mid --track 02_主唱
+# → workspace/project/走在/song_engineer/ai-track/xstudio/
+#   02_主唱_xstudio_lyrics.txt       (逐音符歌词, R=休止, X Studio 直接导入)
+#   02_主唱_xstudio_lyrics_pinyin.txt(歌词+拼音+音素)
+#   02_主唱_xstudio.md              (完整对照表)
 ```
 
-> **注意**：音素数据（字/拼音/CV音素）需从歌词设计文档手工获取，
-> 本脚本只负责将音素与 MIDI 音符配对输出对照表。
+对齐规则：
+- 歌词来源：**本 SKILL.md 的歌词对照表**（按 ### 段落标题 + 小节范围匹配）
+- 段边界：V1(5-12) V2(13-20) 间奏(21-24) 副歌(25-32) 主歌A'(33-40) 副歌2(41-47) 尾奏(48-52)
+- **保持时间顺序填词**：装饰音(短音)优先标 R，长音优先配词（阈值从 3 拍逐级下调）
+- 歌词多于音符时截断并警告；歌词利用率应 = 100%
+
+X Studio 用法：
+1. X Studio 导入 02_主唱.mid
+2. 打开歌词面板，粘贴 `02_主唱_xstudio_lyrics.txt` 内容（每行一字，R=休止）
+3. 选择音源（如 洛天依/乐正绫 等），渲染导出人声 WAV
+
+> 注意：gen_phonemes.py 是旧版简单顺序配对；新工程请用 gen_xstudio_lyrics.py
+> （支持时间顺序 + 装饰音 R + 自动段落对齐）。
 
 ## 相关技能
 
