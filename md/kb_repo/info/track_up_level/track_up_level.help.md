@@ -9,7 +9,8 @@
   - SFZ 开源音色引擎 + sfizz（开源 C++/VST3 引擎）
 - karplus-strong 类
 使用 **Karplus-Strong 等进行物理建模*
-感觉有点像生成正弦波电信号而已
+感觉有点像生成正弦波电信号而已。
+12_泛音环境点缀 这个音轨可以试试
 - daw
 略，没啥好说的。
 - ai 黑盒生成
@@ -18,6 +19,15 @@
 - 文本格式乐谱工具
 guitar pro ,musescore
 音色提示有效，乐器技巧缺少或者生硬。
+
+- 环境音色
+粉红噪音算法生成 或 免版权素材库（Freesound API）
+下载loop
+方案 A（纯代码算法生成 - 最轻量）：
+使用 Python 的 numpy 生成粉红噪音（Pink Noise）或棕色噪音（Brown Noise）（比普通白噪音更沉闷自然，像远处的雨声），再添加极慢的幅度调制（LFO）模拟雨势起伏，自动裁切至整曲长度。
+
+方案 B（API 动态下载）：
+在 Python 构建脚本中调用 freesound-python API，根据 Tag "soft rain ambient loop" 自动下载一段高清雨声 .wav 循环平铺。
 
 - 真正的ai 乐器音轨生成
   - ace studio 啥的 很贵。有没有更靠谱的免费或者低价的技术
