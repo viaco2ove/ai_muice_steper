@@ -4,7 +4,7 @@
 
 - 使用 dawdreamer + Ample Guitar M Lite 等 VST3
 音色提高而且能使用一些乐器技巧不再是塑料音色，可以达到daw 差不多的效果
-需要下载vst3 音色，而且ai 貌似不太知道技巧键位怎么用。
+需要下载vst3 音色，而且ai和官网文档 貌似不太知道技巧键位怎么用。 需要人力调试。
 类似的
   - SFZ 开源音色引擎 + sfizz（开源 C++/VST3 引擎）
 - karplus-strong 类
