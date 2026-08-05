@@ -51,31 +51,33 @@ except ImportError:
 
 SAMPLE_RATE = 44100
 
-# ── 音素 Token 词汇表（从 pypinyin 构建，0=padding, 1=sp 静音）──
-# DiffSinger 的 txt_tokens 是 pinyin 字符串的整数 ID
-# 词汇表由 pypinyin NORMAL 格式拼音动态构建
-VOCAB = {'<PAD>': 0, 'sp': 1}  # sp=静音/休止
+# ── Token 词汇表（VOCAB_SIZE=63，ID 0-62）──
+# 模型声学 embedding 表大小固定。用 hash 把任意 pinyin 稳定映射到 1-62。
+import hashlib as _hl
+VOCAB_SIZE = 63  # 模型 embedding 表大小
+_SP_ID = 1       # sp(静音) 固定为 1
 
 
 def char_to_token(ch):
-    """汉字 → token ID。R/空白 → sp。"""
+    """汉字 → token ID (1~62)，R/空白 → 1。"""
     if ch in ('R', 'sp', 'sil', '', '…', '—', '-'):
-        return VOCAB['sp']
+        return _SP_ID
     if not HAS_PYPINYIN:
-        # 无 pypinyin：直接用字符的 ord 作为 token（效果差但能跑）
-        if ch not in VOCAB:
-            VOCAB[ch] = len(VOCAB) + 1
-        return VOCAB[ch]
+        # 无 pypinyin：用字符的 hash
+        h = int(_hl.md5(ch.encode()).hexdigest(), 16)
+        return (h % (VOCAB_SIZE - 1)) + 1  # 1~62
     try:
         py = pinyin(ch, style=Style.NORMAL)
         if not py or not py[0]:
-            return VOCAB['sp']
+            return _SP_ID
         p = py[0][0]
-        if p not in VOCAB:
-            VOCAB[p] = len(VOCAB) + 1
-        return VOCAB[p]
+        if not p:
+            return _SP_ID
+        # hash 稳定映射到 1~62（同音节 → 同 token）
+        h = int(_hl.md5(p.encode()).hexdigest(), 16)
+        return (h % (VOCAB_SIZE - 1)) + 1
     except Exception:
-        return VOCAB['sp']
+        return _SP_ID
 
 
 # ── ONNX 模型加载 ────────────────────────────────────────────────
@@ -128,12 +130,26 @@ def midi_to_hz(note):
     return 440.0 * (2.0 ** ((note - 69) / 12.0))
 
 
+# vocoder 内部采样率（mel 频谱上采样）
+VOCODER_SR = SAMPLE_RATE // 2   # 22050 Hz
+
+
+def resample(audio, from_sr, to_sr):
+    """线性插值重采样。"""
+    if from_sr == to_sr:
+        return audio
+    n = int(len(audio) * to_sr / from_sr)
+    x_old = np.linspace(0, 1, len(audio))
+    x_new = np.linspace(0, 1, n)
+    return np.interp(x_new, x_old, audio).astype(np.float32)
+
+
 # ── 主合成逻辑 ───────────────────────────────────────────────────
 def synthesize(ac_sess, voc_sess, notes, bpm, resolution):
-    """核心 ONNX 推理。
+    """核心 ONNX 推理（自动分块避免帧数上限）。
 
-    notes: [(pos_ticks, dur_ticks, midi_note, lyric_char), ...]
-    返回: np.array (float32, mono, -1..1)
+    模型内部 mel 帧数上限约 2000（N=20 时 1057 帧，N=50 时超限），
+    超过时 Gather 节点报错。用较小 chunk 多次推理再拼接。
     """
     tps = resolution * bpm / 60.0  # ticks per second
 
@@ -143,85 +159,74 @@ def synthesize(ac_sess, voc_sess, notes, bpm, resolution):
     midi_notes = []
     is_slur = []
 
-    prev_lyric = None
-    prev_midi = None
-    prev_token = None
+    prev_lyric = ""
+    prev_midi = -1
 
     for pos, dur, midi, lyric in notes:
-        # 跳过连续重复歌词
         if lyric == prev_lyric:
             continue
-        prev_lyric = lyric
-
-        dur_sec = dur / tps
+        dur_sec = (dur / resolution) * (60.0 / bpm)   # ticks → 秒，保留相对比例
         token_id = char_to_token(lyric)
-
-        # slur 标记：歌词相同且音高相同则标记连音
         slur = 1 if (lyric == prev_lyric and midi == prev_midi) else 0
-
         tokens.append(token_id)
         durations.append(dur_sec)
         midi_notes.append(midi)
         is_slur.append(slur)
-
+        prev_lyric = lyric
         prev_midi = midi
-        prev_token = token_id
 
     N = len(tokens)
     if N == 0:
         return np.zeros(int(SAMPLE_RATE), dtype=np.float32)
 
-    # ── 2. 声学模型推理 ──
-    txt_tokens = np.array([[tokens]], dtype=np.int64)
-    pitch_midi = np.array([[midi_notes]], dtype=np.int64)
-    midi_dur = np.array([[durations]], dtype=np.float32)
-    slur_arr = np.array([[is_slur]], dtype=np.int64)
+    # ── 2. 分块推理 ──
+    # 模型内部 mel 帧数上限 ~2000，CHUNK_SIZE=16 留余量
+    CHUNK_SIZE = 16
+    chunks_out = []
 
-    dec_out, mel_out = ac_sess.run(None, {
-        'txt_tokens': txt_tokens,
-        'pitch_midi': pitch_midi,
-        'midi_dur': midi_dur,
-        'is_slur': slur_arr,
-    })
-    # mel_out: (1, n_frames, 80)
-    n_frames = mel_out.shape[1]
+    for start in range(0, N, CHUNK_SIZE):
+        end = min(start + CHUNK_SIZE, N)
+        t_tokens = np.array([tokens[start:end]], dtype=np.int64)
+        t_midi = np.array([midi_notes[start:end]], dtype=np.int64)
+        t_dur = np.array([durations[start:end]], dtype=np.float32)
+        t_slur = np.array([is_slur[start:end]], dtype=np.int64)
 
-    # ── 3. 构建 F0 曲线 ──
-    # 每个音符对应的时间段分配 F0
-    f0 = np.zeros((1, n_frames), dtype=np.float32)
-    total_dur = sum(durations)
-    frame_duration = total_dur / n_frames
+        dec_out, mel_out = ac_sess.run(None, {
+            'txt_tokens': t_tokens,
+            'pitch_midi': t_midi,
+            'midi_dur': t_dur,
+            'is_slur': t_slur,
+        })
 
-    for i in range(n_frames):
-        t = i * frame_duration
-        # 找当前帧落在哪个音符区间
-        cum = 0.0
-        for j, d in enumerate(durations):
-            if cum <= t < cum + d:
-                f0[0, i] = midi_to_hz(midi_notes[j])
-                break
-            cum += d
-        # 如果在最后一个音符之后，f0 保持 0（淡出）
+        n_frames = mel_out.shape[1]
+        # 构建 F0 曲线
+        f0 = np.zeros((1, n_frames), dtype=np.float32)
+        chunk_dur = durations[start:end]
+        chunk_midi = midi_notes[start:end]
+        total_dur = sum(chunk_dur)
+        if total_dur > 0:
+            frame_dur = total_dur / n_frames
+            cum = 0.0
+            for i in range(n_frames):
+                t = i * frame_dur
+                for j, d in enumerate(chunk_dur):
+                    if cum <= t < cum + d:
+                        f0[0, i] = midi_to_hz(chunk_midi[j])
+                        break
+                    cum += d
+                else:
+                    cum += 0
 
-    # 简单平滑：插值连接非零段
-    for i in range(1, n_frames):
-        if f0[0, i] == 0 and f0[0, i - 1] > 0:
-            # 找右边非零
-            j = i
-            while j < n_frames and f0[0, j] == 0:
-                j += 1
-            if j < n_frames:
-                # 线性淡出
-                for k in range(i, j):
-                    alpha = (k - i + 1) / (j - i + 1)
-                    f0[0, k] = f0[0, i - 1] * alpha
+        wav = voc_sess.run(None, {'mel_out': mel_out, 'f0': f0})[0]
+        audio = wav.flatten().astype(np.float32)
+        # vocoder 内部 22050 Hz，上采样到 44100 Hz
+        audio = resample(audio, VOCODER_SR, SAMPLE_RATE)
+        chunks_out.append(audio)
+        print(f"      chunk {start}-{end}: {len(audio)/SAMPLE_RATE:.2f}s")
 
-    # ── 4. 声码器推理 ──
-    wav = voc_sess.run(None, {'mel_out': mel_out, 'f0': f0})[0]
-    # wav_out: (1, n_samples), float32, -1..1
-    audio = wav.flatten().astype(np.float32)
+    # ── 3. 拼接 + 后处理 ──
+    audio = np.concatenate(chunks_out)
 
-    # ── 5. 后处理 ──
     # 开头淡入
     fade_in = min(int(0.02 * SAMPLE_RATE), len(audio) // 4)
     if fade_in > 0:
@@ -282,7 +287,7 @@ def main():
 
     # 3. 合成
     print(f"\n[3/4] ONNX 推理合成")
-    print(f"    vocab size: {len(VOCAB)}  tokens: {list(VOCAB.keys())[:10]}...")
+    print(f"    vocab size: {VOCAB_SIZE}  sp_id: {_SP_ID}")
     audio = synthesize(ac_sess, voc_sess, notes, bpm, resolution)
     print(f"    输出: {len(audio)/SAMPLE_RATE:.2f}s  峰值: {float(np.max(np.abs(audio))):.3f}")
 

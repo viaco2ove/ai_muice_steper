@@ -34,7 +34,7 @@ notes: |
   - **节拍**：严格按原节拍位置，逐弦时差仅在毫秒级叠加，不推迟任何音符
 ---
 ## 文档参考
-[Main_Panel_Manual-AGM.pdf.md](../../../md/kb_repo/info/trach_up_level/ample_sound/Main_Panel_Manual-AGM.pdf.md)[Ample Guitar 吉他音源.md](../../../md/kb_repo/info/trach_up_level/Ample%20Guitar%20%E5%90%89%E4%BB%96%E9%9F%B3%E6%BA%90.md)
+[Main_Panel_Manual-AGM.pdf.md](../../../md/kb_repo/info/track_up_level/ample_sound/Main_Panel_Manual-AGM.pdf.md)[Ample Guitar 吉他音源.md](../../../md/kb_repo/info/track_up_level/Ample%20Guitar%20%E5%90%89%E4%BB%96%E9%9F%B3%E6%BA%90.md)
 ## 输入
 
 从 `workspace/project/{song}/song_engineer/track/` 目录查找 JSON 文件：

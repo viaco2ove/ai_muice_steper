@@ -263,7 +263,7 @@ PYTHONUTF8=1 ./.venv/python.exe .workbuddy/skills/song_engineer/scripts/synth_fu
 ##### 难道人声生成
 [hunman_gen.md](../../../md/kb_repo/info/hunman_gen.md)
 ##### 乐器音色
-[track_up_level.md](../../../md/kb_repo/info/trach_up_level/track_up_level.md)
+[track_up_level.md](../../../md/kb_repo/info/track_up_level/track_up_level.md)
 
 #### 步骤
 ```bash
