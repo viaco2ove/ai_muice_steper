@@ -36,6 +36,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 import numpy as np
 import soundfile as sf
 import yaml
+import scipy.signal as sps
 
 try:
     import onnxruntime as ort
@@ -131,17 +132,7 @@ def midi_to_hz(note):
 
 
 # vocoder 内部采样率（mel 频谱上采样）
-VOCODER_SR = SAMPLE_RATE // 2   # 22050 Hz
-
-
-def resample(audio, from_sr, to_sr):
-    """线性插值重采样。"""
-    if from_sr == to_sr:
-        return audio
-    n = int(len(audio) * to_sr / from_sr)
-    x_old = np.linspace(0, 1, len(audio))
-    x_new = np.linspace(0, 1, n)
-    return np.interp(x_new, x_old, audio).astype(np.float32)
+VOCODER_SR = 22050   # vocoder 声码器实测采样率（hop=256 → 22050 Hz）
 
 
 # ── 主合成逻辑 ───────────────────────────────────────────────────
@@ -219,13 +210,16 @@ def synthesize(ac_sess, voc_sess, notes, bpm, resolution):
 
         wav = voc_sess.run(None, {'mel_out': mel_out, 'f0': f0})[0]
         audio = wav.flatten().astype(np.float32)
-        # vocoder 内部 22050 Hz，上采样到 44100 Hz
-        audio = resample(audio, VOCODER_SR, SAMPLE_RATE)
         chunks_out.append(audio)
-        print(f"      chunk {start}-{end}: {len(audio)/SAMPLE_RATE:.2f}s")
+        print(f"      chunk {start}-{end}: {len(audio)/VOCODER_SR:.2f}s")
 
-    # ── 3. 拼接 + 后处理 ──
-    audio = np.concatenate(chunks_out)
+    # ── 3. 拼接 + 上采样(22050→44100) + 后处理 ──
+    audio = np.concatenate(chunks_out)  # 22050 Hz mono
+
+    # 上采样到 44100 Hz（scipy.signal.resample 保持时长）
+    if VOCODER_SR != SAMPLE_RATE:
+        target_len = int(len(audio) * SAMPLE_RATE / VOCODER_SR)
+        audio = sps.resample(audio, target_len).astype(np.float32)
 
     # 开头淡入
     fade_in = min(int(0.02 * SAMPLE_RATE), len(audio) // 4)
