@@ -21,5 +21,6 @@ guitar pro ,musescore
 
 - 真正的ai 乐器音轨生成
   - ace studio 啥的 很贵。有没有更靠谱的免费或者低价的技术
-  - Google DDSP 是一种使用深度学习生成音乐的工具。
+  - Google DDSP 是一种使用深度学习生成音乐的工具。可微分数字信号处理。
   - RAVE 依赖原始输入音轨
+  - ACE-Step 这是ACE Studio团队联合开源的音乐生成基础模型
