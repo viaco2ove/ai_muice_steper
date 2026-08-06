@@ -67,6 +67,9 @@ track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文�
   track/singer/02_主唱.wav
 ```
 
+## 直接用于生成wav 的歌词的格式
+[.workbuddy/skills/DiffSingerMiniEngine/references/lyrics.txt.md]
+
 ## 声库来源
 [md/kb_repo/info/human_gen/声库来源.md]
 
