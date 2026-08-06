@@ -1,0 +1,16 @@
+hidden_size: 384
+hop_size: 512
+languages: ../variance_assets/variance_assets/languages.json
+linguistic: ../variance_assets/variance_assets/linguistic.onnx
+phonemes: ../variance_assets/variance_assets/phonemes.json
+predict_breathiness: true
+predict_dur: false
+predict_energy: false
+predict_tension: true
+predict_voicing: true
+sample_rate: 44100
+speakers:
+- yunye
+use_continuous_acceleration: true
+use_lang_id: true
+variance: ../variance_assets/variance_assets/variance.onnx

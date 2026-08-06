@@ -67,6 +67,9 @@ track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文�
   track/singer/02_主唱.wav
 ```
 
+## 声库来源
+[md/kb_repo/info/human_gen/声库来源.md]
+
 ## ONNX 模型说明
 
 DiffSingerMiniEngine 依赖三组 ONNX 文件（放在 `assets/` 对应子目录）：
