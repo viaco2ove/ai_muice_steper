@@ -33,7 +33,8 @@ mid文件和歌词（格式是非直接可用的）
   "input_lyrics": "workspace/project/走在/song_engineer/track/03_lyrics.json",
   "singer": "D:\\OpenUtau\\Singers\\Singers\\YunYe_DiffSinger_CE_26.07.16.zip",
   "output_mid": "workspace/project/走在/song_engineer/track/singer/02_主唱.mid",
-  "output_mid": "workspace/project/走在/song_engineer/track/singer/02_主唱.lyrics.txt",
+  "output_lyrics": "workspace/project/走在/song_engineer/track/singer/02_主唱.lyrics.txt",
+  "output_ustx_json": "workspace/project/走在/song_engineer/track/singer/02_主唱.ustx.json",
   "output_wav": "workspace/project/走在/song_engineer/track/singer/02_主唱.wav"
 }
 ```
@@ -42,6 +43,7 @@ mid文件和歌词（格式是非直接可用的）
 ## 输出
 - `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 
 - `track/singer/` c歌词文件  {track}.lyrics.txt
+- `track/singer/` 类似 ustx 的渲染json 文件  {track}.ustx.json
 - `track/singer/` 目录下的高清歌声音频 WAV
 
 
@@ -53,6 +55,7 @@ mid文件和歌词（格式是非直接可用的）
         ▼
         
 track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文本歌词)
++ track/singer/{track}.ustx.json (类似ustx 的json文件)
         │
         ▼
   render_singer.py
