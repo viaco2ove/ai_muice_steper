@@ -20,10 +20,24 @@ executable: true
 - **引擎**：ONNX Runtime（CPU 推理，无需 GPU，2-4GB RAM）
 - **输出**：`track/singer/` 目录下的高清歌声音频 WAV
 
+## 输入
+mid文件和歌词（格式是非直接可用的）
+歌手： 默认位  diffsinger_acoustic.onnx 和 hifigan_vocoder.onnx 这两个模型
+
+## 输出
+- `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 
+- `track/singer/` c歌词文件  {track}.lyrics.txt
+- `track/singer/` 目录下的高清歌声音频 WAV
+
+
 ## 核心流程
 
 ```
-02_主唱.ustx (OpenUTAU 导出)
+用户指定的歌词和mid 文件
+        │
+        ▼
+        
+track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文本歌词)
         │
         ▼
   render_singer.py

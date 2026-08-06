@@ -1,304 +1,413 @@
 # -*- coding: utf-8 -*-
 """
-DiffSingerMiniEngine 歌声合成渲染脚本 v2.0（ONNX 推理版）
+DiffSingerMiniEngine v4.1 - 歌声合成（从 lyrics_match.json + DiffSinger音素映射）
 
-读 OpenUTAU .ustx 文件，调用 DiffSinger ONNX 模型合成高清歌声。
+修复 (v4→v4.1):
+  - 从 lyrics_match.json 读取真实歌词（而非空的ustx）
+  - ustx里lyric字段全是'a'占位符，实际歌词在 lyrics_clean.txt
+  - lyrics_match.json 由本脚本的 --sync 参数生成
 
-模型来源: LogiAI10/diffsinger-mobile-onnx (MIT License)
-  - assets/acoustic/diffsinger_acoustic.onnx   声学模型
-  - assets/vocoder/hifigan_vocoder.onnx        声码器
-
-ONNX 模型接口（已实测）:
-  声学模型输入:
-    txt_tokens  (1, N) int64  - pinyin token IDs
-    pitch_midi  (1, N) int64  - MIDI note (0=rest)
-    midi_dur    (1, N) float32 - 每音节时长(秒)
-    is_slur     (1, N) int64  - 连音标记(0/1)
-  声学模型输出:
-    mel_out     (1, n_frames, 80) float32 - 80维mel频谱
-  声码器输入:
-    mel_out     (1, n_frames, 80) float32
-    f0          (1, n_frames) float32     - F0曲线(Hz)
-  声码器输出:
-    wav_out     (1, n_samples) float32    - 波形
-
-依赖: pip install onnxruntime PyYAML soundfile pypinyin numpy
+依赖:
+  python (with: onnxruntime, soundfile, scipy, pypinyin, mido)
+  DiffSinger ONNX 模型: assets/acoustic/diffsinger_acoustic.onnx
+  DiffSinger 音素字典: assets/dictionary.txt (opencpop-extension)
 """
-import sys
-import os
-import math
-import tempfile
-import shutil
-import argparse
-
+import sys, os, tempfile, shutil, argparse, json, hashlib
 sys.stdout.reconfigure(encoding='utf-8')
 
-import numpy as np
-import soundfile as sf
-import yaml
-import scipy.signal as sps
-
+import numpy as np, soundfile as sf, scipy.signal as sps
 try:
     import onnxruntime as ort
-    HAS_ORT = True
 except ImportError:
-    HAS_ORT = False
+    ort = None
 
 try:
     from pypinyin import pinyin, Style
-    HAS_PYPINYIN = True
 except ImportError:
-    HAS_PYPINYIN = False
+    pinyin = None
 
 SAMPLE_RATE = 44100
+VOCODER_SR = 44109.0  # mel fps=344.6, hop=128
 
-# ── Token 词汇表（VOCAB_SIZE=63，ID 0-62）──
-# 模型声学 embedding 表大小固定。用 hash 把任意 pinyin 稳定映射到 1-62。
-import hashlib as _hl
-VOCAB_SIZE = 63  # 模型 embedding 表大小
-_SP_ID = 1       # sp(静音) 固定为 1
+# ── 音素映射（DiffSinger官方字典）───────────────────────────────
+def _load_phoneme_dict():
+    dict_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'dictionary.txt')
+    import urllib.request
+    if not os.path.exists(dict_path):
+        url = "https://raw.githubusercontent.com/openvpi/DiffSinger/main/dictionaries/opencpop-extension.txt"
+        try:
+            urllib.request.urlretrieve(url, dict_path)
+        except:
+            pass
+
+    if os.path.exists(dict_path):
+        phonemes = set()
+        with open(dict_path, encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) == 2:
+                    for ph in parts[1].split():
+                        phonemes.add(ph)
+        all_p = sorted([p for p in phonemes])
+        p2id = {'SP': 1}
+        for i, ph in enumerate(all_p):
+            if ph == 'SP':
+                continue
+            p2id[ph] = i + 2  # SP=ID1, 其余按字母序
+        return p2id
+
+    # 备用
+    return {}
 
 
-def char_to_token(ch):
-    """汉字 → token ID (1~62)，R/空白 → 1。"""
-    if ch in ('R', 'sp', 'sil', '', '…', '—', '-'):
-        return _SP_ID
-    if not HAS_PYPINYIN:
-        # 无 pypinyin：用字符的 hash
-        h = int(_hl.md5(ch.encode()).hexdigest(), 16)
-        return (h % (VOCAB_SIZE - 1)) + 1  # 1~62
+def _split_pinyin(p):
+    # ü → v (DiffSinger 用 v 表示 ü)
+    p = p.replace('ue', 'v').replace('üe', 'v')
+    for ini in ['zh', 'ch', 'sh', 'ng']:
+        if p.startswith(ini):
+            return ini, p[len(ini):]
+    for ini in ['b','p','m','f','d','t','n','l','g','k','h','j','q','x','r','y','w','z','c','s']:
+        if p.startswith(ini):
+            return ini, p[len(ini):]
+    return '', p
+
+
+def lyric_to_phoneme_ids(lyric, p2id):
+    """汉字 → phoneme ID 列表。
+
+    策略：一个音符对应一个 token（拼音的韵母，即元音部分）。
+    声母对歌声的影响较小，用韵母作为主token即可。
+    R/休止 → SP (ID 1)
+    """
+    if lyric in ('R', 'sp', 'sil', '', '-', '—', '…'):
+        return [p2id.get('SP', 1)]
+
+    if pinyin is None:
+        return [p2id.get('SP', 1)]
+
     try:
-        py = pinyin(ch, style=Style.NORMAL)
-        if not py or not py[0]:
-            return _SP_ID
-        p = py[0][0]
-        if not p:
-            return _SP_ID
-        # hash 稳定映射到 1~62（同音节 → 同 token）
-        h = int(_hl.md5(p.encode()).hexdigest(), 16)
-        return (h % (VOCAB_SIZE - 1)) + 1
-    except Exception:
-        return _SP_ID
+        py = pinyin(lyric, style=Style.NORMAL)
+        if not py or not py[0] or not py[0][0]:
+            return [p2id.get('SP', 1)]
+        p = py[0][0].lower()
+    except:
+        return [p2id.get('SP', 1)]
+
+    if not p:
+        return [p2id.get('SP', 1)]
+
+    # 取韵母（辅音后面的元音部分）作为主token
+    ini, fin = _split_pinyin(p)
+    # 用韵母作为token（决定元音音色）
+    if fin and fin in p2id:
+        return [p2id[fin]]
+    elif fin:
+        # 特殊韵母处理
+        if fin == 'ng':
+            return [p2id.get('N', p2id.get('SP', 1))]
+        # ue → v
+        if fin == 'ue':
+            fin = 'v'
+        if fin in p2id:
+            return [p2id[fin]]
+        # hash 兜底
+        h = int(hashlib.md5(fin.encode()).hexdigest(), 16)
+        return [(h % 62) + 1]
+    elif ini and ini in p2id:
+        # 无韵母（如单独的辅音）→ 用声母
+        return [p2id[ini]]
+    else:
+        return [p2id.get('SP', 1)]
 
 
-# ── ONNX 模型加载 ────────────────────────────────────────────────
+# ── ONNX模型加载 ────────────────────────────────────────────────
 def load_models(skill_dir):
     ac_path = os.path.join(skill_dir, 'assets', 'acoustic', 'diffsinger_acoustic.onnx')
     voc_path = os.path.join(skill_dir, 'assets', 'vocoder', 'hifigan_vocoder.onnx')
-
-    sess_opts = ort.SessionOptions()
-    sess_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    opts = ort.SessionOptions()
+    opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
     providers = ['CPUExecutionProvider']
-
-    ac_sess = ort.InferenceSession(ac_path, sess_opts, providers=providers)
-    voc_sess = ort.InferenceSession(voc_path, sess_opts, providers=providers)
-    return ac_sess, voc_sess
-
-
-# ── ustx 解析 ────────────────────────────────────────────────────
-def parse_ustx(ustx_path):
-    """解析 .ustx，返回 (notes, bpm, resolution)。
-
-    notes: [(position_ticks, duration_ticks, midi_note, lyric_char), ...]
-    """
-    with open(ustx_path, encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-
-    bpm = data.get('bpm', 120)
-    resolution = data.get('resolution', 480)
-    for tempo in data.get('tempos', []):
-        bpm = tempo.get('bpm', bpm)
-        break
-
-    notes = []
-    for part in data.get('voice_parts', []):
-        base_pos = part.get('position', 0)
-        for note in part.get('notes', []):
-            pos = base_pos + note.get('position', 0)
-            dur = note.get('duration', 480)
-            tone = note.get('tone', 60)
-            lyric = note.get('lyric', 'sp')
-            notes.append((pos, dur, tone, lyric))
-
-    notes.sort(key=lambda x: x[0])
-    return notes, bpm, resolution
+    ac = ort.InferenceSession(ac_path, opts, providers=providers)
+    voc = ort.InferenceSession(voc_path, opts, providers=providers)
+    return ac, voc
 
 
-def midi_to_hz(note):
-    """MIDI note → Hz。0 = rest → 0 Hz。"""
-    if note <= 0:
+def midi_to_hz(midi):
+    if midi <= 0:
         return 0.0
-    return 440.0 * (2.0 ** ((note - 69) / 12.0))
+    return 440.0 * (2.0 ** ((midi - 69) / 12.0))
 
 
-# vocoder 内部采样率（mel 频谱上采样）
-VOCODER_SR = 22050   # vocoder 声码器实测采样率（hop=256 → 22050 Hz）
-
-
-# ── 主合成逻辑 ───────────────────────────────────────────────────
-def synthesize(ac_sess, voc_sess, notes, bpm, resolution):
-    """核心 ONNX 推理（自动分块避免帧数上限）。
-
-    模型内部 mel 帧数上限约 2000（N=20 时 1057 帧，N=50 时超限），
-    超过时 Gather 节点报错。用较小 chunk 多次推理再拼接。
-    """
+# ── 合成核心 ────────────────────────────────────────────────────
+def synthesize(ac_sess, voc_sess, midi_notes, lyrics, bpm, p2id):
+    resolution = 480  # 固定
     tps = resolution * bpm / 60.0  # ticks per second
 
-    # ── 1. 构建 token 序列（跳过连续相同 lyric）──
-    tokens = []
-    durations = []  # 秒，每音节
-    midi_notes = []
-    is_slur = []
-
-    prev_lyric = ""
-    prev_midi = -1
-
-    for pos, dur, midi, lyric in notes:
-        if lyric == prev_lyric:
-            continue
-        dur_sec = (dur / resolution) * (60.0 / bpm)   # ticks → 秒，保留相对比例
-        token_id = char_to_token(lyric)
-        slur = 1 if (lyric == prev_lyric and midi == prev_midi) else 0
-        tokens.append(token_id)
-        durations.append(dur_sec)
-        midi_notes.append(midi)
-        is_slur.append(slur)
-        prev_lyric = lyric
-        prev_midi = midi
+    # 构建 token 序列
+    # midi_dur 修正系数：实测vocoder输出约=sum(midi_dur)×0.55
+    # 需要放大 1/0.55≈1.8 才能对齐实际音符时长
+    MIDI_DUR_SCALE = 1.8
+    tokens, durations, midi_vals = [], [], []
+    for nn, ly in zip(midi_notes, lyrics):
+        dur_ticks = float(nn['dur'])
+        dur_sec = dur_ticks / tps * MIDI_DUR_SCALE  # 秒，修正后
+        ids = lyric_to_phoneme_ids(ly, p2id)
+        for pid in ids:
+            tokens.append(pid)
+            durations.append(dur_sec)
+            midi_vals.append(nn['note'])
 
     N = len(tokens)
     if N == 0:
         return np.zeros(int(SAMPLE_RATE), dtype=np.float32)
 
-    # ── 2. 分块推理 ──
-    # 模型内部 mel 帧数上限 ~2000，CHUNK_SIZE=16 留余量
-    CHUNK_SIZE = 16
-    chunks_out = []
+    # clamp 到有效范围 [1, 62]
+    tokens = [max(1, min(62, t)) for t in tokens]
+    mn, mx = min(tokens), max(tokens)
+    print(f"    tokens: N={N}, range=[{mn},{mx}] (clamped to 1-62)")
 
-    for start in range(0, N, CHUNK_SIZE):
-        end = min(start + CHUNK_SIZE, N)
-        t_tokens = np.array([tokens[start:end]], dtype=np.int64)
-        t_midi = np.array([midi_notes[start:end]], dtype=np.int64)
-        t_dur = np.array([durations[start:end]], dtype=np.float32)
-        t_slur = np.array([is_slur[start:end]], dtype=np.int64)
+    CHUNK = 3
+    chunks = []
+    for start in range(0, N, CHUNK):
+        end = min(start + CHUNK, N)
+        chunk_dur = durations[start:end]
+        chunk_mid = midi_vals[start:end]
+        total_dur = sum(chunk_dur)
 
-        dec_out, mel_out = ac_sess.run(None, {
-            'txt_tokens': t_tokens,
-            'pitch_midi': t_midi,
+        t_tok = np.array([tokens[start:end]], dtype=np.int64)
+        t_mid = np.array([chunk_mid], dtype=np.int64)
+        t_dur = np.array([chunk_dur], dtype=np.float32)
+        t_slur = np.array([[0] * (end - start)], dtype=np.int64)
+
+        _, mel = ac_sess.run(None, {
+            'txt_tokens': t_tok,
+            'pitch_midi': t_mid,
             'midi_dur': t_dur,
             'is_slur': t_slur,
         })
 
-        n_frames = mel_out.shape[1]
-        # 构建 F0 曲线
-        f0 = np.zeros((1, n_frames), dtype=np.float32)
-        chunk_dur = durations[start:end]
-        chunk_midi = midi_notes[start:end]
-        total_dur = sum(chunk_dur)
+        nf = mel.shape[1]
+
+        # F0曲线
+        # 修复：cum 必须在每个新帧计算时归零，不能跨帧累加
+        # 否则 cum 在第一帧处理后就会超过 total_dur，导致后续所有帧 f0=0
+        f0 = np.zeros((1, nf), dtype=np.float32)
         if total_dur > 0:
-            frame_dur = total_dur / n_frames
-            cum = 0.0
-            for i in range(n_frames):
-                t = i * frame_dur
+            for i in range(nf):
+                t = i * total_dur / nf
+                cum = 0.0  # ← 必须在内层循环开始时归零
                 for j, d in enumerate(chunk_dur):
                     if cum <= t < cum + d:
-                        f0[0, i] = midi_to_hz(chunk_midi[j])
+                        f0[0, i] = midi_to_hz(chunk_mid[j])
                         break
                     cum += d
-                else:
-                    cum += 0
 
-        wav = voc_sess.run(None, {'mel_out': mel_out, 'f0': f0})[0]
+        wav = voc_sess.run(None, {'mel_out': mel, 'f0': f0})[0]
         audio = wav.flatten().astype(np.float32)
-        chunks_out.append(audio)
-        print(f"      chunk {start}-{end}: {len(audio)/VOCODER_SR:.2f}s")
+        chunks.append(audio)
+        if start % 30 == 0:
+            print(f"      chunk {start:3d}-{end:3d}: mel={nf}f expected={total_dur:.2f}s actual={len(audio)/VOCODER_SR:.2f}s")
 
-    # ── 3. 拼接 + 上采样(22050→44100) + 后处理 ──
-    audio = np.concatenate(chunks_out)  # 22050 Hz mono
+    audio = np.concatenate(chunks)
 
-    # 上采样到 44100 Hz（scipy.signal.resample 保持时长）
-    if VOCODER_SR != SAMPLE_RATE:
+    # 整体时长对齐：拉伸到 MIDI 实际总时长（含休止间隙）
+    # MIDI总时长 = 最后一个音符结束时间 = max tick / TPB * 60 / BPM
+    expected_total = sum(durations)
+    actual_total = len(audio) / VOCODER_SR
+
+    # 算 MIDI 实际结束时间
+    tps = 480 * bpm / 60.0
+    midi_end = max(nn['tick'] + nn['dur'] for nn in midi_notes) / tps
+
+    ratio = midi_end / actual_total
+    print(f"    时长对齐: {actual_total:.1f}s → {midi_end:.1f}s (ratio={ratio:.3f})")
+    if 0.5 < ratio < 5.0:
+        new_len = int(len(audio) * ratio)
+        audio = sps.resample(audio, new_len).astype(np.float32)
+        print(f"    拉伸后: {len(audio)/VOCODER_SR:.1f}s")
+
+    # 采样率转换
+    if abs(VOCODER_SR - SAMPLE_RATE) < 500:
         target_len = int(len(audio) * SAMPLE_RATE / VOCODER_SR)
         audio = sps.resample(audio, target_len).astype(np.float32)
 
-    # 开头淡入
-    fade_in = min(int(0.02 * SAMPLE_RATE), len(audio) // 4)
-    if fade_in > 0:
-        audio[:fade_in] *= np.linspace(0, 1, fade_in)
-    # 末尾淡出
-    fade_out = min(int(0.05 * SAMPLE_RATE), len(audio) // 4)
-    if fade_out > 0:
-        audio[-fade_out:] *= np.linspace(1, 0, fade_out)
+    # 淡入淡出
+    fi = min(int(0.02 * SAMPLE_RATE), len(audio) // 4)
+    if fi > 0:
+        audio[:fi] *= np.linspace(0, 1, fi)
+    fo = min(int(0.05 * SAMPLE_RATE), len(audio) // 4)
+    if fo > 0:
+        audio[-fo:] *= np.linspace(1, 0, fo)
 
     return audio
 
 
+# ── 同步歌词到MIDI ────────────────────────────────────────────────
+def sync_lyrics(project, track):
+    """从 lyrics_clean.txt + MIDI 生成 lyrics_match.json。"""
+    import mido, re
+    # scripts/ → DiffSingerMiniEngine/ → skills/ → .workbuddy/ → ai_muice_steper/
+    _s = os.path.dirname(os.path.abspath(__file__))
+    _d = os.path.dirname(_s)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(_d)))
+    project_dir = os.path.join(project_root, "workspace", "project", project)
+    midi_path = os.path.join(project_dir, "song_engineer", "track", f"{track}.mid")
+    lyrics_path = os.path.join(project_dir, "song_engineer", "ai-track", "minimax", "lyrics_clean.txt")
+    out_path = os.path.join(project_dir, "song_engineer", "track", "singer", "lyrics_match.json")
+
+    if not os.path.exists(midi_path):
+        print(f"[错误] 未找到MIDI: {midi_path}")
+        return None
+    if not os.path.exists(lyrics_path):
+        print(f"[错误] 未找到歌词: {lyrics_path}")
+        return None
+
+    mid = mido.MidiFile(midi_path)
+    TPB = mid.ticks_per_beat
+
+    at = 0
+    open_notes = {}
+    midi_notes = []
+    for msg in mid.tracks[1] if len(mid.tracks) > 1 else mid.tracks[0]:
+        at += msg.time
+        if msg.type == 'note_on' and msg.velocity > 0:
+            open_notes[msg.note] = (at, msg.velocity)
+        elif (msg.type == 'note_off' or (msg.type == 'note_on' and msg.velocity == 0)) and msg.note in open_notes:
+            s, v = open_notes.pop(msg.note)
+            midi_notes.append({'tick': s, 'note': msg.note, 'dur': at - s, 'vel': v})
+    midi_notes.sort(key=lambda x: x['tick'])
+
+    with open(lyrics_path, encoding='utf-8') as f:
+        content = f.read()
+
+    all_chars = []
+    for line in content.split('\n'):
+        line = line.strip()
+        if line and not line.startswith('['):
+            chars = [c for c in line if '一' <= c <= '鿿']
+            all_chars.extend(chars)
+        elif '…' in line:
+            all_chars.append('…')
+
+    n = len(midi_notes)
+    lyrics = ['R'] * n
+
+    # 小节→段落映射
+    bar_segs = [
+        (5, 12,  0),
+        (13, 20, 35),
+        (21, 24, 70),
+        (25, 32, 70),
+        (33, 40, 106),
+        (41, 47, 142),
+        (48, 52, 180),
+    ]
+
+    idx = 0
+    for b1, b2, start_idx in bar_segs:
+        idxs = [i for i, nn in enumerate(midi_notes)
+                if b1 <= nn['tick'] // (TPB * 4) + 1 <= b2]
+        if not idxs:
+            continue
+        seg_chars = all_chars[start_idx:start_idx + 300]
+        threshold = 360
+        while threshold >= 120:
+            cands = [i for i in idxs if midi_notes[i]['dur'] >= threshold]
+            if len(cands) >= len(seg_chars):
+                break
+            threshold -= 60
+        if len(cands) < len(seg_chars):
+            cands = sorted(idxs, key=lambda i: -midi_notes[i]['dur'])[:len(seg_chars)]
+        fill = cands[:len(seg_chars)]
+        for i, ch in zip(fill, seg_chars):
+            lyrics[i] = ch
+        idx += len(seg_chars)
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, 'w', encoding='utf-8') as f:
+        json.dump({'midi_notes': midi_notes, 'lyrics': lyrics, 'bpm': 68, 'tpb': TPB}, f, ensure_ascii=False)
+
+    filled = sum(1 for l in lyrics if l != 'R')
+    print(f"  同步完成: {filled}/{n} 音符已填词 → {out_path}")
+    return out_path
+
+
 # ── 主入口 ───────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="DiffSingerMiniEngine 歌声合成 v2.0")
-    parser.add_argument("--project", required=True, help="歌曲名")
-    parser.add_argument("--track", default="02_主唱", help="音轨名（默认 02_主唱）")
+    parser = argparse.ArgumentParser(description="DiffSingerMiniEngine v4.1")
+    parser.add_argument("--project", required=True)
+    parser.add_argument("--track", default="02_主唱")
+    parser.add_argument("--sync", action="store_true", help="同步歌词到MIDI（首次运行需加此参数）")
     args = parser.parse_args()
 
-    project = args.project
-    track = args.track
-
-    # 路径定位
+    # scripts/ → DiffSingerMiniEngine/ → skills/ → .workbuddy/ → ai_muice_steper/ (项目根)
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    skill_dir = os.path.dirname(script_dir)
-    track_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(skill_dir))),
-        "workspace", "project", project, "song_engineer", "track"
-    )
-    ai_dir = os.path.join(os.path.dirname(track_dir), "ai-track", "OpenUtau")
-    singer_dir = os.path.join(track_dir, "singer")
-    singer_dir = os.path.abspath(singer_dir)
+    skill_dir = os.path.dirname(script_dir)           # DiffSingerMiniEngine/
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(skill_dir)))  # → ai_muice_steper/
+    project_dir = os.path.join(project_root, "workspace", "project", args.project)
+    singer_dir = os.path.join(project_dir, "song_engineer", "track", "singer")
     os.makedirs(singer_dir, exist_ok=True)
-
-    ustx_path = os.path.join(ai_dir, f"{track}.ustx")
-    if not os.path.exists(ustx_path):
-        print(f"[错误] 未找到: {ustx_path}")
-        sys.exit(1)
+    json_path = os.path.join(singer_dir, "lyrics_match.json")
 
     print("=" * 60)
-    print(f"DiffSingerMiniEngine v2.0 - {project} / {track}")
+    print(f"DiffSingerMiniEngine v4.1 - {args.project} / {args.track}")
     print("=" * 60)
 
-    # 1. 解析 ustx
-    print(f"\n[1/4] 解析 .ustx: {ustx_path}")
-    notes, bpm, resolution = parse_ustx(ustx_path)
-    print(f"    音符: {len(notes)}  BPM: {bpm:.2f}  分辨率: {resolution}")
+    # 1. 加载音素映射
+    print(f"\n[1/5] 加载 DiffSinger 音素映射")
+    p2id = _load_phoneme_dict()
+    print(f"    音素数: {len(p2id)}, SP=ID {p2id.get('SP', '?')}")
 
-    # 2. 加载 ONNX 模型
-    print(f"\n[2/4] 加载 ONNX 模型")
-    try:
-        ac_sess, voc_sess = load_models(skill_dir)
-        print(f"    ✓ 声学模型加载成功")
-        print(f"    ✓ 声码器加载成功")
-    except Exception as e:
-        print(f"    [错误] ONNX 模型加载失败: {e}")
-        sys.exit(1)
+    # 2. 同步歌词（首次）
 
-    # 3. 合成
-    print(f"\n[3/4] ONNX 推理合成")
-    print(f"    vocab size: {VOCAB_SIZE}  sp_id: {_SP_ID}")
-    audio = synthesize(ac_sess, voc_sess, notes, bpm, resolution)
+    if args.sync or not os.path.exists(json_path):
+        print(f"\n[2/5] 同步歌词到MIDI")
+        sync_lyrics(args.project, args.track)
+    else:
+        print(f"\n[2/5] 读取 lyrics_match.json")
+
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+
+    midi_notes = data['midi_notes']
+    lyrics = data['lyrics']
+    bpm = data.get('bpm', 68)
+    filled = sum(1 for l in lyrics if l != 'R')
+    print(f"    音符: {len(midi_notes)}, 已填词: {filled}")
+    print(f"    BPM: {bpm}")
+
+    # 3. 加载ONNX模型
+    print(f"\n[3/5] 加载 ONNX 模型")
+    ac, voc = load_models(skill_dir)
+    print(f"    ✓ 声学模型 + 声码器")
+
+    # 4. 合成
+    print(f"\n[4/5] ONNX 推理")
+    audio = synthesize(ac, voc, midi_notes, lyrics, bpm, p2id)
     print(f"    输出: {len(audio)/SAMPLE_RATE:.2f}s  峰值: {float(np.max(np.abs(audio))):.3f}")
 
-    # 4. 保存
-    print(f"\n[4/4] 保存音频")
-    output_wav = os.path.join(singer_dir, f"{track}.wav")
+    # 5. 保存
+    print(f"\n[5/5] 保存音频")
+    out_wav = os.path.join(singer_dir, f"{args.track}.wav")
     tmp = os.path.join(tempfile.gettempdir(), f"__singer_{os.getpid()}.wav")
     try:
         sf.write(tmp, audio, SAMPLE_RATE, subtype="PCM_16")
-        if os.path.exists(output_wav):
-            os.remove(output_wav)
-        shutil.copy(tmp, output_wav)
+        if os.path.exists(out_wav):
+            os.remove(out_wav)
+        shutil.copy(tmp, out_wav)
     finally:
         if os.path.exists(tmp):
             os.remove(tmp)
 
-    print(f"    ✓ 已保存: {output_wav}")
+    # 归一化
+    peak = float(np.max(np.abs(audio)))
+    if peak > 0.891:
+        data, sr = sf.read(out_wav)
+        data = data * (0.891 / peak)
+        sf.write(out_wav, data, sr, subtype="PCM_16")
+        print(f"    ✓ 归一化: {peak:.3f} → 0.891")
+
+    print(f"    ✓ 已保存: {out_wav}")
     print(f"\n[完成]")
 
 
