@@ -1,8 +1,8 @@
 ---
 name: DiffSingerMiniEngine
 description: >
-  基于 DiffSingerMiniEngine 的歌声合成技能。读 OpenUTAU .ustx 文件（含歌词/音素/音高曲线），
-  通过 ONNX Runtime 调用轻量级 DiffSinger ONNX 模型合成高清歌声音频。
+  基于 DiffSingerMiniEngine 的歌声合成技能。mid+歌词先生成 ustx风格中间工程文件
+  {track}.ustx.json（逐音符歌词/音素/时长帧/分段决策），再经 ONNX Runtime 合成高清歌声音频。
   无模型时给出清晰指引；有模型时全自动渲染到 singer/ 目录。
   Triggers on: DiffSinger、歌声合成、人声生成、主唱 wav、singer track、AI 歌手、DiffsingerMiniEngine
 agent_created: true
@@ -16,7 +16,7 @@ executable: true
 ## 概述
 
 基于 **DiffSingerMiniEngine** 的轻量级歌声合成方案：
-- **输入**：OpenUTAU .ustx 文件（含逐音符歌词/音素/音高曲线/时长）
+- **输入**：MIDI + 歌词 → `{track}.ustx.json`（ustx风格JSON：逐音符 position/duration/tone/lyric/kind/phones帧分配）
 - **引擎**：ONNX Runtime（CPU 推理，无需 GPU，2-4GB RAM）
 - **输出**：`track/singer/` 目录下的高清歌声音频 WAV
 
@@ -42,8 +42,8 @@ mid文件和歌词（格式是非直接可用的）
 
 ## 输出
 - `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 
-- `track/singer/` c歌词文件  {track}.lyrics.txt
-- `track/singer/` 类似 ustx 的渲染json 文件  {track}.ustx.json
+- `track/singer/` 歌词文件  {track}.lyrics.txt
+- `track/singer/` 类似 ustx 的渲染计划 JSON 文件  {track}.ustx.json（固化对齐/分段/音素/ph_dur帧决策，可审计可手改）
 - `track/singer/` 目录下的高清歌声音频 WAV
 
 
@@ -53,21 +53,20 @@ mid文件和歌词（格式是非直接可用的）
 用户指定的歌词和mid 文件
         │
         ▼
-        
 track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文本歌词)
-+ track/singer/{track}.ustx.json (类似ustx 的json文件)
         │
+        ▼  plan阶段 (render_yunye_v2.py)
+        ├── 线性对齐: 1音符=1字符, '-'拖腔延续韵母, 段外R
+        ├── 间隙展开(expand_gaps) + 按 BAR_SEGS 分段
+        ├── pypinyin 汉字→音素, dur模型预测+按MIDI时值强制缩放
         ▼
-  render_singer.py
+track/singer/{track}.ustx.json  (类似ustx的json中间工程文件, 可审计/手改)
         │
-        ├── 解析 lyrics + tone + duration + pitch (from ustx YAML)
-        ├── pypinyin 汉字→音素
-        ├── 检查 assets/ 模型文件
-        │     ├── 有模型 → ONNX Runtime 推理 → WAV
-        │     └── 无模型 → 报错退出 + 提示如何下载模型
-        │
+        ▼  render阶段 (render_yunye_v2.py --from-plan)
+        ├── 跳过dur预测, 直接用plan烘焙的ph_dur帧
+        ├── pitch → variance → acoustic → vocoder (ONNX 7步pipeline)
         ▼
-  track/singer/02_主唱.wav
+  track/singer/{track}.wav
 ```
 
 ## 直接用于生成wav 的歌词的格式
@@ -97,11 +96,14 @@ ls .workbuddy/skills/DiffSingerMiniEngine/assets/
 
 # 2. 如无模型，按下方"模型下载"步骤下载
 
-# 3. 渲染主唱（默认 02_主唱）
-./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在
+# 3. 渲染主唱（默认 02_主唱）: plan+render 一气呵成
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在
 
-# 4. 指定其他音轨
-./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在 --track 02_主唱
+# 4. 只生成中间工程文件 {track}.ustx.json（不渲染）
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在 --plan-only
+
+# 5. 手改 ustx.json 后重渲染（跳过plan生成, 直接用烘焙的ph_dur帧）
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在 --from-plan
 ```
 
 ## 模型下载
@@ -143,7 +145,7 @@ pip install onnxruntime PyYAML soundfile pypinyin
 
 - **必须有声库模型**：ONNX 模型文件需用户自行下载，无模型则脚本退出并提示
 - **中文歌词优先**：pypinyin 汉字→音素映射针对中文优化
-- **ustx 必须有歌词**：.ustx 文件的 voice_parts[].notes[].lyric 字段非空
+- **ustx.json 可手改**：`{track}.ustx.json` 的 notes[].lyric / phones[].frames 可直接编辑后用 `--from-plan` 重渲染（如修咬字时长/换字）
 
 ## 相关技能
 
