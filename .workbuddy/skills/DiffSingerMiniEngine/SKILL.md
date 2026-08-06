@@ -23,6 +23,21 @@ executable: true
 ## 输入
 mid文件和歌词（格式是非直接可用的）
 歌手： 默认位  diffsinger_acoustic.onnx 和 hifigan_vocoder.onnx 这两个模型
+.env 文件配置了 singers_path
+例如 D:\OpenUtau\Singers\Singers\YunYe_DiffSinger_CE_26.07.16.zip
+
+也可以输入一个json 文件。例如
+```
+{
+  "input_mid": "workspace/project/走在/song_engineer/track/02_主唱.mid",
+  "input_lyrics": "workspace/project/走在/song_engineer/track/03_lyrics.json",
+  "singer": "D:\\OpenUtau\\Singers\\Singers\\YunYe_DiffSinger_CE_26.07.16.zip",
+  "output_mid": "workspace/project/走在/song_engineer/track/singer/02_主唱.mid",
+  "output_mid": "workspace/project/走在/song_engineer/track/singer/02_主唱.lyrics.txt",
+  "output_wav": "workspace/project/走在/song_engineer/track/singer/02_主唱.wav"
+}
+```
+其中singer 文件 会被技能自动解压后使用
 
 ## 输出
 - `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 
