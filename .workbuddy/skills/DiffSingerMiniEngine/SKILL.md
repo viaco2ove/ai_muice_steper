@@ -20,11 +20,17 @@ executable: true
 - **引擎**：ONNX Runtime（CPU 推理，无需 GPU，2-4GB RAM）
 - **输出**：`track/singer/` 目录下的高清歌声音频 WAV
 
+## 配置文件
+.env 文件
+- 配置了 singers_path
+例如 D:\OpenUtau\Singers\Singers\YunYe_DiffSinger_CE_26.07.16.zip
+- diff_singer_mini_engine_assets
+例如 D:\OpenUtau\Singers\Singers\assets
+保存oonx 等文件资源的路径
+
 ## 输入
 mid文件和歌词（格式是非直接可用的）
 歌手： 默认位  diffsinger_acoustic.onnx 和 hifigan_vocoder.onnx 这两个模型
-.env 文件配置了 singers_path
-例如 D:\OpenUtau\Singers\Singers\YunYe_DiffSinger_CE_26.07.16.zip
 
 也可以输入一个json 文件。例如
 ```
@@ -68,6 +74,7 @@ track/singer/{track}.ustx.json  (类似ustx的json中间工程文件, 可审计/
         ▼
   track/singer/{track}.wav
 ```
+
 
 ## 直接用于生成wav 的歌词的格式
 [.workbuddy/skills/DiffSingerMiniEngine/references/lyrics.txt.md]

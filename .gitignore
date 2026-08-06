@@ -97,3 +97,5 @@ cache/
 /.cache/
 /models.json
 /frontend/node_modules/
+/.workbuddy/skills/DiffSingerMiniEngine/assets/
+/.workbuddy/skills/DiffSingerMiniEngine/configs/
