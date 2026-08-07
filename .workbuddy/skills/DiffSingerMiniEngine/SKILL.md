@@ -71,7 +71,7 @@ mid文件和歌词（格式是非直接可用的）
 
 ## 输出
 - `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 
-- `track/singer/` 歌词文件  {track}.lyrics.txt
+- `track/singer/` 歌词文件  {track}.lyrics.txt，参考x studio 和openutau 等的歌词格式要求
 - `track/singer/` 类似 ustx 的渲染计划 JSON 文件  {track}.ustx.json（固化对齐/分段/音素/ph_dur帧决策，可审计可手改）
 - `track/singer/` 目录下的高清歌声音频 WAV
 
