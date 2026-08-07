@@ -9,10 +9,16 @@
 - mel_base 与 vocoder 不一致时转换: 10->e 乘 2.30259, e->10 乘 0.434294
 - vocoder: mel + f0(Hz); 输出采样率以 vocoder.yaml 为准
 """
+import os
+
 import numpy as np
 
 from .predictors import pad_tokens, _spk_frames
 from .voicebank import HEAD_FRAMES
+
+# 性别/共振峰偏移 (官方 GENC 曲线: -1~+1, 正=偏厚实男声, 负=偏柔女声; 默认0)
+# 实验用环境变量 DS_GENDER 覆盖, 如 DS_GENDER=0.2 把高音区的音色往男声压
+GENDER = float(os.environ.get("DS_GENDER", "0"))
 
 
 def midi_to_hz(midi):
@@ -42,7 +48,7 @@ class AcousticRenderer:
             "durations": seg["ph_dur"].reshape(1, -1),
             "f0": f0,
             "breathiness": breath, "voicing": voicing, "tension": tension,
-            "gender": np.zeros((1, n), dtype=np.float32),
+            "gender": np.full((1, n), GENDER, dtype=np.float32),
             "velocity": np.ones((1, n), dtype=np.float32),
             "spk_embed": _spk_frames(vb.emb_ac, n),
             "depth": np.array(self.depth, dtype=np.float32),
@@ -62,10 +68,10 @@ class AcousticRenderer:
             print("    mel_base %s->%s (x%.5f)" % (ac_base, voc_base, factor))
         h = HEAD_FRAMES
         b = seg["n_body"]
-        print("    acoustic: f0 body[%.1f,%.1f]Hz mel body[%.2f,%.2f] depth=%.2g steps=%d" % (
+        print("    acoustic: f0 body[%.1f,%.1f]Hz mel body[%.2f,%.2f] depth=%.2g steps=%d gender=%.2f" % (
             float(f0[0, h:h + b].min()), float(f0[0, h:h + b].max()),
             float(mel[0, h:h + b].min()), float(mel[0, h:h + b].max()),
-            self.depth, self.steps))
+            self.depth, self.steps, GENDER))
         return mel, f0
 
     def run_vocoder(self, mel, f0):
