@@ -15,8 +15,9 @@ cover_two_step.py — MiniMax 两步翻唱 (music-cover) 辅助脚本
                        + structure_result(JSON字符串,各段类型与起止时间戳)
   Step2 generate:   用人工校正后的 lyrics + cover_feature_id + prompt 调
                      POST /v1/music_generation （model=music-cover，非 free）
-                     → task_id → 轮询 GET /v1/query_async_task → 取 file_id →
-                       GET /v1/files/retrieve → 下载 url(24h) → 存 mp3
+                     → 同步阻塞（POST 保持连接）直到返回音频
+                     → 取 data.audio_url(URL) 或 data.audio(hex/base64) 存 mp3
+                     （music_cover 是同步接口，没有异步进度端点）
 
 铁律：
   1. 只传纯人声干音，绝不传带伴奏的整混音。
@@ -257,46 +258,15 @@ def step_preprocess(args):
 
 
 # ==================== Step2: generate ====================
-def _poll_until_done(base_url, api_key, task_id, timeout):
-    url = f"{base_url}/v1/query_async_task"
-    headers = {"Authorization": f"Bearer {api_key}"}
-    deadline = time.time() + timeout
-    while time.time() < deadline:
-        r = requests.get(url, headers=headers, params={"task_id": task_id}, timeout=60)
-        try:
-            d = r.json()
-        except Exception:
-            print("  [轮询] 响应非 JSON，重试")
-            time.sleep(8)
-            continue
-        code = d.get("base_resp", {}).get("status_code", -1)
-        if code != 0:
-            print("[错误] 查询任务失败:\n" + json.dumps(d, ensure_ascii=False, indent=2))
-            sys.exit(1)
-        atd = d.get("async_task_data") or {}
-        status = str(atd.get("status", "")).lower()
-        # 进度打印
-        prog = atd.get("progress", atd.get("percent"))
-        print(f"  [轮询] status={atd.get('status')} progress={prog}")
-        if status in ("success", "complete", "completed", "done") or atd.get("file_id"):
-            return atd
-        if status in ("fail", "failed", "error"):
-            print("[错误] 任务失败:\n" + json.dumps(d, ensure_ascii=False, indent=2))
-            sys.exit(1)
-        time.sleep(10)
-    print("[错误] 轮询超时")
-    sys.exit(1)
-
-
-def _retrieve_file(base_url, api_key, file_id):
-    url = f"{base_url}/v1/files/retrieve"
-    headers = {"Authorization": f"Bearer {api_key}"}
-    r = requests.get(url, headers=headers, params={"file_id": file_id}, timeout=60)
-    d = r.json()
-    if d.get("base_resp", {}).get("status_code", -1) != 0:
-        print("[错误] 取文件失败:\n" + json.dumps(d, ensure_ascii=False, indent=2))
-        sys.exit(1)
-    return d.get("file", {})
+def _download(url, out):
+    out = os.path.abspath(out)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with requests.get(url, timeout=300, stream=True) as r:
+        r.raise_for_status()
+        with open(out, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1 << 20):
+                f.write(chunk)
+    return out
 
 
 def step_generate(args):
@@ -337,43 +307,89 @@ def step_generate(args):
         "cover_feature_id": cover_feature_id,
         "lyrics": lyrics,
         "prompt": prompt,
+        "output_format": "url",   # 同步返回 data.audio_url（24h 有效），无需轮询
+        "audio_setting": {
+            "format": "mp3",
+            "sample_rate": 44100,
+            "bitrate": 256000,
+            "channel": 2,
+        },
     }
+
+    # 进度记录：music_cover 是同步阻塞接口（POST 保持连接直到返回音频），
+    # 没有异步进度端点，用 Heartbeat 在等待期间定期写心跳到 progress.md。
+    sys.path.insert(0, _CUR)
+    import progress  # 惰性导入，避免与 cover_two_step 循环依赖
+    _out_dir = os.path.dirname(os.path.abspath(args.out))
+    _md = os.path.join(_out_dir, "progress.md")
+    _meta = os.path.join(_out_dir, "generate_meta.json")
+    json.dump({
+        "model": model,
+        "cover_feature_id": cover_feature_id,
+        "out": os.path.abspath(args.out),
+        "submitted_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }, open(_meta, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     print(f"[Step2] POST {url}  model={model}")
     print(f"[Step2] cover_feature_id={cover_feature_id}")
-    resp = requests.post(url, headers=headers, json=payload, timeout=300)
+    print(f"[Step2] 进度记录到: {_md}")
+
+    with progress.Heartbeat(_md, interval=30):
+        # 阻塞等待 MiniMax 生成完并返回音频（通常 1~5 分钟）
+        resp = requests.post(url, headers=headers, json=payload, timeout=600)
     d = resp.json()
+
+    # 兜底：把原始响应落盘，便于失败时排查真实结构
+    _resp_dump = os.path.join(_out_dir, "generate_resp.json")
+    try:
+        json.dump(d, open(_resp_dump, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
     if d.get("base_resp", {}).get("status_code", -1) != 0:
-        print("[错误] 生成提交失败:\n" + json.dumps(d, ensure_ascii=False, indent=2))
-        sys.exit(1)
-    task_id = d.get("task_id") or (d.get("async_task_data") or {}).get("task_id")
-    print(f"[Step2] task_id={task_id}")
-
-    # 轮询
-    atd = _poll_until_done(base_url, api_key, task_id, args.poll_timeout)
-    file_id = atd.get("file_id")
-    if not file_id:
-        # 有些返回直接带 audio 字段
-        file_id = atd.get("audio", {}).get("file_id") if isinstance(atd.get("audio"), dict) else None
-    if not file_id:
-        print("[错误] 未找到 file_id，响应:\n" + json.dumps(atd, ensure_ascii=False, indent=2))
+        progress.append_entry(_md, "失败", "生成接口返回错误")
+        print("[错误] 生成失败:\n" + json.dumps(d, ensure_ascii=False, indent=2))
         sys.exit(1)
 
-    file_info = _retrieve_file(base_url, api_key, file_id)
-    audio_url = file_info.get("url") or file_info.get("download_url")
-    if not audio_url:
-        print("[错误] 未找到音频 url，响应:\n" + json.dumps(file_info, ensure_ascii=False, indent=2))
+    data = d.get("data", {}) or {}
+    # 兼容三种返回：audio_url（URL）/ audio（hex）/ audio（base64）
+    audio_url = data.get("audio_url")
+    audio_raw = data.get("audio")
+    saved_path = None
+    src_kind = None
+    if audio_url and str(audio_url).startswith("http"):
+        saved_path = _download(audio_url, args.out)
+        src_kind = "url"
+    elif audio_raw:
+        s = str(audio_raw)
+        if s.startswith("http"):
+            saved_path = _download(s, args.out)
+            src_kind = "url(audio字段)"
+        else:
+            # 先试 hex，再试 base64
+            try:
+                buf = bytes.fromhex(s)
+                src_kind = "hex"
+            except ValueError:
+                try:
+                    buf = base64.b64decode(s, validate=True)
+                    src_kind = "base64"
+                except Exception:
+                    buf = None
+            if buf:
+                out = os.path.abspath(args.out)
+                os.makedirs(os.path.dirname(out), exist_ok=True)
+                with open(out, "wb") as f:
+                    f.write(buf)
+                saved_path = out
+    if saved_path:
+        progress.append_entry(_md, "完成",
+                              f"已保存({src_kind}) {os.path.basename(saved_path)} ({os.path.getsize(saved_path)/1e6:.2f}MB)")
+        print(f"[Step2] 已保存: {saved_path}  ({src_kind}, {os.path.getsize(saved_path)/1e6:.2f}MB)")
+        return saved_path
+    else:
+        progress.append_entry(_md, "失败", "响应无 audio_url / audio 字段")
+        print("[错误] 响应中找不到音频，结构:\n" + json.dumps(d, ensure_ascii=False, indent=2)[:2000])
         sys.exit(1)
-    print(f"[Step2] 下载音频: {audio_url[:80]}...")
-
-    out = args.out
-    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    with requests.get(audio_url, timeout=300, stream=True) as r:
-        r.raise_for_status()
-        with open(out, "wb") as f:
-            for chunk in r.iter_content(chunk_size=1 << 20):
-                f.write(chunk)
-    print(f"[Step2] 已保存: {out}  ({os.path.getsize(out)/1e6:.2f}MB)")
-    return out
 
 
 # ==================== CLI ====================

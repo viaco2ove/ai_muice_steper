@@ -44,9 +44,9 @@ executable: true
       ▼  【人工校正】改 formatted_lyrics.txt 的错字/段落对齐（对照 structure_result）
       │
       ▼  Step2: POST /v1/music_generation  (model=music-cover,
-      │         cover_feature_id + 修正后 lyrics + prompt)
-      ├─ task_id → 轮询 GET /v1/query_async_task
-      └─ file_id → GET /v1/files/retrieve → 下载 url(24h) → 存 mp3
+      │         cover_feature_id + 修正后 lyrics + prompt, output_format=url)
+      │   ★ 同步阻塞接口：POST 保持连接直到返回 data.audio_url，直接下载
+      └─ 无 query_async_task 端点（音乐用返回 404），不要轮询
 ```
 
 ## 输入
@@ -58,10 +58,15 @@ executable: true
 歌曲风格（默认从orkspace/project/{song}/project.md 获取，）
 
 ## 输出
-workspace/project/{song}/song_engineer/cover_minimax下面
-真正发送的歌词。minimax 能识别的歌词
-真正发送的干声 wav 转 mp3 ,降低体积不然无法上传。
-生成的wav
+`workspace/project/{song}/song_engineer/cover_minimax/` 下面：
+- `cover_preprocess.json` — Step1 产物（cover_feature_id 等）
+- `formatted_lyrics.txt` — ASR 提取歌词（需人工校正）
+- `formatted_lyrics.corrected.txt` — 校正后歌词（Step2 实际发送）
+- `structure_result.txt` — 各段时间戳
+- `02_主唱_v7_upload.mp3` — 干音转码后的实际上传文件（压体积）
+- `generate_meta.json` — Step2 提交后写入（model/cover_feature_id/out/提交时间，无 task_id，因同步接口）
+- `progress.md` — Step2 实时进度记录（见下「进度检测」）
+- `cover_minimax_v2.mp3` — 最终翻唱成品（mp3，非 wav）
 
 ## 铁律（务必遵守）
 
@@ -75,6 +80,9 @@ workspace/project/{song}/song_engineer/cover_minimax下面
 4. `lyrics` 字段长度 [10,1000]，`prompt` 长度 [10,300]，超出会被拒。
 
 ## 用法
+### 知识库
+[md/kb_repo/info/ai_tools/minimax/minimax_mmx_muisc.md]
+[md/kb_repo/info/ai_tools/minimax/minimax_api_muisc.md]
 
 ### Step1 前处理（提取歌词+结构，供校正）
 
@@ -119,11 +127,13 @@ workspace/project/{song}/song_engineer/cover_minimax下面
 - Body: `{"model":"music-cover","audio_base64":"..."}`（或 `audio_url`）
 - 响应: `cover_feature_id` / `formatted_lyrics` / `structure_result`(JSON串) / `audio_duration` / `trace_id`
 
-**Step2** `POST /v1/music_generation`
-- Body: `{"model":"music-cover","cover_feature_id":"...","lyrics":"...","prompt":"..."}`
+**Step2** `POST /v1/music_generation`（同步阻塞，无异步轮询端点）
+- Body: `{"model":"music-cover","cover_feature_id":"...","lyrics":"...","prompt":"...","output_format":"url"}`
   （`cover_feature_id` 与 `audio_*` 互斥；传 feature_id 时 lyrics 必填）
-- 异步：返回 `task_id` → `GET /v1/query_async_task?task_id=` 轮询至 `status=Success`
-  → 取 `file_id` → `GET /v1/files/retrieve?file_id=` → `file.url`（24h 有效）→ 下载
+- 同步：POST 保持连接直到生成完成，响应里带音频。实测返回结构：音频 URL 在 **`data.audio`** 字段
+  （`data.audio_url` 反而是空），脚本对「`audio_url`/URL/`audio`(hex/base64)」三种情况都做了兼容。
+  **没有** `query_async_task` 之类的进度端点（对音乐返回 404），不要轮询。
+- 进度靠 `progress.py` 的 Heartbeat：等待期间每 30s 写一条「生成中（已等待 N 分）」到 progress.md。
 
 鉴权：`.env` 的 `minimax_api_key`；base_url 读 `mmx config`（region=cn，默认 `https://api.minimaxi.com`）。
 
@@ -133,8 +143,28 @@ workspace/project/{song}/song_engineer/cover_minimax下面
   且本项目用它出了女声翻车问题 → 本技能是它的「可控升级替代」，专治一步 cover 的坑。
 - `minimax-music-web` 是网页端手动粘贴，不适用接口流程。
 
+## 进度检测
+
+重要事实（已实测纠正）：MiniMax 的 `music_cover` / `music_generation` 是**同步阻塞接口**，
+POST 会一直保持连接直到音频生成完，直接把 `data.audio_url` 返回在响应里。**不存在**
+异步进度端点（`query_async_task` 对音乐返回 404）。所以没有百分比进度可拉取——
+进度只能是「提交 → 等待心跳(已耗时) → 完成/失败」。
+
+`progress.py` 提供 `Heartbeat` 上下文管理器：`generate` 把阻塞的 POST 包在
+`with progress.Heartbeat(progress.md, interval=30):` 里，进入时记「提交」，
+开后台线程每 30s 写一条「生成中（已等待 N 分）」，退出时停线程；拿到响应后再写「完成/失败」。
+
+**Step2 自动记录**：每次 `generate` 运行都会写 `progress.md`（含表头）和 `generate_meta.json`，
+不再黑屏。后台任务也能看到心跳行。
+
+> 说明：本项目 2026-08-07 第一次 v2 生成（SWHIZQ）用了**错误的异步轮询端点**（`query_async_task` 对音乐 404），
+> 导致轮询全程失败、最后「轮询超时」退出，`cover_minimax_v2.mp3` 未生成。改成同步接口后重跑（task 1Q098E）
+> 又踩到第二个坑：响应把音频 URL 放在 `data.audio` 而非 `data.audio_url`，旧代码当 hex 解码直接 ValueError。
+> 修复为「URL/hex/base64 三路兼容 + 原始响应落盘 generate_resp.json」后，task 3QG1GC 才真正成功产出
+> `cover_minimax_v2.mp3`（5.81MB，3:01，44.1kHz 立体声）。
+
 ## 依赖
 
 - Python：`requests`（API 调用）。根 `.venv` 已装。
 - 干音提纯：`demucs`（根 `.venv` 已装 htdemucs）。仅在用 `--source` 整曲时才需要。
-- 仅 Step1 需要网络上传；Step2 也需要网络（提交+轮询+下载）。
+- 仅 Step1 需要网络上传；Step2 也需要网络（提交+等待返回+下载）。
