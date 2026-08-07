@@ -1,0 +1,8132 @@
+{
+ "format": "ustx-json",
+ "version": 2,
+ "meta": {
+  "name": "02_主唱",
+  "project": "走在",
+  "bpm": 68.0,
+  "tpb": 480,
+  "fps": 86.1328125,
+  "sample_rate": 44100,
+  "hop_size": 512,
+  "head_frames": 8,
+  "tail_frames": 8,
+  "singer": "yunye",
+  "voicebank": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16",
+  "models": {
+   "ling_dur": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\variance_assets\\duration_assets\\linguistic.onnx",
+   "dur": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\variance_assets\\duration_assets\\dur.onnx",
+   "ling_var": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\variance_assets\\variance_assets\\linguistic.onnx",
+   "variance": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\variance_assets\\variance_assets\\variance.onnx",
+   "ling_pitch": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\dspitch\\linguistic.onnx",
+   "pitch": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\dspitch\\pitch.onnx",
+   "acoustic": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\acoustic.onnx",
+   "vocoder": "D:\\OpenUtau\\Singers\\YunYe_DiffSinger_CE_26.07.16\\YunYe_DiffSinger_CE_26.07.16\\dsvocoder\\2601_zhibin_club_ft_pc_nsf_hifigan.onnx"
+  },
+  "bar_segs": [
+   [
+    5,
+    12,
+    1
+   ],
+   [
+    13,
+    20,
+    2
+   ],
+   [
+    21,
+    24,
+    3
+   ],
+   [
+    25,
+    32,
+    4
+   ],
+   [
+    33,
+    40,
+    5
+   ],
+   [
+    41,
+    47,
+    6
+   ],
+   [
+    48,
+    52,
+    7
+   ]
+  ],
+  "sources": {
+   "mid": "workspace\\project\\走在\\song_engineer\\track\\02_主唱.mid",
+   "lyrics": "workspace\\project\\走在\\song_engineer\\track\\03_lyrics.json"
+  },
+  "generator": "ds/ package (OpenUTAU official input contract)",
+  "created_at": "2026-08-07T10:02:06"
+ },
+ "notes": [
+  {
+   "position": 1616,
+   "duration": 38,
+   "tone": 52,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 52.0
+  },
+  {
+   "position": 1654,
+   "duration": 262,
+   "tone": 52,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 52.0
+  },
+  {
+   "position": 1917,
+   "duration": 246,
+   "tone": 51,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 39
+    }
+   ],
+   "word_frames": 39,
+   "note_midi_filled": 51.0
+  },
+  {
+   "position": 2164,
+   "duration": 487,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 77
+    }
+   ],
+   "word_frames": 77,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 2651,
+   "duration": 346,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 55
+    }
+   ],
+   "word_frames": 55,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 2997,
+   "duration": 236,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 37
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 3233,
+   "duration": 174,
+   "tone": 56,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 28
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 56.0
+  },
+  {
+   "position": 3407,
+   "duration": 158,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 25
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 3565,
+   "duration": 153,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 24
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 3718,
+   "duration": 299,
+   "tone": 51,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 47
+    }
+   ],
+   "word_frames": 47,
+   "note_midi_filled": 51.0
+  },
+  {
+   "position": 4018,
+   "duration": 281,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 44
+    }
+   ],
+   "word_frames": 44,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 4301,
+   "duration": 286,
+   "tone": 51,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 45
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 51.0
+  },
+  {
+   "position": 4589,
+   "duration": 501,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 79
+    }
+   ],
+   "word_frames": 79,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 5090,
+   "duration": 59,
+   "tone": 56,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 9
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 56.0
+  },
+  {
+   "position": 5149,
+   "duration": 289,
+   "tone": 56,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 46
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 56.0
+  },
+  {
+   "position": 5509,
+   "duration": 231,
+   "tone": 51,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 37
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 51.0
+  },
+  {
+   "position": 5741,
+   "duration": 182,
+   "tone": 49,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 29
+    }
+   ],
+   "word_frames": 29,
+   "note_midi_filled": 49.0
+  },
+  {
+   "position": 5925,
+   "duration": 527,
+   "tone": 46,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 83
+    }
+   ],
+   "word_frames": 83,
+   "note_midi_filled": 46.0
+  },
+  {
+   "position": 6453,
+   "duration": 299,
+   "tone": 49,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 47
+    }
+   ],
+   "word_frames": 47,
+   "note_midi_filled": 49.0
+  },
+  {
+   "position": 6752,
+   "duration": 221,
+   "tone": 47,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 35
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 47.0
+  },
+  {
+   "position": 6988,
+   "duration": 275,
+   "tone": 52,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 44
+    }
+   ],
+   "word_frames": 44,
+   "note_midi_filled": 52.0
+  },
+  {
+   "position": 7264,
+   "duration": 403,
+   "tone": 53,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 64
+    }
+   ],
+   "word_frames": 64,
+   "note_midi_filled": 53.0
+  },
+  {
+   "position": 7668,
+   "duration": 256,
+   "tone": 52,
+   "lyric": "R",
+   "kind": "rest",
+   "seg_id": null,
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 52.0
+  },
+  {
+   "position": 7925,
+   "duration": 140,
+   "tone": 51,
+   "lyric": "门",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 7
+    },
+    {
+     "ph": "zh/en",
+     "frames": 15
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 8065,
+   "duration": 288,
+   "tone": 51,
+   "lyric": "虚",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 18
+    },
+    {
+     "ph": "zh/v",
+     "frames": 28
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 8353,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 8354,
+   "duration": 271,
+   "tone": 49,
+   "lyric": "掩",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 32
+    }
+   ],
+   "word_frames": 43,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 8625,
+   "duration": 615,
+   "tone": 49,
+   "lyric": "着",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 14
+    },
+    {
+     "ph": "zh/e",
+     "frames": 83
+    }
+   ],
+   "word_frames": 97,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 9240,
+   "duration": 384,
+   "tone": 49,
+   "lyric": "风",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 20
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 41
+    }
+   ],
+   "word_frames": 61,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 9624,
+   "duration": 12,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 9636,
+   "duration": 290,
+   "tone": 53,
+   "lyric": "掀",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 22
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 24
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 9926,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 9928,
+   "duration": 231,
+   "tone": 51,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 16
+    },
+    {
+     "ph": "zh/e",
+     "frames": 21
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 10159,
+   "duration": 30,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 10189,
+   "duration": 286,
+   "tone": 53,
+   "lyric": "快",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 23
+    },
+    {
+     "ph": "zh/uai",
+     "frames": 22
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 10475,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 10476,
+   "duration": 272,
+   "tone": 51,
+   "lyric": "递",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 19
+    },
+    {
+     "ph": "zh/i",
+     "frames": 24
+    }
+   ],
+   "word_frames": 43,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 10748,
+   "duration": 256,
+   "tone": 51,
+   "lyric": "鞋",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 18
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 23
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11004,
+   "duration": 114,
+   "tone": 51,
+   "lyric": "尖",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 10
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 8
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11118,
+   "duration": 83,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 13
+    }
+   ],
+   "word_frames": 13,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11201,
+   "duration": 228,
+   "tone": 52,
+   "lyric": "沾",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 21
+    },
+    {
+     "ph": "zh/an",
+     "frames": 15
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 52.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11429,
+   "duration": 17,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 52.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11446,
+   "duration": 375,
+   "tone": 53,
+   "lyric": "雨",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y0",
+     "frames": 28
+    },
+    {
+     "ph": "zh/v",
+     "frames": 31
+    }
+   ],
+   "word_frames": 59,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 11821,
+   "duration": 925,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 146
+    }
+   ],
+   "word_frames": 146,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 12746,
+   "duration": 220,
+   "tone": 53,
+   "lyric": "空",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 16
+    },
+    {
+     "ph": "zh/ong",
+     "frames": 19
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 12966,
+   "duration": 32,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 12998,
+   "duration": 178,
+   "tone": 51,
+   "lyric": "调",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 8
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 20
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13176,
+   "duration": 505,
+   "tone": 51,
+   "lyric": "数",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 28
+    },
+    {
+     "ph": "zh/u",
+     "frames": 52
+    }
+   ],
+   "word_frames": 80,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13681,
+   "duration": 60,
+   "tone": 51,
+   "lyric": "到",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 7
+    },
+    {
+     "ph": "zh/ao",
+     "frames": 2
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13741,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13743,
+   "duration": 254,
+   "tone": 53,
+   "lyric": "七",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 19
+    },
+    {
+     "ph": "zh/i",
+     "frames": 21
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13997,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 13999,
+   "duration": 259,
+   "tone": 51,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 19
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 22
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14258,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14260,
+   "duration": 184,
+   "tone": 53,
+   "lyric": "起",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 14
+    },
+    {
+     "ph": "zh/i",
+     "frames": 15
+    }
+   ],
+   "word_frames": 29,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14444,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14446,
+   "duration": 335,
+   "tone": 51,
+   "lyric": "身",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 24
+    },
+    {
+     "ph": "zh/en",
+     "frames": 29
+    }
+   ],
+   "word_frames": 53,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14781,
+   "duration": 13,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 14794,
+   "duration": 465,
+   "tone": 53,
+   "lyric": "窝",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/w",
+     "frames": 24
+    },
+    {
+     "ph": "zh/uo",
+     "frames": 50
+    }
+   ],
+   "word_frames": 74,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 15259,
+   "duration": 536,
+   "tone": 53,
+   "lyric": "在",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 20
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 65
+    }
+   ],
+   "word_frames": 85,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 15795,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 15797,
+   "duration": 326,
+   "tone": 51,
+   "lyric": "花",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 25
+    },
+    {
+     "ph": "zh/ua",
+     "frames": 27
+    }
+   ],
+   "word_frames": 52,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16123,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16124,
+   "duration": 149,
+   "tone": 49,
+   "lyric": "海",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 13
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16273,
+   "duration": 26,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16299,
+   "duration": 322,
+   "tone": 48,
+   "lyric": "里",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 24
+    },
+    {
+     "ph": "zh/i",
+     "frames": 27
+    }
+   ],
+   "word_frames": 51,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16621,
+   "duration": 28,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16649,
+   "duration": 189,
+   "tone": 46,
+   "lyric": "沙",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 17
+    },
+    {
+     "ph": "zh/a",
+     "frames": 13
+    }
+   ],
+   "word_frames": 30,
+   "note_midi_filled": 46.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16838,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 0
+  },
+  {
+   "position": 16840,
+   "duration": 269,
+   "tone": 53,
+   "lyric": "发",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 21
+    },
+    {
+     "ph": "zh/a",
+     "frames": 22
+    }
+   ],
+   "word_frames": 43,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17109,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17111,
+   "duration": 176,
+   "tone": 49,
+   "lyric": "陷",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 13
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17287,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17288,
+   "duration": 220,
+   "tone": 48,
+   "lyric": "着",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 16
+    },
+    {
+     "ph": "zh/e",
+     "frames": 19
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17508,
+   "duration": 99,
+   "tone": 48,
+   "lyric": "杯",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 3
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 13
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 17607,
+   "duration": 404,
+   "tone": 48,
+   "lyric": "底",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 12
+    },
+    {
+     "ph": "zh/i",
+     "frames": 52
+    }
+   ],
+   "word_frames": 64,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18011,
+   "duration": 103,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 16
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 48.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18114,
+   "duration": 196,
+   "tone": 51,
+   "lyric": "淡",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 17
+    },
+    {
+     "ph": "zh/an",
+     "frames": 14
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18310,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18311,
+   "duration": 224,
+   "tone": 53,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 16
+    },
+    {
+     "ph": "zh/e",
+     "frames": 19
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18535,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18536,
+   "duration": 139,
+   "tone": 49,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 12
+    },
+    {
+     "ph": "zh/v",
+     "frames": 10
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18675,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18677,
+   "duration": 127,
+   "tone": 46,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 20
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18804,
+   "duration": 35,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 18839,
+   "duration": 236,
+   "tone": 45,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 37
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19075,
+   "duration": 17,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19092,
+   "duration": 250,
+   "tone": 55,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 40
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19342,
+   "duration": 37,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19379,
+   "duration": 106,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 17
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19485,
+   "duration": 160,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 25
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19645,
+   "duration": 129,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 20
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 19774,
+   "duration": 350,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 55
+    }
+   ],
+   "word_frames": 55,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 20124,
+   "duration": 427,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 68
+    }
+   ],
+   "word_frames": 68,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 20551,
+   "duration": 1914,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 303
+    }
+   ],
+   "word_frames": 303,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 22465,
+   "duration": 254,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 40
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 22719,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 22720,
+   "duration": 153,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 24
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 22873,
+   "duration": 254,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 40
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 49.0,
+   "seg_id": 0
+  },
+  {
+   "position": 23127,
+   "duration": 197,
+   "tone": 51,
+   "lyric": "拖",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 13
+    },
+    {
+     "ph": "zh/uo",
+     "frames": 18
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23324,
+   "duration": 99,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 16
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23423,
+   "duration": 211,
+   "tone": 53,
+   "lyric": "鞋",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 22
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 11
+    }
+   ],
+   "word_frames": 33,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23634,
+   "duration": 43,
+   "tone": 53,
+   "lyric": "半",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 5
+    },
+    {
+     "ph": "zh/an",
+     "frames": 2
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23677,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23678,
+   "duration": 150,
+   "tone": 51,
+   "lyric": "掉",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 11
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 13
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23828,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 23829,
+   "duration": 233,
+   "tone": 53,
+   "lyric": "踩",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/c",
+     "frames": 17
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 20
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24062,
+   "duration": 25,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24087,
+   "duration": 103,
+   "tone": 51,
+   "lyric": "过",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/g",
+     "frames": 6
+    },
+    {
+     "ph": "zh/uo",
+     "frames": 10
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24190,
+   "duration": 139,
+   "tone": 51,
+   "lyric": "泥",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/n",
+     "frames": 8
+    },
+    {
+     "ph": "zh/i",
+     "frames": 14
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24329,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24330,
+   "duration": 510,
+   "tone": 53,
+   "lyric": "和",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 33
+    },
+    {
+     "ph": "zh/e",
+     "frames": 48
+    }
+   ],
+   "word_frames": 81,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 24840,
+   "duration": 942,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 149
+    }
+   ],
+   "word_frames": 149,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 25782,
+   "duration": 327,
+   "tone": 53,
+   "lyric": "水",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 23
+    },
+    {
+     "ph": "zh/ui",
+     "frames": 29
+    }
+   ],
+   "word_frames": 52,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26109,
+   "duration": 39,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26148,
+   "duration": 260,
+   "tone": 51,
+   "lyric": "冷",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 22
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 19
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26408,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26410,
+   "duration": 181,
+   "tone": 53,
+   "lyric": "柜",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/g",
+     "frames": 13
+    },
+    {
+     "ph": "zh/ui",
+     "frames": 16
+    }
+   ],
+   "word_frames": 29,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26591,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 26592,
+   "duration": 448,
+   "tone": 51,
+   "lyric": "发",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 24
+    },
+    {
+     "ph": "zh/a",
+     "frames": 47
+    }
+   ],
+   "word_frames": 71,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 27040,
+   "duration": 409,
+   "tone": 51,
+   "lyric": "蓝",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 12
+    },
+    {
+     "ph": "zh/an",
+     "frames": 53
+    }
+   ],
+   "word_frames": 65,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 27449,
+   "duration": 254,
+   "tone": 51,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 12
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 28
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 27703,
+   "duration": 279,
+   "tone": 51,
+   "lyric": "买",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 14
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 30
+    }
+   ],
+   "word_frames": 44,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 27982,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 27984,
+   "duration": 629,
+   "tone": 53,
+   "lyric": "就",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 28
+    },
+    {
+     "ph": "zh/iu",
+     "frames": 72
+    }
+   ],
+   "word_frames": 100,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 28613,
+   "duration": 568,
+   "tone": 53,
+   "lyric": "回",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 21
+    },
+    {
+     "ph": "zh/ui",
+     "frames": 69
+    }
+   ],
+   "word_frames": 90,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29181,
+   "duration": 92,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 15
+    }
+   ],
+   "word_frames": 15,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29273,
+   "duration": 199,
+   "tone": 50,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 20
+    },
+    {
+     "ph": "zh/v",
+     "frames": 12
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 50.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29472,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 50.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29473,
+   "duration": 129,
+   "tone": 49,
+   "lyric": "沙",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 12
+    },
+    {
+     "ph": "zh/a",
+     "frames": 8
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29602,
+   "duration": 73,
+   "tone": 49,
+   "lyric": "发",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 8
+    },
+    {
+     "ph": "zh/a",
+     "frames": 4
+    }
+   ],
+   "word_frames": 12,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29675,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29676,
+   "duration": 235,
+   "tone": 46,
+   "lyric": "空",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ong",
+     "frames": 22
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 29911,
+   "duration": 184,
+   "tone": 46,
+   "lyric": "着",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 6
+    },
+    {
+     "ph": "zh/e",
+     "frames": 23
+    }
+   ],
+   "word_frames": 29,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 30095,
+   "duration": 232,
+   "tone": 50,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 9
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 28
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 50.0,
+   "seg_id": 1
+  },
+  {
+   "position": 30327,
+   "duration": 263,
+   "tone": 49,
+   "lyric": "人",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/r",
+     "frames": 12
+    },
+    {
+     "ph": "zh/en",
+     "frames": 30
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 30590,
+   "duration": 178,
+   "tone": 49,
+   "lyric": "留",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 4
+    },
+    {
+     "ph": "zh/iu",
+     "frames": 24
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 30768,
+   "duration": 710,
+   "tone": 46,
+   "lyric": "意",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 15
+    },
+    {
+     "ph": "zh/i",
+     "frames": 97
+    }
+   ],
+   "word_frames": 112,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 31478,
+   "duration": 402,
+   "tone": 46,
+   "lyric": "身",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 22
+    },
+    {
+     "ph": "zh/en",
+     "frames": 42
+    }
+   ],
+   "word_frames": 64,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 31880,
+   "duration": 125,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 20
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 32005,
+   "duration": 264,
+   "tone": 53,
+   "lyric": "体",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 24
+    },
+    {
+     "ph": "zh/i",
+     "frames": 18
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 32269,
+   "duration": 154,
+   "tone": 53,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 5
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 19
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 53.0,
+   "seg_id": 1
+  },
+  {
+   "position": 32423,
+   "duration": 381,
+   "tone": 48,
+   "lyric": "动",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ong",
+     "frames": 49
+    }
+   ],
+   "word_frames": 60,
+   "note_midi_filled": 48.0,
+   "seg_id": 1
+  },
+  {
+   "position": 32804,
+   "duration": 29,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 48.0,
+   "seg_id": 1
+  },
+  {
+   "position": 32833,
+   "duration": 355,
+   "tone": 46,
+   "lyric": "灵",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 23
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 33
+    }
+   ],
+   "word_frames": 56,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33188,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33190,
+   "duration": 330,
+   "tone": 56,
+   "lyric": "魂",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 22
+    },
+    {
+     "ph": "zh/un",
+     "frames": 30
+    }
+   ],
+   "word_frames": 52,
+   "note_midi_filled": 56.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33520,
+   "duration": 31,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 56.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33551,
+   "duration": 324,
+   "tone": 51,
+   "lyric": "走",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 25
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 26
+    }
+   ],
+   "word_frames": 51,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33875,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 1
+  },
+  {
+   "position": 33877,
+   "duration": 257,
+   "tone": 49,
+   "lyric": "过",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/g",
+     "frames": 22
+    },
+    {
+     "ph": "zh/uo",
+     "frames": 19
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 34134,
+   "duration": 129,
+   "tone": 49,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 12
+    },
+    {
+     "ph": "zh/v",
+     "frames": 8
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 34263,
+   "duration": 172,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 27
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 34435,
+   "duration": 384,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 61
+    }
+   ],
+   "word_frames": 61,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 34819,
+   "duration": 2412,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 382
+    }
+   ],
+   "word_frames": 382,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 37231,
+   "duration": 715,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 113
+    }
+   ],
+   "word_frames": 113,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 37946,
+   "duration": 243,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 38
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 38189,
+   "duration": 271,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/v",
+     "frames": 43
+    }
+   ],
+   "word_frames": 43,
+   "note_midi_filled": 49.0,
+   "seg_id": 1
+  },
+  {
+   "position": 38460,
+   "duration": 178,
+   "tone": 51,
+   "lyric": "嗯",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 28
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 51.0,
+   "seg_id": 2
+  },
+  {
+   "position": 38638,
+   "duration": 106,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 17
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 51.0,
+   "seg_id": 2
+  },
+  {
+   "position": 38744,
+   "duration": 506,
+   "tone": 53,
+   "lyric": "它",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 30
+    },
+    {
+     "ph": "zh/a",
+     "frames": 50
+    }
+   ],
+   "word_frames": 80,
+   "note_midi_filled": 53.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39250,
+   "duration": 289,
+   "tone": 53,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 17
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 29
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 53.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39539,
+   "duration": 39,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 53.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39578,
+   "duration": 165,
+   "tone": 52,
+   "lyric": "动",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ong",
+     "frames": 11
+    }
+   ],
+   "word_frames": 26,
+   "note_midi_filled": 52.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39743,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 52.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39744,
+   "duration": 176,
+   "tone": 51,
+   "lyric": "又",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 12
+    },
+    {
+     "ph": "zh/iu",
+     "frames": 16
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 51.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39920,
+   "duration": 27,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 51.0,
+   "seg_id": 2
+  },
+  {
+   "position": 39947,
+   "duration": 90,
+   "tone": 48,
+   "lyric": "像",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 6
+    },
+    {
+     "ph": "zh/iang",
+     "frames": 8
+    }
+   ],
+   "word_frames": 14,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 40037,
+   "duration": 128,
+   "tone": 49,
+   "lyric": "都",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 5
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 15
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 49.0,
+   "seg_id": 2
+  },
+  {
+   "position": 40165,
+   "duration": 1611,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 255
+    }
+   ],
+   "word_frames": 255,
+   "note_midi_filled": 49.0,
+   "seg_id": 2
+  },
+  {
+   "position": 41776,
+   "duration": 153,
+   "tone": 49,
+   "lyric": "走",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 9
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 49.0,
+   "seg_id": 2
+  },
+  {
+   "position": 41929,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 49.0,
+   "seg_id": 2
+  },
+  {
+   "position": 41930,
+   "duration": 195,
+   "tone": 48,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 14
+    },
+    {
+     "ph": "zh/e",
+     "frames": 17
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 42125,
+   "duration": 1460,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 231
+    }
+   ],
+   "word_frames": 231,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 43585,
+   "duration": 262,
+   "tone": 52,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 43847,
+   "duration": 6,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 43853,
+   "duration": 378,
+   "tone": 50,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 60
+    }
+   ],
+   "word_frames": 60,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 44231,
+   "duration": 259,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 44490,
+   "duration": 1029,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 163
+    }
+   ],
+   "word_frames": 163,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 45519,
+   "duration": 203,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 32
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 45722,
+   "duration": 17,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 45739,
+   "duration": 257,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 45996,
+   "duration": 138,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/e",
+     "frames": 22
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 48.0,
+   "seg_id": 2
+  },
+  {
+   "position": 46135,
+   "duration": 242,
+   "tone": 51,
+   "lyric": "杯",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 8
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 30
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46377,
+   "duration": 34,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46411,
+   "duration": 62,
+   "tone": 50,
+   "lyric": "底",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 7
+    },
+    {
+     "ph": "zh/i",
+     "frames": 3
+    }
+   ],
+   "word_frames": 10,
+   "note_midi_filled": 50.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46473,
+   "duration": 33,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 50.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46506,
+   "duration": 132,
+   "tone": 53,
+   "lyric": "圈",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 11
+    },
+    {
+     "ph": "zh/van",
+     "frames": 10
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46638,
+   "duration": 53,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 8
+    }
+   ],
+   "word_frames": 8,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46691,
+   "duration": 227,
+   "tone": 51,
+   "lyric": "淡",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 13
+    },
+    {
+     "ph": "zh/an",
+     "frames": 23
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 46918,
+   "duration": 220,
+   "tone": 51,
+   "lyric": "投",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 24
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47138,
+   "duration": 116,
+   "tone": 50,
+   "lyric": "屏",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/p",
+     "frames": 10
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 8
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 50.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47254,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 50.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47256,
+   "duration": 180,
+   "tone": 53,
+   "lyric": "卡",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 12
+    },
+    {
+     "ph": "zh/a",
+     "frames": 16
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47436,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47438,
+   "duration": 47,
+   "tone": 52,
+   "lyric": "半",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 3
+    },
+    {
+     "ph": "zh/an",
+     "frames": 4
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 52.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47485,
+   "duration": 15,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 52.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47500,
+   "duration": 198,
+   "tone": 53,
+   "lyric": "截",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 14
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 17
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47698,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47700,
+   "duration": 293,
+   "tone": 51,
+   "lyric": "消",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 21
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 25
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 47993,
+   "duration": 34,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48027,
+   "duration": 171,
+   "tone": 53,
+   "lyric": "息",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 10
+    },
+    {
+     "ph": "zh/i",
+     "frames": 17
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48198,
+   "duration": 202,
+   "tone": 53,
+   "lyric": "弹",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 7
+    },
+    {
+     "ph": "zh/an",
+     "frames": 25
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48400,
+   "duration": 18,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48418,
+   "duration": 253,
+   "tone": 51,
+   "lyric": "出",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/ch",
+     "frames": 15
+    },
+    {
+     "ph": "zh/u",
+     "frames": 25
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48671,
+   "duration": 228,
+   "tone": 51,
+   "lyric": "名",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 25
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48899,
+   "duration": 60,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 9
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 48959,
+   "duration": 824,
+   "tone": 53,
+   "lyric": "字",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 26
+    },
+    {
+     "ph": "zh/i0",
+     "frames": 104
+    }
+   ],
+   "word_frames": 130,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 49783,
+   "duration": 252,
+   "tone": 53,
+   "lyric": "很",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 12
+    },
+    {
+     "ph": "zh/en",
+     "frames": 28
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50035,
+   "duration": 14,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50049,
+   "duration": 150,
+   "tone": 51,
+   "lyric": "熟",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 6
+    },
+    {
+     "ph": "zh/u",
+     "frames": 18
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50199,
+   "duration": 472,
+   "tone": 51,
+   "lyric": "悉",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 16
+    },
+    {
+     "ph": "zh/i",
+     "frames": 59
+    }
+   ],
+   "word_frames": 75,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50671,
+   "duration": 268,
+   "tone": 53,
+   "lyric": "有",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 12
+    },
+    {
+     "ph": "zh/iu",
+     "frames": 30
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50939,
+   "duration": 10,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 50949,
+   "duration": 217,
+   "tone": 51,
+   "lyric": "人",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/r",
+     "frames": 12
+    },
+    {
+     "ph": "zh/en",
+     "frames": 22
+    }
+   ],
+   "word_frames": 34,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 51166,
+   "duration": 295,
+   "tone": 51,
+   "lyric": "碰",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/p",
+     "frames": 9
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 38
+    }
+   ],
+   "word_frames": 47,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 51461,
+   "duration": 268,
+   "tone": 51,
+   "lyric": "肩",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 31
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 51729,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 51731,
+   "duration": 823,
+   "tone": 53,
+   "lyric": "风",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 37
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 93
+    }
+   ],
+   "word_frames": 130,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 52554,
+   "duration": 68,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 11
+    }
+   ],
+   "word_frames": 11,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 52622,
+   "duration": 205,
+   "tone": 51,
+   "lyric": "晃",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 15
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 17
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 52827,
+   "duration": 169,
+   "tone": 49,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 11
+    },
+    {
+     "ph": "zh/e",
+     "frames": 16
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 49.0,
+   "seg_id": 3
+  },
+  {
+   "position": 52996,
+   "duration": 55,
+   "tone": 49,
+   "lyric": "窗",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/ch",
+     "frames": 4
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 5
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 49.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53051,
+   "duration": 124,
+   "tone": 48,
+   "lyric": "帘",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 4
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 16
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 48.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53175,
+   "duration": 200,
+   "tone": 46,
+   "lyric": "细",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 11
+    },
+    {
+     "ph": "zh/i",
+     "frames": 21
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 46.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53375,
+   "duration": 210,
+   "tone": 46,
+   "lyric": "线",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 13
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 20
+    }
+   ],
+   "word_frames": 33,
+   "note_midi_filled": 46.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53585,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53587,
+   "duration": 115,
+   "tone": 51,
+   "lyric": "反",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 10
+    },
+    {
+     "ph": "zh/an",
+     "frames": 8
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53702,
+   "duration": 62,
+   "tone": 51,
+   "lyric": "复",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 7
+    },
+    {
+     "ph": "zh/u",
+     "frames": 3
+    }
+   ],
+   "word_frames": 10,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53764,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53765,
+   "duration": 228,
+   "tone": 49,
+   "lyric": "却",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ve",
+     "frames": 21
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 49.0,
+   "seg_id": 3
+  },
+  {
+   "position": 53993,
+   "duration": 157,
+   "tone": 49,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 5
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 20
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 49.0,
+   "seg_id": 3
+  },
+  {
+   "position": 54150,
+   "duration": 441,
+   "tone": 46,
+   "lyric": "人",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/r",
+     "frames": 17
+    },
+    {
+     "ph": "zh/en",
+     "frames": 53
+    }
+   ],
+   "word_frames": 70,
+   "note_midi_filled": 46.0,
+   "seg_id": 3
+  },
+  {
+   "position": 54591,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 3
+  },
+  {
+   "position": 54593,
+   "duration": 203,
+   "tone": 52,
+   "lyric": "在",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 17
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 15
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 52.0,
+   "seg_id": 3
+  },
+  {
+   "position": 54796,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 52.0,
+   "seg_id": 3
+  },
+  {
+   "position": 54797,
+   "duration": 256,
+   "tone": 53,
+   "lyric": "意",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 19
+    },
+    {
+     "ph": "zh/i",
+     "frames": 22
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55053,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55055,
+   "duration": 128,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 20
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55183,
+   "duration": 209,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 33
+    }
+   ],
+   "word_frames": 33,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55392,
+   "duration": 367,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 58
+    }
+   ],
+   "word_frames": 58,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55759,
+   "duration": 67,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 11
+    }
+   ],
+   "word_frames": 11,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55826,
+   "duration": 134,
+   "tone": 54,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 21
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55960,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 55962,
+   "duration": 263,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 42
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 56225,
+   "duration": 276,
+   "tone": 48,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 44
+    }
+   ],
+   "word_frames": 44,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 56501,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 56503,
+   "duration": 541,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 86
+    }
+   ],
+   "word_frames": 86,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 57044,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 57045,
+   "duration": 116,
+   "tone": 50,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 18
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 57161,
+   "duration": 2027,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 321
+    }
+   ],
+   "word_frames": 321,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 59188,
+   "duration": 206,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 33
+    }
+   ],
+   "word_frames": 33,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 59394,
+   "duration": 78,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 12
+    }
+   ],
+   "word_frames": 12,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 59472,
+   "duration": 159,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 25
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 59631,
+   "duration": 368,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 58
+    }
+   ],
+   "word_frames": 58,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 59999,
+   "duration": 254,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 40
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60253,
+   "duration": 15,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60268,
+   "duration": 211,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 33
+    }
+   ],
+   "word_frames": 33,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60479,
+   "duration": 62,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 10
+    }
+   ],
+   "word_frames": 10,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60541,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60543,
+   "duration": 174,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 28
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60717,
+   "duration": 20,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60737,
+   "duration": 250,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 40
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 60987,
+   "duration": 112,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 18
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 61099,
+   "duration": 193,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 31
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 61292,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 61293,
+   "duration": 1095,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 173
+    }
+   ],
+   "word_frames": 173,
+   "note_midi_filled": 53.0,
+   "seg_id": 3
+  },
+  {
+   "position": 62388,
+   "duration": 283,
+   "tone": 53,
+   "lyric": "地",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 8
+    },
+    {
+     "ph": "zh/i",
+     "frames": 37
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 62671,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 62673,
+   "duration": 238,
+   "tone": 51,
+   "lyric": "铁",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 17
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 21
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 62911,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 62913,
+   "duration": 404,
+   "tone": 53,
+   "lyric": "报",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 24
+    },
+    {
+     "ph": "zh/ao",
+     "frames": 40
+    }
+   ],
+   "word_frames": 64,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 63317,
+   "duration": 173,
+   "tone": 51,
+   "lyric": "站",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 8
+    },
+    {
+     "ph": "zh/an",
+     "frames": 19
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 63490,
+   "duration": 297,
+   "tone": 51,
+   "lyric": "靠",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ao",
+     "frames": 32
+    }
+   ],
+   "word_frames": 47,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 63787,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 63788,
+   "duration": 241,
+   "tone": 53,
+   "lyric": "门",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 17
+    },
+    {
+     "ph": "zh/en",
+     "frames": 21
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64029,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64030,
+   "duration": 194,
+   "tone": 51,
+   "lyric": "打",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 14
+    },
+    {
+     "ph": "zh/a",
+     "frames": 17
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64224,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64225,
+   "duration": 154,
+   "tone": 53,
+   "lyric": "哈",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 13
+    },
+    {
+     "ph": "zh/a",
+     "frames": 11
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64379,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64381,
+   "duration": 307,
+   "tone": 51,
+   "lyric": "欠",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 23
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 26
+    }
+   ],
+   "word_frames": 49,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64688,
+   "duration": 5,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64693,
+   "duration": 171,
+   "tone": 53,
+   "lyric": "手",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 4
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 23
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 64864,
+   "duration": 637,
+   "tone": 53,
+   "lyric": "里",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 13
+    },
+    {
+     "ph": "zh/i",
+     "frames": 88
+    }
+   ],
+   "word_frames": 101,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 65501,
+   "duration": 376,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 60
+    }
+   ],
+   "word_frames": 60,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 65877,
+   "duration": 243,
+   "tone": 50,
+   "lyric": "攥",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 16
+    },
+    {
+     "ph": "zh/uan",
+     "frames": 22
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 50.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66120,
+   "duration": 220,
+   "tone": 49,
+   "lyric": "皱",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 9
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 26
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 49.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66340,
+   "duration": 253,
+   "tone": 49,
+   "lyric": "小",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 17
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 23
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 49.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66593,
+   "duration": 52,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 8
+    }
+   ],
+   "word_frames": 8,
+   "note_midi_filled": 49.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66645,
+   "duration": 124,
+   "tone": 48,
+   "lyric": "票",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/p",
+     "frames": 12
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 8
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 48.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66769,
+   "duration": 39,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 48.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66808,
+   "duration": 130,
+   "tone": 46,
+   "lyric": "没",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 12
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 9
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66938,
+   "duration": 18,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 66956,
+   "duration": 200,
+   "tone": 51,
+   "lyric": "目",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 15
+    },
+    {
+     "ph": "zh/u",
+     "frames": 17
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 67156,
+   "duration": 25,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 67181,
+   "duration": 320,
+   "tone": 49,
+   "lyric": "的",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 21
+    },
+    {
+     "ph": "zh/e",
+     "frames": 30
+    }
+   ],
+   "word_frames": 51,
+   "note_midi_filled": 49.0,
+   "seg_id": 4
+  },
+  {
+   "position": 67501,
+   "duration": 175,
+   "tone": 49,
+   "lyric": "忘",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/w",
+     "frames": 4
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 24
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 49.0,
+   "seg_id": 4
+  },
+  {
+   "position": 67676,
+   "duration": 598,
+   "tone": 47,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 14
+    },
+    {
+     "ph": "zh/e",
+     "frames": 81
+    }
+   ],
+   "word_frames": 95,
+   "note_midi_filled": 47.0,
+   "seg_id": 4
+  },
+  {
+   "position": 68274,
+   "duration": 47,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 7
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 47.0,
+   "seg_id": 4
+  },
+  {
+   "position": 68321,
+   "duration": 172,
+   "tone": 53,
+   "lyric": "填",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 8
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 19
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 68493,
+   "duration": 418,
+   "tone": 53,
+   "lyric": "停",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 13
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 53
+    }
+   ],
+   "word_frames": 66,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 68911,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 68913,
+   "duration": 295,
+   "tone": 47,
+   "lyric": "在",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 21
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 26
+    }
+   ],
+   "word_frames": 47,
+   "note_midi_filled": 47.0,
+   "seg_id": 4
+  },
+  {
+   "position": 69208,
+   "duration": 3,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 47.0,
+   "seg_id": 4
+  },
+  {
+   "position": 69211,
+   "duration": 332,
+   "tone": 46,
+   "lyric": "第",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 24
+    },
+    {
+     "ph": "zh/i",
+     "frames": 29
+    }
+   ],
+   "word_frames": 53,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 69543,
+   "duration": 235,
+   "tone": 57,
+   "lyric": "三",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/s",
+     "frames": 13
+    },
+    {
+     "ph": "zh/an",
+     "frames": 24
+    }
+   ],
+   "word_frames": 37,
+   "note_midi_filled": 57.0,
+   "seg_id": 4
+  },
+  {
+   "position": 69778,
+   "duration": 239,
+   "tone": 56,
+   "lyric": "弦",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 15
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 23
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 56.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70017,
+   "duration": 120,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 19
+    }
+   ],
+   "word_frames": 19,
+   "note_midi_filled": 56.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70137,
+   "duration": 136,
+   "tone": 55,
+   "lyric": "它",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 15
+    },
+    {
+     "ph": "zh/a",
+     "frames": 7
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 55.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70273,
+   "duration": 26,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 55.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70299,
+   "duration": 350,
+   "tone": 53,
+   "lyric": "还",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 27
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 28
+    }
+   ],
+   "word_frames": 55,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70649,
+   "duration": 22,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70671,
+   "duration": 100,
+   "tone": 48,
+   "lyric": "在",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 6
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 10
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 48.0,
+   "seg_id": 4
+  },
+  {
+   "position": 70771,
+   "duration": 262,
+   "tone": 46,
+   "lyric": "响",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 12
+    },
+    {
+     "ph": "zh/iang",
+     "frames": 29
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 71033,
+   "duration": 286,
+   "tone": 46,
+   "lyric": "人",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/r",
+     "frames": 12
+    },
+    {
+     "ph": "zh/en",
+     "frames": 33
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 71319,
+   "duration": 2226,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 352
+    }
+   ],
+   "word_frames": 352,
+   "note_midi_filled": 46.0,
+   "seg_id": 4
+  },
+  {
+   "position": 73545,
+   "duration": 167,
+   "tone": 51,
+   "lyric": "已",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 10
+    },
+    {
+     "ph": "zh/i",
+     "frames": 16
+    }
+   ],
+   "word_frames": 26,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 73712,
+   "duration": 25,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 73737,
+   "duration": 254,
+   "tone": 53,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 15
+    },
+    {
+     "ph": "zh/v",
+     "frames": 25
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 73991,
+   "duration": 249,
+   "tone": 53,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 11
+    },
+    {
+     "ph": "zh/e",
+     "frames": 28
+    }
+   ],
+   "word_frames": 39,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74240,
+   "duration": 10,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74250,
+   "duration": 276,
+   "tone": 51,
+   "lyric": "别",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 20
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 24
+    }
+   ],
+   "word_frames": 44,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74526,
+   "duration": 86,
+   "tone": 51,
+   "lyric": "地",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 8
+    },
+    {
+     "ph": "zh/i",
+     "frames": 6
+    }
+   ],
+   "word_frames": 14,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74612,
+   "duration": 25,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74637,
+   "duration": 108,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 17
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74745,
+   "duration": 59,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 9
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74804,
+   "duration": 99,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 16
+    }
+   ],
+   "word_frames": 16,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74903,
+   "duration": 6,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 74909,
+   "duration": 108,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 17
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75017,
+   "duration": 42,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 7
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75059,
+   "duration": 291,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 46
+    }
+   ],
+   "word_frames": 46,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75350,
+   "duration": 268,
+   "tone": 51,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 42
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75618,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75619,
+   "duration": 248,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 39
+    }
+   ],
+   "word_frames": 39,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 75867,
+   "duration": 260,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76127,
+   "duration": 111,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 18
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76238,
+   "duration": 178,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 28
+    }
+   ],
+   "word_frames": 28,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76416,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76418,
+   "duration": 256,
+   "tone": 52,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 41
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76674,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 76675,
+   "duration": 490,
+   "tone": 53,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 78
+    }
+   ],
+   "word_frames": 78,
+   "note_midi_filled": 51.0,
+   "seg_id": 4
+  },
+  {
+   "position": 77165,
+   "duration": 55,
+   "tone": 53,
+   "lyric": "杯",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 1
+    },
+    {
+     "ph": "zh/ei",
+     "frames": 8
+    }
+   ],
+   "word_frames": 9,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77220,
+   "duration": 238,
+   "tone": 51,
+   "lyric": "底",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 7
+    },
+    {
+     "ph": "zh/i",
+     "frames": 31
+    }
+   ],
+   "word_frames": 38,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77458,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77460,
+   "duration": 131,
+   "tone": 53,
+   "lyric": "圈",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 7
+    },
+    {
+     "ph": "zh/van",
+     "frames": 14
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77591,
+   "duration": 130,
+   "tone": 53,
+   "lyric": "淡",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 6
+    },
+    {
+     "ph": "zh/an",
+     "frames": 15
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77721,
+   "duration": 34,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 5
+    }
+   ],
+   "word_frames": 5,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 77755,
+   "duration": 274,
+   "tone": 51,
+   "lyric": "投",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/t",
+     "frames": 17
+    },
+    {
+     "ph": "zh/ou",
+     "frames": 26
+    }
+   ],
+   "word_frames": 43,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78029,
+   "duration": 217,
+   "tone": 51,
+   "lyric": "屏",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/p",
+     "frames": 11
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 23
+    }
+   ],
+   "word_frames": 34,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78246,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78247,
+   "duration": 156,
+   "tone": 53,
+   "lyric": "卡",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/k",
+     "frames": 9
+    },
+    {
+     "ph": "zh/a",
+     "frames": 16
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78403,
+   "duration": 126,
+   "tone": 53,
+   "lyric": "半",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/b",
+     "frames": 8
+    },
+    {
+     "ph": "zh/an",
+     "frames": 12
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78529,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78531,
+   "duration": 125,
+   "tone": 51,
+   "lyric": "截",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 9
+    },
+    {
+     "ph": "zh/ie",
+     "frames": 11
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78656,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78657,
+   "duration": 181,
+   "tone": 53,
+   "lyric": "消",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 11
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 18
+    }
+   ],
+   "word_frames": 29,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 78838,
+   "duration": 264,
+   "tone": 53,
+   "lyric": "息",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 10
+    },
+    {
+     "ph": "zh/i",
+     "frames": 32
+    }
+   ],
+   "word_frames": 42,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 79102,
+   "duration": 455,
+   "tone": 53,
+   "lyric": "弹",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 14
+    },
+    {
+     "ph": "zh/an",
+     "frames": 58
+    }
+   ],
+   "word_frames": 72,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 79557,
+   "duration": 218,
+   "tone": 53,
+   "lyric": "出",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/ch",
+     "frames": 7
+    },
+    {
+     "ph": "zh/u",
+     "frames": 28
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 79775,
+   "duration": 637,
+   "tone": 56,
+   "lyric": "那",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/n",
+     "frames": 17
+    },
+    {
+     "ph": "zh/a",
+     "frames": 84
+    }
+   ],
+   "word_frames": 101,
+   "note_midi_filled": 56.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80412,
+   "duration": 10,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 56.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80422,
+   "duration": 138,
+   "tone": 50,
+   "lyric": "名",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 10
+    },
+    {
+     "ph": "zh/ing",
+     "frames": 12
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 50.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80560,
+   "duration": 18,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 50.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80578,
+   "duration": 129,
+   "tone": 48,
+   "lyric": "字",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/z",
+     "frames": 11
+    },
+    {
+     "ph": "zh/i0",
+     "frames": 9
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80707,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80708,
+   "duration": 145,
+   "tone": 49,
+   "lyric": "很",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 7
+    },
+    {
+     "ph": "zh/en",
+     "frames": 16
+    }
+   ],
+   "word_frames": 23,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 80853,
+   "duration": 245,
+   "tone": 49,
+   "lyric": "熟",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 15
+    },
+    {
+     "ph": "zh/u",
+     "frames": 24
+    }
+   ],
+   "word_frames": 39,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81098,
+   "duration": 47,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 7
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81145,
+   "duration": 76,
+   "tone": 46,
+   "lyric": "悉",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 9
+    },
+    {
+     "ph": "zh/i",
+     "frames": 3
+    }
+   ],
+   "word_frames": 12,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81221,
+   "duration": 26,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81247,
+   "duration": 116,
+   "tone": 49,
+   "lyric": "有",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/y",
+     "frames": 11
+    },
+    {
+     "ph": "zh/iu",
+     "frames": 7
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81363,
+   "duration": 28,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81391,
+   "duration": 109,
+   "tone": 47,
+   "lyric": "人",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/r",
+     "frames": 9
+    },
+    {
+     "ph": "zh/en",
+     "frames": 8
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 47.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81500,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 47.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81502,
+   "duration": 151,
+   "tone": 49,
+   "lyric": "碰",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/p",
+     "frames": 11
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 13
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81653,
+   "duration": 20,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81673,
+   "duration": 229,
+   "tone": 46,
+   "lyric": "肩",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 16
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 20
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81902,
+   "duration": 24,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 4
+    }
+   ],
+   "word_frames": 4,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 81926,
+   "duration": 117,
+   "tone": 48,
+   "lyric": "风",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/f",
+     "frames": 11
+    },
+    {
+     "ph": "zh/eng",
+     "frames": 8
+    }
+   ],
+   "word_frames": 19,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82043,
+   "duration": 19,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82062,
+   "duration": 62,
+   "tone": 46,
+   "lyric": "晃",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 6
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 4
+    }
+   ],
+   "word_frames": 10,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82124,
+   "duration": 13,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82137,
+   "duration": 201,
+   "tone": 49,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 12
+    },
+    {
+     "ph": "zh/e",
+     "frames": 20
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82338,
+   "duration": 203,
+   "tone": 49,
+   "lyric": "窗",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/ch",
+     "frames": 11
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 21
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82541,
+   "duration": 173,
+   "tone": 53,
+   "lyric": "帘",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 4
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 23
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82714,
+   "duration": 126,
+   "tone": 53,
+   "lyric": "光",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/g",
+     "frames": 6
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 14
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 82840,
+   "duration": 173,
+   "tone": 53,
+   "lyric": "线",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 12
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 15
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 83013,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 5
+  },
+  {
+   "position": 83015,
+   "duration": 282,
+   "tone": 49,
+   "lyric": "晃",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 12
+    },
+    {
+     "ph": "zh/uang",
+     "frames": 33
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 83297,
+   "duration": 369,
+   "tone": 49,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 10
+    },
+    {
+     "ph": "zh/e",
+     "frames": 48
+    }
+   ],
+   "word_frames": 58,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 83666,
+   "duration": 287,
+   "tone": 49,
+   "lyric": "吹",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/ch",
+     "frames": 16
+    },
+    {
+     "ph": "zh/ui",
+     "frames": 29
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 83953,
+   "duration": 133,
+   "tone": 49,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 4
+    },
+    {
+     "ph": "zh/e",
+     "frames": 17
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84086,
+   "duration": 255,
+   "tone": 49,
+   "lyric": "我",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/w",
+     "frames": 12
+    },
+    {
+     "ph": "zh/uo",
+     "frames": 28
+    }
+   ],
+   "word_frames": 40,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84341,
+   "duration": 106,
+   "tone": 49,
+   "lyric": "到",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/d",
+     "frames": 9
+    },
+    {
+     "ph": "zh/ao",
+     "frames": 8
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84447,
+   "duration": 41,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84488,
+   "duration": 218,
+   "tone": 48,
+   "lyric": "那",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/n",
+     "frames": 19
+    },
+    {
+     "ph": "zh/a",
+     "frames": 16
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84706,
+   "duration": 38,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 6
+    }
+   ],
+   "word_frames": 6,
+   "note_midi_filled": 48.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84744,
+   "duration": 150,
+   "tone": 49,
+   "lyric": "里",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 14
+    },
+    {
+     "ph": "zh/i",
+     "frames": 10
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 49.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84894,
+   "duration": 75,
+   "tone": 46,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 12
+    }
+   ],
+   "word_frames": 12,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 84969,
+   "duration": 44,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 7
+    }
+   ],
+   "word_frames": 7,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85013,
+   "duration": 155,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 25
+    }
+   ],
+   "word_frames": 25,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85168,
+   "duration": 127,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 20
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85295,
+   "duration": 187,
+   "tone": 48,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 30
+    }
+   ],
+   "word_frames": 30,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85482,
+   "duration": 80,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 13
+    }
+   ],
+   "word_frames": 13,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85562,
+   "duration": 388,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 61
+    }
+   ],
+   "word_frames": 61,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85950,
+   "duration": 18,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 85968,
+   "duration": 249,
+   "tone": 50,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 39
+    }
+   ],
+   "word_frames": 39,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 86217,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 86219,
+   "duration": 144,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 23
+    }
+   ],
+   "word_frames": 23,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 86363,
+   "duration": 132,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 21
+    }
+   ],
+   "word_frames": 21,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 86495,
+   "duration": 93,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 15
+    }
+   ],
+   "word_frames": 15,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 86588,
+   "duration": 451,
+   "tone": 49,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 71
+    }
+   ],
+   "word_frames": 71,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 87039,
+   "duration": 120,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 19
+    }
+   ],
+   "word_frames": 19,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 87159,
+   "duration": 85,
+   "tone": 45,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 13
+    }
+   ],
+   "word_frames": 13,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 87244,
+   "duration": 311,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 49
+    }
+   ],
+   "word_frames": 49,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 87555,
+   "duration": 445,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 70
+    }
+   ],
+   "word_frames": 70,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88000,
+   "duration": 169,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 27
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88169,
+   "duration": 172,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 27
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88341,
+   "duration": 343,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 54
+    }
+   ],
+   "word_frames": 54,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88684,
+   "duration": 150,
+   "tone": 44,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 24
+    }
+   ],
+   "word_frames": 24,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88834,
+   "duration": 79,
+   "tone": 57,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 13
+    }
+   ],
+   "word_frames": 13,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 88913,
+   "duration": 190,
+   "tone": 57,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 30
+    }
+   ],
+   "word_frames": 30,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 89103,
+   "duration": 765,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 121
+    }
+   ],
+   "word_frames": 121,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 89868,
+   "duration": 360,
+   "tone": 57,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 57
+    }
+   ],
+   "word_frames": 57,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 90228,
+   "duration": 163,
+   "tone": 57,
+   "lyric": "-",
+   "kind": "slur",
+   "phones": [
+    {
+     "ph": "zh/i",
+     "frames": 26
+    }
+   ],
+   "word_frames": 26,
+   "note_midi_filled": 46.0,
+   "seg_id": 5
+  },
+  {
+   "position": 91623,
+   "duration": 489,
+   "tone": 57,
+   "lyric": "脚",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/j",
+     "frames": 15
+    },
+    {
+     "ph": "zh/iao",
+     "frames": 62
+    }
+   ],
+   "word_frames": 77,
+   "note_midi_filled": 57.0,
+   "seg_id": 6
+  },
+  {
+   "position": 92112,
+   "duration": 202,
+   "tone": 57,
+   "lyric": "麻",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 11
+    },
+    {
+     "ph": "zh/a",
+     "frames": 21
+    }
+   ],
+   "word_frames": 32,
+   "note_midi_filled": 57.0,
+   "seg_id": 6
+  },
+  {
+   "position": 92314,
+   "duration": 1753,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 278
+    }
+   ],
+   "word_frames": 278,
+   "note_midi_filled": 57.0,
+   "seg_id": 6
+  },
+  {
+   "position": 94067,
+   "duration": 386,
+   "tone": 53,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 15
+    },
+    {
+     "ph": "zh/e",
+     "frames": 46
+    }
+   ],
+   "word_frames": 61,
+   "note_midi_filled": 53.0,
+   "seg_id": 6
+  },
+  {
+   "position": 94453,
+   "duration": 287,
+   "tone": 51,
+   "lyric": "水",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/sh",
+     "frames": 8
+    },
+    {
+     "ph": "zh/ui",
+     "frames": 37
+    }
+   ],
+   "word_frames": 45,
+   "note_midi_filled": 51.0,
+   "seg_id": 6
+  },
+  {
+   "position": 94740,
+   "duration": 774,
+   "tone": 53,
+   "lyric": "很",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 24
+    },
+    {
+     "ph": "zh/en",
+     "frames": 99
+    }
+   ],
+   "word_frames": 123,
+   "note_midi_filled": 53.0,
+   "seg_id": 6
+  },
+  {
+   "position": 95514,
+   "duration": 906,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 143
+    }
+   ],
+   "word_frames": 143,
+   "note_midi_filled": 53.0,
+   "seg_id": 6
+  },
+  {
+   "position": 96420,
+   "duration": 258,
+   "tone": 53,
+   "lyric": "凉",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 15
+    },
+    {
+     "ph": "zh/iang",
+     "frames": 26
+    }
+   ],
+   "word_frames": 41,
+   "note_midi_filled": 53.0,
+   "seg_id": 6
+  },
+  {
+   "position": 96678,
+   "duration": 1,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 53.0,
+   "seg_id": 6
+  },
+  {
+   "position": 96679,
+   "duration": 166,
+   "tone": 52,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 12
+    },
+    {
+     "ph": "zh/v",
+     "frames": 14
+    }
+   ],
+   "word_frames": 26,
+   "note_midi_filled": 52.0,
+   "seg_id": 6
+  },
+  {
+   "position": 96845,
+   "duration": 17,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 3
+    }
+   ],
+   "word_frames": 3,
+   "note_midi_filled": 52.0,
+   "seg_id": 6
+  },
+  {
+   "position": 96862,
+   "duration": 142,
+   "tone": 51,
+   "lyric": "吗",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 12
+    },
+    {
+     "ph": "zh/a",
+     "frames": 10
+    }
+   ],
+   "word_frames": 22,
+   "note_midi_filled": 51.0,
+   "seg_id": 6
+  },
+  {
+   "position": 97004,
+   "duration": 2,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 51.0,
+   "seg_id": 6
+  },
+  {
+   "position": 97006,
+   "duration": 196,
+   "tone": 52,
+   "lyric": "去",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/q",
+     "frames": 7
+    },
+    {
+     "ph": "zh/v",
+     "frames": 24
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 52.0,
+   "seg_id": 6
+  },
+  {
+   "position": 97202,
+   "duration": 512,
+   "tone": 50,
+   "lyric": "吗",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/m",
+     "frames": 12
+    },
+    {
+     "ph": "zh/a",
+     "frames": 69
+    }
+   ],
+   "word_frames": 81,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 97714,
+   "duration": 434,
+   "tone": 50,
+   "lyric": "算",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/s",
+     "frames": 18
+    },
+    {
+     "ph": "zh/uan",
+     "frames": 51
+    }
+   ],
+   "word_frames": 69,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 98148,
+   "duration": 307,
+   "tone": 46,
+   "lyric": "了",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 13
+    },
+    {
+     "ph": "zh/e",
+     "frames": 36
+    }
+   ],
+   "word_frames": 49,
+   "note_midi_filled": 46.0,
+   "seg_id": 6
+  },
+  {
+   "position": 98455,
+   "duration": 14,
+   "tone": 0,
+   "lyric": "R",
+   "kind": "gap",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 2
+    }
+   ],
+   "word_frames": 2,
+   "note_midi_filled": 46.0,
+   "seg_id": 6
+  },
+  {
+   "position": 98469,
+   "duration": 215,
+   "tone": 45,
+   "lyric": "算",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/s",
+     "frames": 13
+    },
+    {
+     "ph": "zh/uan",
+     "frames": 21
+    }
+   ],
+   "word_frames": 34,
+   "note_midi_filled": 45.0,
+   "seg_id": 6
+  },
+  {
+   "position": 98684,
+   "duration": 225,
+   "tone": 50,
+   "lyric": "啦",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/l",
+     "frames": 8
+    },
+    {
+     "ph": "zh/a",
+     "frames": 28
+    }
+   ],
+   "word_frames": 36,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 98909,
+   "duration": 219,
+   "tone": 50,
+   "lyric": "那",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/n",
+     "frames": 12
+    },
+    {
+     "ph": "zh/a",
+     "frames": 23
+    }
+   ],
+   "word_frames": 35,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 99128,
+   "duration": 106,
+   "tone": 50,
+   "lyric": "弦",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 7
+    },
+    {
+     "ph": "zh/ian",
+     "frames": 10
+    }
+   ],
+   "word_frames": 17,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 99234,
+   "duration": 193,
+   "tone": 50,
+   "lyric": "还",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/h",
+     "frames": 12
+    },
+    {
+     "ph": "zh/ai",
+     "frames": 19
+    }
+   ],
+   "word_frames": 31,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 99427,
+   "duration": 113,
+   "tone": 50,
+   "lyric": "响",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/x",
+     "frames": 7
+    },
+    {
+     "ph": "zh/iang",
+     "frames": 11
+    }
+   ],
+   "word_frames": 18,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 99540,
+   "duration": 129,
+   "tone": 50,
+   "lyric": "着",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "zh/zh",
+     "frames": 6
+    },
+    {
+     "ph": "zh/e",
+     "frames": 14
+    }
+   ],
+   "word_frames": 20,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  },
+  {
+   "position": 99669,
+   "duration": 171,
+   "tone": 50,
+   "lyric": "嗯",
+   "kind": "sing",
+   "phones": [
+    {
+     "ph": "SP",
+     "frames": 27
+    }
+   ],
+   "word_frames": 27,
+   "note_midi_filled": 50.0,
+   "seg_id": 6
+  }
+ ]
+}

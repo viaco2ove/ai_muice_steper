@@ -70,10 +70,11 @@ def _spk_frames(emb, n_frames):
 class PitchPredictor:
     """dspitch: ph 模式 linguistic + pitch 扩散模型 -> midi 曲线 (padded)"""
 
-    def __init__(self, vb, sess, steps=10):
+    def __init__(self, vb, sess, steps=10, expr=1.0):
         self.vb = vb
         self.sess = sess
         self.steps = int(steps)  # 官方默认 DiffSingerStepsPitch=10
+        self.expr = float(expr)  # 表现力初值(0=表现力归零), 可由 voice_conf 覆盖
 
     def predict(self, seg):
         tokens, langs = pad_tokens(self.vb.tab_pitch, seg["body_phones"])
@@ -89,7 +90,7 @@ class PitchPredictor:
             "note_rest": seg["note_rest"].reshape(1, -1),
             "note_dur": seg["note_dur"].reshape(1, -1),
             "pitch": np.full((1, n), 60.0, dtype=np.float32),   # 官方初值 60
-            "expr": np.ones((1, n), dtype=np.float32),           # 官方默认 1.0
+            "expr": np.full((1, n), self.expr, dtype=np.float32),  # 表现力初值, 可配
             "retake": np.ones((1, n), dtype=bool),
             "spk_embed": _spk_frames(self.vb.emb_pitch, n),
             "steps": np.array(self.steps, dtype=np.int64),
@@ -105,10 +106,14 @@ class PitchPredictor:
 class VariancePredictor:
     """dsvariance: ph 模式 linguistic + variance 扩散模型 -> breathiness/voicing/tension"""
 
-    def __init__(self, vb, sess, steps=20):
+    def __init__(self, vb, sess, steps=20, breathiness=0.0, voicing=0.0, tension=0.0):
         self.vb = vb
         self.sess = sess
         self.steps = int(steps)  # 官方默认 DiffSingerStepsVariance=20
+        # variance 初值, 可由 voice_conf 覆盖(决定整体气声/张力性格)
+        self.breathiness = float(breathiness)
+        self.voicing = float(voicing)
+        self.tension = float(tension)
 
     def predict(self, seg, pitch_midi):
         """pitch_midi: (1, n_frames) **midi 值**(不是 Hz)"""
@@ -122,9 +127,9 @@ class VariancePredictor:
             "encoder_out": enc,
             "ph_dur": seg["ph_dur"].reshape(1, -1),
             "pitch": pitch_midi.astype(np.float32),              # 官方: midi 值
-            "breathiness": np.zeros((1, n), dtype=np.float32),   # 官方初值全 0
-            "voicing": np.zeros((1, n), dtype=np.float32),
-            "tension": np.zeros((1, n), dtype=np.float32),
+            "breathiness": np.full((1, n), self.breathiness, dtype=np.float32),
+            "voicing": np.full((1, n), self.voicing, dtype=np.float32),
+            "tension": np.full((1, n), self.tension, dtype=np.float32),
             "retake": np.ones((1, n, 3), dtype=bool),
             "spk_embed": _spk_frames(self.vb.emb_var, n),
             "steps": np.array(self.steps, dtype=np.int64),

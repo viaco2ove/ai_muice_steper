@@ -65,16 +65,29 @@ mid文件和歌词（格式是非直接可用的）
   "output_lyrics": "workspace/project/走在/song_engineer/track/singer/02_主唱.lyrics.txt",
   "output_ustx_json": "workspace/project/走在/song_engineer/track/singer/02_主唱.ustx.json",
   "output_wav": "workspace/project/走在/song_engineer/track/singer/02_主唱.wav",
-  "gender": -0.5
+  "voice_conf": {
+    "gender": -0.5,
+    "expr": 1.0,
+    "breathiness": 0.0,
+    "voicing": 0.0,
+    "tension": 0.0,
+    "velocity": 1.0
+  }
 }
 ```
 其中singer 文件 会被技能自动解压后使用
+渲染时 render_singer.py 会读取同目录下的 `{track}.singer.json`，取其中 `voice_conf` 作为音色性格旋钮。
+缺省：gender 回退环境变量 `DS_GENDER`，其余回退官方初值（gender 不写在 voice_conf 里则等效于 0）。
 
 ## 输入参数说明
-- gender：官方 GENC 参数
-gender 本质是整体压共振峰，压多了所有元音的口腔感都会变圆变闷
-增加时声音会变尖锐。 减小时声音会变浑厚。 其实也不能说是厚而是一种奇怪的“厚” 感觉是口腔变“圆”了的声音。
-建议范围值“-0.5”
+- `voice_conf`（位于 `{track}.singer.json`）：音色性格旋钮，全部可选，缺省回退官方初值
+  - `gender`：官方 GENC 参数，范围 `-1 ~ +1`（默认 `0`，不写则回退 `DS_GENDER` 环境变量）。
+    本质是整体压共振峰：增加时声音变尖锐；减小时变浑厚（口腔变“圆”的怪厚感）。建议 `-0.5`。
+  - `expr`：pitch 模型表现力初值，默认 `1.0`（`0` = 表现力归零，平直无起伏）。
+  - `breathiness` / `voicing` / `tension`：variance 模型初值，默认 `0.0`。
+    决定整体气声/张力性格（log 域：breath/voicing 越负越气声/虚；tension 正=更紧绷、负=更松弛）。
+  - `velocity`：acoustic 速度感，默认 `1.0`（官方常数）。
+- 另：CLI 扩散步数 `--steps/--steps-pitch/--steps-variance`（质量↔速度，默认 20/10/20）、`--bpm`（曲速覆盖）、`--track/--out/--lyrics-json`（I/O）。
 
 ## 输出
 - `track/singer/` 直接用于生成wav 的mid 文件 {track}.mid 

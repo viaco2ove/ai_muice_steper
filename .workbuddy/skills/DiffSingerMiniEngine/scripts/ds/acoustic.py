@@ -17,8 +17,7 @@ from .predictors import pad_tokens, _spk_frames
 from .voicebank import HEAD_FRAMES
 
 # 性别/共振峰偏移 (官方 GENC 曲线: -1~+1, 正=偏厚实男声, 负=偏柔女声; 默认0)
-# 实验用环境变量 DS_GENDER 覆盖, 如 DS_GENDER=0.2 把高音区的音色往男声压
-GENDER = float(os.environ.get("DS_GENDER", "0"))
+# 现在由 voice_conf.gender 经 render_singer.py 传入; 缺省回退 DS_GENDER 环境变量
 
 
 def midi_to_hz(midi):
@@ -27,11 +26,15 @@ def midi_to_hz(midi):
 
 
 class AcousticRenderer:
-    def __init__(self, vb, sess, steps=20):
+    def __init__(self, vb, sess, steps=20, gender=None, velocity=1.0):
         self.vb = vb
         self.sess = sess
         self.steps = int(steps)
         self.depth = float(min(1.0, vb.cfg_ac.max_depth))
+        # gender 优先用传入值; 不传则回退 DS_GENDER 环境变量(向后兼容)
+        self.gender = float(gender) if gender is not None \
+            else float(os.environ.get("DS_GENDER", "0"))
+        self.velocity = float(velocity)
 
     def render_mel(self, seg, pitch_midi, breath, voicing, tension):
         """-> (mel, f0Hz) 均为 padded 帧"""
@@ -48,8 +51,8 @@ class AcousticRenderer:
             "durations": seg["ph_dur"].reshape(1, -1),
             "f0": f0,
             "breathiness": breath, "voicing": voicing, "tension": tension,
-            "gender": np.full((1, n), GENDER, dtype=np.float32),
-            "velocity": np.ones((1, n), dtype=np.float32),
+            "gender": np.full((1, n), self.gender, dtype=np.float32),
+            "velocity": np.full((1, n), self.velocity, dtype=np.float32),
             "spk_embed": _spk_frames(vb.emb_ac, n),
             "depth": np.array(self.depth, dtype=np.float32),
             "steps": np.array(self.steps, dtype=np.int64),
@@ -71,7 +74,7 @@ class AcousticRenderer:
         print("    acoustic: f0 body[%.1f,%.1f]Hz mel body[%.2f,%.2f] depth=%.2g steps=%d gender=%.2f" % (
             float(f0[0, h:h + b].min()), float(f0[0, h:h + b].max()),
             float(mel[0, h:h + b].min()), float(mel[0, h:h + b].max()),
-            self.depth, self.steps, GENDER))
+            self.depth, self.steps, self.gender))
         return mel, f0
 
     def run_vocoder(self, mel, f0):

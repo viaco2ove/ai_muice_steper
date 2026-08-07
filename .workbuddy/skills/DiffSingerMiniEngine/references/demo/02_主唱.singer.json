@@ -1,0 +1,18 @@
+{
+  "input_mid": "workspace/project/走在/song_engineer/track/02_主唱.mid",
+  "input_lyrics": "workspace/project/走在/song_engineer/track/03_lyrics.json",
+  "singer": "D:\\OpenUtau\\Singers\\Singers\\YunYe_DiffSinger_CE_26.07.16.zip",
+  "output_mid": "workspace/project/走在/song_engineer/track/singer/02_主唱.mid",
+  "output_lyrics": "workspace/project/走在/song_engineer/track/singer/02_主唱.lyrics.txt",
+  "output_ustx_json": "workspace/project/走在/song_engineer/track/singer/02_主唱.ustx.json",
+  "output_wav": "workspace/project/走在/song_engineer/track/singer/02_主唱.wav",
+  "voice_conf": {
+    "gender": -0.5,
+    "expr": 1.0,
+    "breathiness": 0.0,
+    "voicing": 0.0,
+    "tension": 0.0,
+    "velocity": 1.0
+  }
+
+}

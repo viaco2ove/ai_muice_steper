@@ -24,12 +24,16 @@ from .acoustic import AcousticRenderer
 
 
 class Renderer:
-    def __init__(self, vb, sess, steps_ac=20, steps_pitch=10, steps_var=20):
+    def __init__(self, vb, sess, steps_ac=20, steps_pitch=10, steps_var=20,
+                 gender=None, velocity=1.0, expr=1.0,
+                 breathiness=0.0, voicing=0.0, tension=0.0):
         self.vb = vb
         self.sess = sess
-        self.pitch = PitchPredictor(vb, sess, steps_pitch)
-        self.var = VariancePredictor(vb, sess, steps_var)
-        self.ac = AcousticRenderer(vb, sess, steps_ac)
+        self.pitch = PitchPredictor(vb, sess, steps_pitch, expr=expr)
+        self.var = VariancePredictor(vb, sess, steps_var,
+                                     breathiness=breathiness, voicing=voicing,
+                                     tension=tension)
+        self.ac = AcousticRenderer(vb, sess, steps_ac, gender=gender, velocity=velocity)
         self.sr = int(vb.cfg_voc.sample_rate)
         self.hop = int(vb.cfg_voc.hop_size)
 

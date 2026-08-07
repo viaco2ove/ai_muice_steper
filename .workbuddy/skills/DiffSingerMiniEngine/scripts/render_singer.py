@@ -44,6 +44,29 @@ def main():
     os.makedirs(singer, exist_ok=True)
     plan_path = args.plan_path or os.path.join(singer, args.track + ".ustx.json")
 
+    # 读取 {track}.singer.json 里的 voice_conf（音色性格旋钮）
+    # 缺省: gender 回退 DS_GENDER 环境变量, 其余回退官方初值
+    voice_conf = {}
+    sj = os.path.join(singer, args.track + ".singer.json")
+    if os.path.exists(sj):
+        try:
+            with open(sj, encoding="utf-8") as f:
+                voice_conf = (json.load(f) or {}).get("voice_conf", {}) or {}
+            print("voice_conf loaded: %s" % sj)
+        except Exception as ex:
+            print("voice_conf read failed: %s (ignore)" % ex)
+    conf_gender = voice_conf.get("gender", None)
+    if conf_gender is None:
+        env_g = os.environ.get("DS_GENDER")
+        conf_gender = float(env_g) if env_g is not None else None
+    conf_expr = float(voice_conf.get("expr", 1.0))
+    conf_breath = float(voice_conf.get("breathiness", 0.0))
+    conf_voice = float(voice_conf.get("voicing", 0.0))
+    conf_tension = float(voice_conf.get("tension", 0.0))
+    conf_vel = float(voice_conf.get("velocity", 1.0))
+    print("voice_conf: gender=%s expr=%.2f breath=%.1f voice=%.1f tension=%.1f vel=%.2f" % (
+        conf_gender, conf_expr, conf_breath, conf_voice, conf_tension, conf_vel))
+
     vb = Voicebank(Voicebank.locate())
     sess = vb.sessions()
     print("voicebank: %s" % vb.root)
@@ -96,7 +119,9 @@ def main():
             return
 
     print("synthesizing (pitch->variance->acoustic->vocoder, from plan)...")
-    r = Renderer(vb, sess, args.steps, args.steps_pitch, args.steps_variance)
+    r = Renderer(vb, sess, args.steps, args.steps_pitch, args.steps_variance,
+                 gender=conf_gender, velocity=conf_vel, expr=conf_expr,
+                 breathiness=conf_breath, voicing=conf_voice, tension=conf_tension)
     audio = r.synth_from_plan(plan)
 
     m = plan["meta"]
