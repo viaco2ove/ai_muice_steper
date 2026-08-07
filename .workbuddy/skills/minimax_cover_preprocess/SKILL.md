@@ -49,10 +49,24 @@ executable: true
       └─ file_id → GET /v1/files/retrieve → 下载 url(24h) → 存 mp3
 ```
 
+## 输入
+
+
+指定发送的整曲 （默认 workspace/project/{song}/song_engineer/track/full_remix.wav）
+人声干音wav 或者MP3 （默认 workspace/project/{song}/song_engineer/track/singer）
+参考歌词 （默认 workspace/project/{song}/song_engineer/track/）
+歌曲风格（默认从orkspace/project/{song}/project.md 获取，）
+
+## 输出
+workspace/project/{song}/song_engineer/ai_cover 下面
+真正发送的歌词。minimax 能识别的歌词
+真正发送的干声 wav 转 mp3 ,降低体积不然无法上传。
+生成的wav
+
 ## 铁律（务必遵守）
 
 1. **只传纯人声干音**，绝不传带伴奏的整混音。
-   - 本项目已有现成干音：`workspace/project/走在/song_engineer/track/singer/02_主唱_v7.wav`
+   - 本项目已有现成干音：`workspace/project/{song}/song_engineer/track/singer/02_主唱_v7.wav`
      （OpenUTAU 导出的真人声，本身就是提纯后的）。直接 `--vocals` 给它。
    wav 转 mp3 ,降低体积不然无法上传。
    - 若只有整曲，用 `--source` 让脚本自动 demucs 提纯（htdemucs 两stems=vocals）。
@@ -67,8 +81,8 @@ executable: true
 ```bash
 # 直接给纯人声干音（推荐，本项目场景）
 .venv/python.exe .workbuddy/skills/minimax_cover_preprocess/scripts/cover_two_step.py preprocess \
-  --vocals "workspace/project/走在/song_engineer/track/singer/02_主唱_v7.wav" \
-  --out-dir "workspace/project/走在/song_engineer/cover_minimax"
+  --vocals "workspace/project/{song}/song_engineer/track/singer/02_主唱_v7.wav" \
+  --out-dir "workspace/project/{song}/song_engineer/cover_minimax"
 
 # 或给整曲，自动 demucs 提纯
 ... preprocess --source "整曲.wav" --out-dir <dir>
@@ -90,10 +104,10 @@ executable: true
 
 ```bash
 .venv/python.exe .workbuddy/skills/minimax_cover_preprocess/scripts/cover_two_step.py generate \
-  --preprocess-json "workspace/project/走在/song_engineer/cover_minimax/cover_preprocess.json" \
-  --lyrics "workspace/project/走在/song_engineer/cover_minimax/formatted_lyrics.txt" \
+  --preprocess-json "workspace/project/{song}/song_engineer/cover_minimax/cover_preprocess.json" \
+  --lyrics "workspace/project/{song}/song_engineer/cover_minimax/formatted_lyrics.txt" \
   --prompt "Lo-fi sofa song, warm male vocal, soft acoustic guitar, relaxed and intimate" \
-  --out "workspace/project/走在/song_engineer/cover_minimax/cover_minimax_v2.mp3"
+  --out "workspace/project/{song}/song_engineer/cover_minimax/cover_minimax_v2.mp3"
 ```
 
 > 注意：`--lyrics` 传的是**校正后**的 `formatted_lyrics.txt`（改完保存即可）。
