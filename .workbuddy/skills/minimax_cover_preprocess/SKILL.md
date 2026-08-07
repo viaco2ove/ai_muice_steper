@@ -58,7 +58,7 @@ executable: true
 歌曲风格（默认从orkspace/project/{song}/project.md 获取，）
 
 ## 输出
-workspace/project/{song}/song_engineer/ai_cover 下面
+workspace/project/{song}/song_engineer/cover_minimax下面
 真正发送的歌词。minimax 能识别的歌词
 真正发送的干声 wav 转 mp3 ,降低体积不然无法上传。
 生成的wav
