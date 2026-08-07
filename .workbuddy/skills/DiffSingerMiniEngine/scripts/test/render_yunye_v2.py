@@ -13,6 +13,12 @@
      (ustx风格中间工程文件: 每音符 position/duration/tone/lyric/kind/seg_id/phones帧分配,
      固化对齐/分段/间隙展开/音素/ph_dur全部渲染决策, 可审计可手改),
      再从plan渲染; --plan-only 只生成plan, --from-plan 从plan渲染(手改plan后可局部重渲染)
+  6. variance链路独立化: dsvariance/dsconfig.yaml指定 variance_assets/variance_assets/ 下的
+     独立linguistic+variance模型和独立音素表(19个键id与dur表不同), 误用duration_assets版本
+     会导致breathiness/voicing/tension预测失真(水声)
+  7. 各组件专属spk_embed: dsdur/dsvariance/dspitch/acoustic四个emb数值均不同,
+     pitch是zhibin-pop训练必须用zhibin-pop.emb, 混喂会致f0曲线失真(NSF声码器水下咕噜声)
+  8. acoustic depth=0.7 (dsconfig max_depth上限, 超上限扩散超分布, mel模糊)
 
 Pipeline (与v1相同):
   1. duration_linguistic -> 2. dur -> 3. pitch_linguistic -> 4. pitch
@@ -30,7 +36,41 @@ try:
 except ImportError:
     HAS_PYPINYIN = False
 
-VB = r"D:\OpenUtau\Singers\YunYe_DiffSinger_CE_26.07.16\YunYe_DiffSinger_CE_26.07.16"
+def load_env():
+    """从工作区根 .env 读配置: singers_path(声库zip目录) / diff_singer_mini_engine_assets(资源目录)"""
+    env = {}
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+    p = os.path.join(root, ".env")
+    if os.path.exists(p):
+        with open(p, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    env[k.strip()] = v.strip()
+    return env
+
+_ENV = load_env()
+
+
+def find_vb(zip_name=None):
+    """由声库zip名定位解压目录(OpenUTAU安装结构: singers_path同级/{stem}/{stem})"""
+    sp = _ENV.get("singers_path", r"D:\OpenUtau\Singers\Singers")
+    stem = (os.path.splitext(os.path.basename(zip_name))[0] if zip_name
+            else "YunYe_DiffSinger_CE_26.07.16")
+    cands = [
+        os.path.join(os.path.dirname(sp), stem, stem),
+        os.path.join(sp, stem, stem),
+        os.path.join(os.path.dirname(sp), stem),
+        os.path.join(sp, stem),
+    ]
+    for c in cands:
+        if os.path.exists(os.path.join(c, "acoustic.onnx")):
+            return c
+    return cands[0]
+
+
+VB = find_vb()
 AC_PATH = os.path.join(VB, "acoustic.onnx")
 VOC_PATH = os.path.join(VB, "dsvocoder", "2601_zhibin_club_ft_pc_nsf_hifigan.onnx")
 LING_DUR = os.path.join(VB, "variance_assets", "duration_assets", "linguistic.onnx")
@@ -47,10 +87,14 @@ LANG_JSON = os.path.join(VB, "languages.json")
 PH_JSON_P = os.path.join(VB, "dspitch", "phonemes.json")  # 74 (pitch)
 LANG_JSON_P = os.path.join(VB, "dspitch", "languages.json")
 DICT_ZH = os.path.join(VB, "dsdur", "dsdict-zh.yaml")
-EMB_PATH = os.path.join(VB, "yunye.emb")
+# 各组件专属spk_embed(实测4个emb数值均不同, 喂错致f0/方差失真)
+EMB_PATH = os.path.join(VB, "yunye.emb")                      # acoustic 用
+EMB_DUR = os.path.join(VB, "dsdur", "yunye.emb")             # dur 专用
+EMB_VAR = os.path.join(VB, "dsvariance", "yunye.emb")        # variance 专用
+EMB_PITCH = os.path.join(VB, "dspitch", "zhibin-pop.emb")    # pitch(zhibin-pop训练)专用
 
 SR_WRITE = 44100
-SR_VOC = 44109
+SR_VOC = 44100  # vocoder.yaml sample_rate=44100 (原44109为笔误, 致静音段长度+0.02%)
 FPS = 86.13  # 44100/512
 
 # 段落小节范围 -> 03_lyrics.json lyric_sections 索引
@@ -125,6 +169,9 @@ def load_res():
             py2phs[py] = items
 
     spk = np.fromfile(EMB_PATH, dtype=np.float32).astype(np.float32)
+    spk_dur = np.fromfile(EMB_DUR, dtype=np.float32).astype(np.float32)
+    spk_var = np.fromfile(EMB_VAR, dtype=np.float32).astype(np.float32)
+    spk_pitch = np.fromfile(EMB_PITCH, dtype=np.float32).astype(np.float32)
     opts = ort.SessionOptions()
     opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
     # 关闭内存池/内存模式缓存: 逐段推理时arena会持续累积不释放, 长曲后段必OOM
@@ -134,7 +181,8 @@ def load_res():
     _res = {
         "ph": ph, "ph_p": ph_p, "lang": lang, "lang_p": lang_p,
         "zh": zh, "zh_p": zh_p, "zh_v": zh_v, "ph_v": ph_v,
-        "py2phs": py2phs, "spk": spk, "opts": opts,
+        "py2phs": py2phs, "opts": opts,
+        "spk": spk, "spk_dur": spk_dur, "spk_var": spk_var, "spk_pitch": spk_pitch,
     }
     print("  ph_dur=%d ph_pitch=%d ph_var=%d py2phs=%d" % (
         len(ph), len(ph_p), len(ph_v), len(py2phs)))
@@ -381,7 +429,7 @@ def plan_chunk(notes, lyrics, sess, r, tps):
     word_dur_arr = np.array([word_dur], dtype=np.int64)
     midi_vals_arr = np.array([midi_vals], dtype=np.int64)
 
-    spk = r["spk"]
+    spk = r["spk_dur"]  # dur用dsdur专属emb
 
     # ── Step1: duration_linguistic ──
     enc_d, mask_d = sess["ling_dur"].run(None, {
@@ -463,7 +511,9 @@ def render_chunk(plan_notes, sess, r):
     word_div_arr = np.array([word_div], dtype=np.int64)
     word_dur_arr = np.array([word_dur], dtype=np.int64)
 
-    spk = r["spk"]
+    spk = r["spk"]  # acoustic用根emb
+    spk_pitch = r["spk_pitch"]
+    spk_var = r["spk_var"]
 
     # ── variance_linguistic (variance专用encoder: 独立模型+独立音素表, 输入ph_dur) ──
     enc_v, mask_v = sess["ling_var"].run(None, {
@@ -486,10 +536,12 @@ def render_chunk(plan_notes, sess, r):
     expr = np.zeros((1, n_frames), dtype=np.float32)
     retake_p = np.ones((1, n_frames), dtype=bool)
     spk_fr = np.broadcast_to(spk[np.newaxis, np.newaxis, :], (1, n_frames, 384)).astype(np.float32)
+    spk_fr_p = np.broadcast_to(spk_pitch[np.newaxis, np.newaxis, :], (1, n_frames, 384)).astype(np.float32)
+    spk_fr_v = np.broadcast_to(spk_var[np.newaxis, np.newaxis, :], (1, n_frames, 384)).astype(np.float32)
     pitch_pred_midi = sess["pitch"].run(None, {
         "encoder_out": enc_p, "ph_dur": ph_dur_frames.reshape(1, -1),
         "note_midi": note_midi, "note_rest": note_rest, "note_dur": note_dur,
-        "pitch": pitch_in, "expr": expr, "retake": retake_p, "spk_embed": spk_fr,
+        "pitch": pitch_in, "expr": expr, "retake": retake_p, "spk_embed": spk_fr_p,
         "steps": np.array(30, dtype=np.int64),
     })[0]
 
@@ -509,7 +561,7 @@ def render_chunk(plan_notes, sess, r):
         "breathiness": np.zeros((1, n_frames), dtype=np.float32),
         "voicing": np.ones((1, n_frames), dtype=np.float32),
         "tension": np.zeros((1, n_frames), dtype=np.float32),
-        "retake": retake_v, "spk_embed": spk_fr,
+        "retake": retake_v, "spk_embed": spk_fr_v,
         "steps": np.array(20, dtype=np.int64),
     })
     breath, voicing, tension = var_out[0], var_out[1], var_out[2]
@@ -558,7 +610,8 @@ def main():
     os.makedirs(singer, exist_ok=True)
     plan_path = args.plan_path or os.path.join(singer, args.track + ".ustx.json")
 
-    # 预载模型(7个)
+    # 预载模型(8个), VB由.env singers_path推导
+    print("  voicebank: %s" % VB)
     load_res()
     opts = _res["opts"]
     prov = ["CPUExecutionProvider"]

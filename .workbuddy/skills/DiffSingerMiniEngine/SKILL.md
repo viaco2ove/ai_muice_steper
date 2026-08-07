@@ -11,14 +11,37 @@ params: {"--project": "歌曲名(required)", "--track": "音轨名(default 02_�
 executable: true
 ---
 
-# DiffSingerMiniEngine — 歌声合成技能 v1.0
+# DiffSingerMiniEngine — 歌声合成技能 v2.0
 
 ## 概述
 
 基于 **DiffSingerMiniEngine** 的轻量级歌声合成方案：
-- **输入**：MIDI + 歌词 → `{track}.ustx.json`（ustx风格JSON：逐音符 position/duration/tone/lyric/kind/phones帧分配）
+- **输入**：MIDI + 歌词 → `{track}.ustx.json`（ustx风格JSON：逐音符 position/duration/tone/lyric/kind/phones帧分配/note_midi_filled）
 - **引擎**：ONNX Runtime（CPU 推理，无需 GPU，2-4GB RAM）
 - **输出**：`track/singer/` 目录下的高清歌声音频 WAV
+- **渲染器**：`scripts/render_singer.py`（薄CLI）+ `scripts/ds/` 包（配置驱动，复刻 OpenUTAU 官方输入契约）；旧脚本存档于 `scripts/test/`（勿用）
+
+## 渲染器结构（scripts/ds/ 包）
+
+| 模块 | 职责 |
+|------|------|
+| `config.py` | .env / dsconfig.yaml / vocoder.yaml 解析为 dataclass（maxDepth 分支语义） |
+| `voicebank.py` | 声库定位/5份配置/音素表/语言表/dsdict-zh/4个专属emb/8个ONNX会话 |
+| `g2p.py` | 汉字→音素（pypinyin + dsdict-zh.yaml） |
+| `align.py` | MIDI↔歌词线性对齐、BAR_SEGS 分段、expand_gaps |
+| `plan.py` | dur烘焙：SP padding、word_div 元音分组、rest 音高填充 → ustx.json |
+| `predictors.py` | pitch/variance 预测（官方输入契约核心） |
+| `acoustic.py` | acoustic+vocoder（f0 Hz、variance clamp、mel_base 转换） |
+| `render.py` | 段调度/拼接/padding切除/重采样/写盘 |
+
+## 官方输入契约（对照 OpenUTAU C# 源码，水声根因修复）
+
+1. **所有 linguistic/acoustic 输入**：tokens 首尾各 pad 1 个 SP（8+8 帧），渲染后切除 8×512=4096 samples/侧；languages 按音素前缀（`zh/x→zh`，SP/AP→0）
+2. **pitch 模型**：`pitch` 初值全 60、`expr` 全 1.0（0=表现力归零）、`note_midi` rest 音符用邻近非 rest 音高填充（组首用后值/组尾用前值/组中各半，全rest填60）、slur 继承前音符 rest 状态、steps=10
+3. **variance 模型**：`pitch` 输入 = **midi 值**（不是 Hz！）、breathiness/voicing/tension 初值全 0、retake 全 true、steps=20
+4. **acoustic**：f0=440·2^((midi-69)/12) Hz 且 rest 帧**不归零**；breathiness/voicing clamp [-96,0]、tension clamp [-10,10]；gender=0、velocity=1；depth=min(1.0, max_depth)=0.7、steps=20
+5. **dur 链路**：word_div 按元音位置切分（SP/AP=元音，声母依附前一元音组）、word_dur=组内**帧数**和（不是 ticks）；预测后按 MIDI 时值强制缩放（零漂移）
+6. **spk_embed 专属**：根/dsdur/dsvariance/dspitch 四个 emb 数值全不同，各喂各的（pitch 是 zhibin-pop.emb）
 
 ## 配置文件
 .env 文件
@@ -61,14 +84,14 @@ mid文件和歌词（格式是非直接可用的）
         ▼
 track/singer/{track}.mid (MIDI音轨) + track/singer/{track}.lyrics.txt (纯文本歌词)
         │
-        ▼  plan阶段 (render_yunye_v2.py)
+        ▼  plan阶段 (render_singer.py: ds/align.py + ds/plan.py)
         ├── 线性对齐: 1音符=1字符, '-'拖腔延续韵母, 段外R
         ├── 间隙展开(expand_gaps) + 按 BAR_SEGS 分段
         ├── pypinyin 汉字→音素, dur模型预测+按MIDI时值强制缩放
         ▼
 track/singer/{track}.ustx.json  (类似ustx的json中间工程文件, 可审计/手改)
         │
-        ▼  render阶段 (render_yunye_v2.py --from-plan)
+        ▼  render阶段 (render_singer.py --from-plan: ds/predictors.py + ds/acoustic.py + ds/render.py)
         ├── 跳过dur预测, 直接用plan烘焙的ph_dur帧
         ├── pitch → variance → acoustic → vocoder (ONNX 7步pipeline)
         ▼
@@ -104,13 +127,16 @@ ls .workbuddy/skills/DiffSingerMiniEngine/assets/
 # 2. 如无模型，按下方"模型下载"步骤下载
 
 # 3. 渲染主唱（默认 02_主唱）: plan+render 一气呵成
-./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在
 
 # 4. 只生成中间工程文件 {track}.ustx.json（不渲染）
-./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在 --plan-only
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在 --plan-only
 
 # 5. 手改 ustx.json 后重渲染（跳过plan生成, 直接用烘焙的ph_dur帧）
-./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_yunye_v2.py --project 走在 --from-plan
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在 --from-plan
+
+# 6. 可调扩散步数（默认官方值: acoustic=20 pitch=10 variance=20）
+./.venv/python.exe .workbuddy/skills/DiffSingerMiniEngine/scripts/render_singer.py --project 走在 --steps 20 --steps-pitch 10 --steps-variance 20
 ```
 
 ## 模型下载
