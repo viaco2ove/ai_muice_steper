@@ -65,14 +65,20 @@ class Renderer:
             print("  head silence: %.2fs" % head_sec)
 
         i = 0
+        prev_end = notes[0]["position"] if notes else 0
         while i < len(notes):
             sid = notes[i].get("seg_id")
             j = i
             while j < len(notes) and notes[j].get("seg_id") == sid:
                 j += 1
             group = notes[i:j]
+            gap_ticks = group[0]["position"] - prev_end
+            if gap_ticks > 0:
+                # 段间空隙补静音, 保持与 MIDI 时间轴严格对齐(懒进场/呼吸口不塌陷)
+                chunks.append(np.zeros(int(gap_ticks / tps * sr), dtype=np.float32))
             seg_ticks = group[-1]["position"] + group[-1]["duration"] - group[0]["position"]
             seg_sec = seg_ticks / tps
+            prev_end = group[-1]["position"] + group[-1]["duration"]
             if sid is None:
                 chunks.append(np.zeros(int(seg_sec * sr), dtype=np.float32))
                 print("  notes %d-%d REST %.1fs -> silence" % (i, j, seg_sec))

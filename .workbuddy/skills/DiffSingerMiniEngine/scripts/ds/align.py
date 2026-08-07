@@ -40,12 +40,18 @@ def read_midi_notes(path):
 
 
 def extract_section_chars(lines):
-    """从段落 lines 提取有效字符(汉字), 跳过 … 等装饰符"""
+    """从段落 lines 提取有效字符(汉字 + '-'/'～' 转音标记), 跳过 … 等装饰符
+
+    '-'/'～' = 显式转音(slur): 前一个汉字韵母延长到该音符(一字多音),
+    与 xstudio_lyrics 技能同一约定; 段内字符用尽后剩余音符仍自动补 '-'。
+    """
     chars = []
     for line in lines:
         for ch in line:
             if "一" <= ch <= "鿿":
                 chars.append(ch)
+            elif ch in ("-", "～"):
+                chars.append("-")
     return chars
 
 
